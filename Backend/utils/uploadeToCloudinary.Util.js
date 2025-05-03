@@ -12,20 +12,18 @@ const uploadImageToCloudinary = async (filePath) => {
   const absolutePath = path.resolve(filePath);
 
   try {
-    
     const result = await cloudinary.uploader.upload(absolutePath, {
       folder: 'Mobile Shopping/Products', // Custom folder
       resource_type: 'auto',
       overwrite: false,
     });
     
-console.log('Upload result:', result); // Log the result of the upload
-    fs.unlinkSync(absolutePath); // Delete after upload
+    fs.unlinkSync(filePath); // Delete after upload
     return result; // Just return result
   } catch (error) {
     // Try to delete file even if upload fails
-    if (fs.existsSync(absolutePath)) {
-      fs.unlinkSync(absolutePath);
+    if (fs.existsSync(filePath)) {
+      fs.unlinkSync(filePath);
     }
     throw error; // Let caller handle the error
   }

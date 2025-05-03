@@ -8,11 +8,11 @@ const Product = sequelize.define('Product', {
         autoIncrement: true,      
         primaryKey: true
     },
-    title: {
+    productTitle: {
         type: DataTypes.STRING,
         allowNull: false
     },
-    description: {
+    productDescription: {
         type: DataTypes.TEXT,
         allowNull: true
     },

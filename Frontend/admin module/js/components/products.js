@@ -165,94 +165,94 @@
   </div>
 </div>`;
 
-  // Initial products data
-let products = [
-  {
-    id: "VIVO-SMA-001",
-    title: "Vivo X100 Pro",
-    description: "Vivo X100 Pro with Snapdragon 8 Gen 2, 120Hz AMOLED Display.",
-    originalPrice: 79999,
-    sellingPrice: 74999,
-    colors: [
-      "#000000",
-      "#FFFFFF",
-      "linear-gradient(45deg, #1F1C2C, #928DAB)"
-    ],
-    sizes: {
-      "RAM": "8GB",
-      "Storage": "128GB",
-      "Processor": "Snapdragon 8 Gen 2"
-    },
-    specifications: {
-      "Display": "6.78-inch AMOLED, 120Hz",
-      "Battery": "5000mAh, 80W Fast Charging",
-      "Camera": "50MP + 12MP + 8MP Triple Camera",
-      "OS": "Funtouch OS based on Android 14"
-    },
-    mainImage: "/api/placeholder/200/200?text=Vivo+X100+Pro",
-    casualImages: [
-      "/api/placeholder/200/200?text=X100+Side",
-      "/api/placeholder/200/200?text=X100+Back"
-    ],
-    category: "Smartphones",
-    stock: 0,
-    warranty: "1 Year"
-  },
-  {
-    id: "VIVO-SMA-002",
-    title: "Vivo V27",
-    description: "Vivo V27 with MediaTek Dimensity 920, 120Hz AMOLED Display.",
-    originalPrice: 35999,
-    sellingPrice: 32999,
-    colors: ["#1E90FF", "#FFC0CB", "linear-gradient(45deg, #FF6B6B, #FFD700)"],
-    sizes: {
-      "RAM": "8GB",
-      "Storage": "128GB",
-      "Processor": "MediaTek Dimensity 920"
-    },
-    specifications: {
-      "Display": "6.78-inch AMOLED, 120Hz",
-      "Battery": "4600mAh, 66W Fast Charging",
-      "Camera": "50MP + 8MP + 2MP Triple Camera",
-      "OS": "Funtouch OS based on Android 13"
-    },
-    mainImage: "/api/placeholder/200/200?text=Vivo+V27",
-    casualImages: [
-      "/api/placeholder/200/200?text=V27+Side",
-      "/api/placeholder/200/200?text=V27+Back"
-    ],
-    category: "Smartphones",
-    stock: 10,
-    warranty: "1 Year"
-  },
-  {
-    id: "VIVO-SMA-003",
-    title: "Vivo Y100",
-    description: "Vivo Y100 with MediaTek Dimensity 900, 90Hz AMOLED Display.",
-    originalPrice: 24999,
-    sellingPrice: 22999,
-    colors: ["#8B0000", "#FFFFFF", "linear-gradient(45deg, #FF4500, #FFD700)"],
-    sizes: {
-      "RAM": "6GB",
-      "Storage": "128GB",
-      "Processor": "MediaTek Dimensity 900"
-    },
-    specifications: {
-      "Display": "6.67-inch AMOLED, 90Hz",
-      "Battery": "4500mAh, 44W Fast Charging",
-      "Camera": "64MP + 8MP + 2MP Triple Camera",
-      "OS": "Funtouch OS based on Android 12"
-    },
-    mainImage: "/api/placeholder/200/200?text=Vivo+Y100",
-    casualImages: [
-      "/api/placeholder/200/200?text=Y100+Side",
-      "/api/placeholder/200/200?text=Y100+Back"
-    ],
-    category: "Smartphones",
-    stock: 10,
-    warranty: "1 Year"
-  }
-];
+//   // Initial products data
+// let products = [
+//   {
+//     id: "VIVO-SMA-001",
+//     title: "Vivo X100 Pro",
+//     description: "Vivo X100 Pro with Snapdragon 8 Gen 2, 120Hz AMOLED Display.",
+//     originalPrice: 79999,
+//     sellingPrice: 74999,
+//     colors: [
+//       "#000000",
+//       "#FFFFFF",
+//       "linear-gradient(45deg, #1F1C2C, #928DAB)"
+//     ],
+//     sizes: {
+//       "RAM": "8GB",
+//       "Storage": "128GB",
+//       "Processor": "Snapdragon 8 Gen 2"
+//     },
+//     specifications: {
+//       "Display": "6.78-inch AMOLED, 120Hz",
+//       "Battery": "5000mAh, 80W Fast Charging",
+//       "Camera": "50MP + 12MP + 8MP Triple Camera",
+//       "OS": "Funtouch OS based on Android 14"
+//     },
+//     mainImage: "/api/placeholder/200/200?text=Vivo+X100+Pro",
+//     casualImages: [
+//       "/api/placeholder/200/200?text=X100+Side",
+//       "/api/placeholder/200/200?text=X100+Back"
+//     ],
+//     category: "Smartphones",
+//     stock: 0,
+//     warranty: "1 Year"
+//   },
+//   {
+//     id: "VIVO-SMA-002",
+//     title: "Vivo V27",
+//     description: "Vivo V27 with MediaTek Dimensity 920, 120Hz AMOLED Display.",
+//     originalPrice: 35999,
+//     sellingPrice: 32999,
+//     colors: ["#1E90FF", "#FFC0CB", "linear-gradient(45deg, #FF6B6B, #FFD700)"],
+//     sizes: {
+//       "RAM": "8GB",
+//       "Storage": "128GB",
+//       "Processor": "MediaTek Dimensity 920"
+//     },
+//     specifications: {
+//       "Display": "6.78-inch AMOLED, 120Hz",
+//       "Battery": "4600mAh, 66W Fast Charging",
+//       "Camera": "50MP + 8MP + 2MP Triple Camera",
+//       "OS": "Funtouch OS based on Android 13"
+//     },
+//     mainImage: "/api/placeholder/200/200?text=Vivo+V27",
+//     casualImages: [
+//       "/api/placeholder/200/200?text=V27+Side",
+//       "/api/placeholder/200/200?text=V27+Back"
+//     ],
+//     category: "Smartphones",
+//     stock: 10,
+//     warranty: "1 Year"
+//   },
+//   {
+//     id: "VIVO-SMA-003",
+//     title: "Vivo Y100",
+//     description: "Vivo Y100 with MediaTek Dimensity 900, 90Hz AMOLED Display.",
+//     originalPrice: 24999,
+//     sellingPrice: 22999,
+//     colors: ["#8B0000", "#FFFFFF", "linear-gradient(45deg, #FF4500, #FFD700)"],
+//     sizes: {
+//       "RAM": "6GB",
+//       "Storage": "128GB",
+//       "Processor": "MediaTek Dimensity 900"
+//     },
+//     specifications: {
+//       "Display": "6.67-inch AMOLED, 90Hz",
+//       "Battery": "4500mAh, 44W Fast Charging",
+//       "Camera": "64MP + 8MP + 2MP Triple Camera",
+//       "OS": "Funtouch OS based on Android 12"
+//     },
+//     mainImage: "/api/placeholder/200/200?text=Vivo+Y100",
+//     casualImages: [
+//       "/api/placeholder/200/200?text=Y100+Side",
+//       "/api/placeholder/200/200?text=Y100+Back"
+//     ],
+//     category: "Smartphones",
+//     stock: 10,
+//     warranty: "1 Year"
+//   }
+// ];
 
 
 
@@ -454,6 +454,8 @@ casualImagesInput.addEventListener('change', function() {
 productForm.addEventListener('submit', async function(e) {
   e.preventDefault();
 
+  const formData = new FormData();
+
   const idField = document.getElementById('productId');
   const isEdit = idField.value !== "";
   
@@ -496,14 +498,14 @@ productForm.addEventListener('submit', async function(e) {
 
    // Set default image URL in case no file is selected
    const mainImageUrl = document.getElementById('mainImage').files[0];
-console.log(mainImageUrl);
+
+
 
 // Handle casual images
-let casualImagesUrls = [];
 if (casualImagesInput.files && casualImagesInput.files.length > 0) {
-  Array.from(casualImagesInput.files).forEach((file) => {
-    casualImagesUrls = file; // append actual file(s)
-  });
+  Array.from(casualImagesInput.files).forEach((file, i) => {
+    formData.append('casualImages', file); // No JSON.stringify
+  });  
 } else {
   console.warn("No casual images selected.");
 }
@@ -514,41 +516,29 @@ if (casualImagesInput.files && casualImagesInput.files.length > 0) {
 
 
 
-
-  // Create product object
-  const product = {
-    title: document.getElementById('productTitle').value,
-    description: document.getElementById('productDescription').value,
-    originalPrice: originalPrice,
-    sellingPrice: sellingPrice,
-    colors: colors,
-    category: category,
-    stock: parseInt(document.getElementById('productStock').value),
-    warranty: document.getElementById('productWarranty').value,
-    sizes: sizes,
-    specifications: specifications,
-    mainImage: mainImageUrl,
-    casualImages: casualImagesUrls
-  };
+formData.append('productId', idField.value);
+formData.append('productTitle', document.getElementById('productTitle').value);
+formData.append('productDescription', document.getElementById('productDescription').value);
+formData.append('originalPrice', originalPrice);
+formData.append('sellingPrice', sellingPrice);
+formData.append('colors', JSON.stringify(colors));
+formData.append('category', category);
+formData.append('stock', document.getElementById('productStock').value);
+formData.append('warranty', document.getElementById('productWarranty').value);
+formData.append('sizes', JSON.stringify(sizes));
+formData.append('specifications', JSON.stringify(specifications));
+formData.append('mainImage', mainImageUrl);
 
 
-  const res  =  await fetch('http://localhost:3000/api/product/create',{
-method: 'POST',
-body: JSON.stringify(product),
-headers: {
-  'Content-Type': 'application/json'  
-}
+
+try{
+  const res = await fetch('http://localhost:3000/api/product/create', {
+    method: 'POST',
+    body: formData // DO NOT add Content-Type header
   });
-
-
+  
   const result = await res.json();
   alert(result.message);
-
- 
-
-
-
-
 
   // Update existing product or add new one
   if (isEdit) {
@@ -559,10 +549,16 @@ headers: {
   } else {
     products.push(product);
   }
-
-  renderTable();
+  
+}
+catch{
+  alert("Error uploading product. Please try again.");
+}
+renderTable();
   productModal.hide();
+  
 });
+ 
 
 
 
@@ -773,9 +769,15 @@ window.deleteProduct  = function (id) {
 }
 
 // Render Products Table
-function renderTable() {
+const renderTable = async () => {
   const tbody = document.querySelector("#productsTable tbody");
   tbody.innerHTML = "";
+
+const products = await fetch('http://localhost:3000/api/product/all', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
 
   products.forEach(product => {
     // Calculate discount percentage
