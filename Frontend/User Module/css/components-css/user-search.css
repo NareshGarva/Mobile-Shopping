@@ -1,0 +1,23 @@
+.searchoffcanvas{
+  height: 100vh !important;
+}
+.searchinput{
+  border: none;
+}
+.searchinput:focus{
+  box-shadow: none;
+}
+
+.searchform{
+  border: var(--border);
+  border-radius: 10px;
+  padding: 2px;
+}
+.searchform button{
+  background: var(--light-gray-bg);
+  padding: 5px 8px;
+  border-radius:10px;
+}
+.search-result{
+  margin-top: 20px;
+}

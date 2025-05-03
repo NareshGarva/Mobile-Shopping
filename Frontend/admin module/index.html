@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Admin deshboard</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+    <link
+      rel="stylesheet"
+      href="css/style.css"
+      type="text/css"
+      media="all"
+    />
+
+
+<link rel="stylesheet" href="css/index.css" type="text/css" media="all" />
+<link rel="stylesheet" href="css/components/products.css" type="text/css" media="all" />
+<link rel="stylesheet" href="css/components/category.css" type="text/css" media="all" />
+</head>
+
+<body>
+  <div id="accountPageHeader"></div>
+  
+   <div class="main-content" id="mainContent">
+<div id="dashboard">
+  <div id="adminDashboard"></div>
+</div>
+<div id="Orders" class="d-none">
+  <div id="adminOrders"></div>
+</div>
+
+<div id="Products" class="d-none">
+  <div id="adminProducts">
+    
+  </div>
+</div>
+<div id="Categories" class="d-none">
+  <div id="adminCategory">
+    
+  </div>
+</div>
+
+<div id="Reviewa" class="d-none">
+  <div id="adminReview">
+    
+  </div>
+</div>
+
+<div id="Coupons" class="d-none">
+  <div id="adminCoupon">
+    
+  </div>
+</div>
+
+<div id="Customers" class="d-none">
+  <div id="adminCustomer">
+    
+  </div>
+</div>
+
+<div id="logout" class="d-none">
+        <h3>Logged Out</h3>
+      <p>You have been logged out.</p>
+</div>
+    </div>
+</body>
+
+<script>
+  //extrate the token from URL
+  const token = localStorage.getItem("token");
+  if (!token) {
+    alert("Please login to access this page.");
+    window.location.href = "/Frontend/admin%20module/login.html";
+  }
+  // Check if the token is valid
+fetch('http://localhost:3000/api/auth/deshboard', {
+  method: 'GET',
+  headers: {
+    'Authorization': `Bearer ${token}` // Send token in header
+  }
+})
+.then(res => {
+  if (res.status === 401 || res.status === 403) {
+    alert("Please login to access this page.");
+    window.location.href = "/Frontend/admin%20module/login.html";
+  }
+  return res.json();
+})
+.then(data => {
+  console.log(data);
+  document.getElementById("profileName").textContent = data.user.email;
+});
+
+</script>
+
+
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="js/index.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/components/deshboard.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/components/orders.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/components/products.js" type="module" charset="utf-8" defer></script>
+<script src="js/components/category.js" type="module" charset="utf-8" defer></script>
+<script src="js/components/coupon.js" type="module" charset="utf-8" defer></script>
+<script src="js/components/customer.js" type="module" charset="utf-8" defer></script>
+</html>

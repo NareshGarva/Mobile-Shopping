@@ -1,0 +1,37 @@
+header{
+width: 100%;
+padding:12px 0;
+margin: 0;
+background: transparent;
+backdrop-filter: blur(10px);
+border-radius:10px 10px;
+}
+.close-icon{
+  background:var(--light-gray-bg) ;
+  border-radius:50px;
+  padding: 3px 4px;
+  
+}
+
+.logo-img{
+  width: 150px;
+}
+.cart-item-counter .item-number{
+  position: fixed;
+  width: 15px;
+  height: 15px;
+  margin-top: -12px;
+  margin-left: 10px;
+  color: var(--light-gray-bg);
+}
+.item-number span{
+  background: #000;
+  border-radius: 50px;
+  padding:1px 4px;
+  position: fixed;
+  font-weight: bold;
+font-size: 9px;
+  margin-left: 2px;
+  margin-top: -.5px;
+  color: var(--light-gray-bg);
+}

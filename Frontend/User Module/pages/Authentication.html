@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Authentication Pages</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<style>
+  
+</style>
+<body class="d-flex align-items-center justify-content-center vh-100">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-4 p-4">
+                
+                <!-- Login Page -->
+                <div id="loginPage" class="Authentication-cards">
+                    <h2 class="text-center fw-bold">Login</h2>
+                    <p class="text-center">Enter your credentials to access your account</p>
+                    <form >
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <input name="email" type="email" class="form-control" placeholder="your@mobileshopping.com" required>
+                        </div>
+                        <div class="mb-3 position-relative">
+                            <label class="form-label">Password</label>
+                            <input name="password" type="password" class="form-control" required>
+                        </div>
+                        <div class="text-center">
+                           Don't know your password? <a href="#forgotPage">Forgot</a>
+                        </div>
+                        <button type="submit" class="btn btn-dark w-100 mt-3">Login</button>
+                        <p class="text-center mt-3">Don't have an account? <a href="#registerPage">Register</a></p>
+                    </form>
+                </div>
+
+                <!-- Register Page -->
+                <div id="registerPage" class="Authentication-cards d-none">
+                    <h2 class="text-center fw-bold">Create an Account</h2>
+                    <p class="text-center">Enter your details to create a new account</p>
+                    <form >
+                        <div class="mb-3">
+                            <label class="form-label">Full Name</label>
+                            <input name="name" type="text" class="form-control" placeholder="Your name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <input name="email" type="email" class="form-control" placeholder="your@mobileshopping.com" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Password</label>
+                            <input name="password" type="password" class="form-control" required>
+                        </div>
+                    
+                        <button type="submit" class="btn btn-dark w-100">Create Account</button>
+                        <p class="text-center mt-3">Already have an account? <a href="#loginPage">Login</a></p>
+                    </form>
+                </div>
+                
+                <!-- Forgot Password Page -->
+                <div id="forgotPage" class="Authentication-cards d-none">
+                    <h2 class="text-center fw-bold">Forgot Password?</h2>
+                    <p class="text-center">Enter your email to reset your password</p>
+                    <form id="forgotForm" >
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <input name="email" type="email" class="form-control" id="forgotEmail" placeholder="your@mobileshopping.com" required>
+                        </div>
+                        <button type="submit" class="btn btn-dark w-100">Reset Password</button>
+
+                    </form>
+                    <div id="successMessage" class="text-center mt-3 d-none p-4 rounded" style="background: #f0fdf4;color: #27A356;">
+                        <strong style="color: #216d3e;">Check your email</strong><br>
+                        We've sent a password reset link to your email address.
+                    </div>
+                                            <p class="text-center mt-3">Remember your password? <a href="#loginPage">Back to Login</a></p>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Form navigation
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelectorAll('.Authentication-cards').forEach(page => page.classList.add('d-none'));
+                document.querySelector(this.getAttribute('href')).classList.remove('d-none');
+            });
+        });
+
+  // Navigate between forms
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function(e) {
+      e.preventDefault();
+      document.querySelectorAll('.Authentication-cards').forEach(page => page.classList.add('d-none'));
+      document.querySelector(this.getAttribute('href')).classList.remove('d-none');
+    });
+  });
+
+
+
+
+
+
+
+
+  // Registration Form Handler
+  document.querySelector('#registerPage form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(e.target);
+    const data = {
+      name: formData.get('name'),
+      email: formData.get('email'),
+      password: formData.get('password'),
+    };
+console.log(data);
+    const res = await fetch('http://localhost:3000/api/auth/register-user', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+
+    const result = await res.json();
+    alert(result.message);
+  });
+
+
+
+
+
+
+  
+  // Login Form Handler
+  document.querySelector('#loginPage form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(e.target);
+    const data = {
+      email: formData.get('email'),
+      password: formData.get('password'),
+    };
+
+    const res = await fetch('http://localhost:3000/api/auth/login-user', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+
+    const result = await res.json();
+    alert(result.message);
+
+    if (res.ok) {
+      localStorage.setItem("token", result.token); // save JWT in local storage
+      window.location.href = "/Frontend/User%20Module/pages/account.html";
+    }
+  });
+
+
+
+
+
+
+
+
+   // forgot Password Form Handler
+   document.querySelector('#forgotPage').addEventListener('submit',async (e)=>{
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const data = {
+      email: formData.get('email'),
+    }
+
+    const res = await fetch('http://localhost:3000/api/auth/forgot-password',{
+      method: 'POST',
+      headers: {'Content-Type' : 'application/json'},
+      body: JSON.stringify(data)
+    })
+
+    const result = await res.json();
+    alert(result.message);
+    if(res.ok){
+      document.getElementById("forgotForm").classList.add("d-none");
+      document.getElementById("successMessage").classList.remove("d-none");
+    }
+  });
+
+    </script>
+
+</body>
+</html>

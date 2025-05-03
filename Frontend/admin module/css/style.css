@@ -1,0 +1,164 @@
+/* ============================= / /        GLOBAL STYLES          / / ============================= */
+
+
+/* CSS Reset */
+
+*{ margin: 0; padding: 0; box-sizing: border-box; }
+
+/* Root Variables */ :root { --text-color: #262626; --background-color: #FFFFFF; --light-gray-bg: #EFF3F6; --accent-color: #F2A027; --border: 1px solid #DFE5EF; --border-radius: 6px; --transition: all 0.3s ease-in-out; }
+
+/* Global Styles */ body { font-family: Arial, sans-serif; color: var(--text-color); background-color: var(--background-color); line-height: 1.6; }
+
+i { font-size: 1.5rem; color: #000; }
+
+hr { margin-top: 0; }
+
+/* Links */ a {  color: #000; transition: var(--transition); }
+
+a:hover { color: var(--accent-color); }
+
+
+/* Text Color */
+.text-main {
+  color: var(--text-color) !important;
+}
+
+/* Background Colors */
+.bg-main {
+  background-color: var(--background-color) !important;
+}
+
+.bg-light-gray {
+  background-color: var(--light-gray-bg) !important;
+}
+
+.bg-accent {
+  background-color: var(--accent-color) !important;
+  color: #fff !important;
+}
+
+/* Border */
+.border-main {
+  border: var(--border) !important;
+}
+
+.rounded-main {
+  border-radius: var(--border-radius) !important;
+}
+
+/* Transition */
+.transition-main {
+  transition: var(--transition) !important;
+}
+
+/* Buttons */ button { background-color: transparent; border: none; outline: none; cursor: pointer; }
+
+.btn-custom { padding: 10px 20px; font-size: 16px; font-weight: bold; border-radius: var(--border-radius); cursor: pointer; transition: var(--transition); text-align: center; }
+
+.btn-primary-custom { background-color: var(--accent-color); color: #000; }
+
+.btn-primary-custom:hover { background-color: #D88B1E; /* Manually darkened */ }
+
+.btn-secondary-custom { background-color: var(--light-gray-bg); color: #fff; }
+
+.btn-secondary-custom:hover { background-color: #E0E6EB; /* Manually lightened */ }
+
+.btn-hover-outline:hover { background-color: var(--light-gray-bg); color: #000000;}
+/* Layout & Containers */ .container { width: 90%; max-width: 1200px; margin: 0 auto; }
+
+/* Grid System */ .grid { display: grid; gap: 20px; }
+
+.grid-2 { grid-template-columns: repeat(2, 1fr); } .grid-3 { grid-template-columns: repeat(3, 1fr); } .grid-4 { grid-template-columns: repeat(4, 1fr); }
+
+
+
+/* Image Styling */ img { max-width: 100%; height: auto; cursor: pointer; border-radius: var(--border-radius); object-fit: cover; }
+
+/* Form Elements */ input, textarea, select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: var(--border-radius); font-size: 16px; }
+
+input:focus, textarea:focus, select:focus { border-color: var(--light-gray-bg); outline: none; }
+
+/* Sections & Titles */ section { padding-top: 30px; }
+
+.User-section-title { padding: 10px 0; color: #000; }
+
+.user-title-view-all { text-decoration: underline; padding-bottom: 5px; color: #000; font-weight: bold; }
+
+.User-section-title-strong { color: #000; position: relative; }
+
+.User-section-title-strong::after { content: ""; position: absolute; bottom: -5px; left: 0; width: 50px; height: 3px; border-radius: 50px; background: var(--light-gray-bg); }
+
+/* Responsive Design */ @media (max-width: 768px) { .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; } .container { width: 100%; } }
+
+    .payment-Paid {
+      border: var(--border);
+      border-radius: 50px;
+      background: #ccffc4;
+      border-color: #29fe1d;
+      color: #003404;
+    }
+    
+    .payment-Refunded {
+      border: var(--border);
+      border-radius: 50px;
+      background: #fafdc4;
+      border-color: #f6e819;
+      color: #412807;
+    }
+    
+    .payment-Pending {
+      border: var(--border);
+      border-radius: 50px;
+      background: #efefef;
+      border-color: #989898;
+      color: #292929;
+    }
+    
+    .payment-Cancelled {
+      border: var(--border);
+      border-radius: 50px;
+      background: #ffdddd;
+      border-color: #ff5757;
+      color: #500000;
+    }
+    
+    .status-Cancelled {
+      border-radius: 50px;
+      background: #ffdddd;
+      color: #500000;
+    }
+    
+    .status-Delivered {
+      border-radius: 50px;
+      background: #ccffc4;
+      color: #003404;
+    }
+    
+    .status-Returned {
+      border-radius: 50px;
+      background: #fafdc4;
+      color: #003404;
+    }
+    
+    .status-Shipped {
+      border-radius: 50px;
+      background: #eee5ff;
+      color: #2a0077;
+    }
+    
+    .status-Processing {
+      border-radius: 50px;
+      background: #efefef;
+      color: #292929;
+    }
+        .btn-custom-hover {
+      transition: all ease-in-out 0.3s;
+    }
+    
+    .btn-custom-hover:hover {
+      background-color: #8888881c;
+    }
+        .section-title {
+      font-weight: 600;
+      margin-bottom: 8px;
+    }

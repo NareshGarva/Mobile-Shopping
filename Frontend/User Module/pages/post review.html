@@ -1,0 +1,112 @@
+<!-- review.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Star Rating & Review</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <style>
+    .stars {
+      display: flex;
+      flex-direction: row-reverse;
+      font-size: 2rem;
+      justify-content: center;
+      cursor: pointer;
+    }
+    .stars input {
+      display: none;
+    }
+    .stars label {
+      color: gray;
+      transition: color 0.3s;
+    }
+    .stars input:checked ~ label,
+    .stars label:hover,
+    .stars label:hover ~ label {
+      color: gold;
+    }
+  </style>
+</head>
+<body class="container py-5">
+  <h2 class="text-center mb-4">Leave a Review</h2>
+  <div class="card p-4">
+    <div class="stars mb-3 text-center">
+      <input type="radio" id="star5" name="rating" value="5"><label for="star5">&#9733;</label>
+      <input type="radio" id="star4" name="rating" value="4"><label for="star4">&#9733;</label>
+      <input type="radio" id="star3" name="rating" value="3"><label for="star3">&#9733;</label>
+      <input type="radio" id="star2" name="rating" value="2"><label for="star2">&#9733;</label>
+      <input type="radio" id="star1" name="rating" value="1"><label for="star1">&#9733;</label>
+    </div>
+    <form id="reviewForm">
+      <div class="mb-3">
+        <label for="username" class="form-label">Your Name</label>
+        <input type="text" class="form-control" id="username" placeholder="Enter your name" required>
+      </div>
+      <div class="mb-3">
+        <label for="reviewTitle" class="form-label">Review Title</label>
+        <input type="text" class="form-control" id="reviewTitle" placeholder="Enter review title" required>
+      </div>
+      <div class="mb-3">
+        <label for="reviewText" class="form-label">Your Review</label>
+        <textarea class="form-control" id="reviewText" rows="3" placeholder="Write your review here..." required></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary w-100">Leave Review</button>
+    </form>
+  </div>
+
+  <!-- Load review array before main script -->
+  <script src="../js/review.js" type="module"></script>
+
+<script type="module">
+  import productReviews from "../js/review.js";
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const productId = urlParams.get("id");
+
+  if (!productId) {
+    alert("No product selected to review.");
+    window.location.href = "product.html"; // fallback
+  }
+
+  // Find the product object
+  const product = productReviews.find(p => p.productId === productId);
+
+  if (!product) {
+    alert("Product not found in reviews array.");
+
+  }
+
+  document.getElementById("reviewForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    const username = document.getElementById("username").value.trim();
+    const reviewTitle = document.getElementById("reviewTitle").value.trim();
+    const reviewText = document.getElementById("reviewText").value.trim();
+    const rating = document.querySelector('input[name="rating"]:checked')?.value;
+
+    if (!rating) {
+      alert("Please select a rating");
+      return;
+    }
+
+    const newReview = {
+      name: username,
+      rating: parseInt(rating),
+      comment: reviewText,
+      title: reviewTitle,
+      date: new Date().toISOString().split('T')[0] // YYYY-MM-DD
+    };
+
+    if (product) {
+      product.reviews.push(newReview); // PUSH INTO reviews ARRAY INSIDE PRODUCT
+     
+      alert("Thank you for your review!");
+      this.reset();
+    } else {
+      alert("Error: Product not found.");
+    }
+  });
+</script>
+</body>
+</html>

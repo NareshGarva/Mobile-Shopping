@@ -1,0 +1,16 @@
+    .default-address-badge {
+      margin-right: -17px;
+      margin-top: -30px;
+      background-color: #28a745;
+      /* Change to your desired color */
+      color: white;
+      padding: 0.10rem 0.60rem;
+      font-size: 0.75rem;
+      font-weight: 500;
+      border-top-right-radius: 0.4rem;
+      border-bottom-left-radius: 0.4rem;
+      border-top-left-radius: 0;
+      border-bottom-right-radius: 0;
+      z-index: 1;
+    }
+    

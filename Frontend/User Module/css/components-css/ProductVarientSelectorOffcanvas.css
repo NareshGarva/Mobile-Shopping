@@ -1,0 +1,32 @@
+.variant-option {
+  border: var(--border);
+  padding: 10px;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  margin-bottom: 5px;
+  text-align: left;
+}
+.variant-option.selected {
+  border-color: black;
+  font-weight: bold;
+}
+.color-box {
+  width: 20px;
+  height: 20px;
+  display: inline-block;
+  border: var(--border);
+  border-radius: 50px;
+  margin-right: 8px;
+}
+.variant-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #000;
+  margin-bottom: 5px;
+}
+.SelectedVarientName,
+.VarientAddPriceValue {
+  color: gray;
+  font-size: 13px;
+}

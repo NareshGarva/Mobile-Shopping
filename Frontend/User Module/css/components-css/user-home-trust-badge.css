@@ -1,0 +1,17 @@
+.trust-badges {
+  background-color: var(--light-gray-bg);
+  text-align: center;
+  font-size: 10px;
+  padding: 10px 0;
+}
+.trust-badge img {
+  width: 35px;
+}
+.trust-badge p {
+  color: var(--text-color);
+  padding: 0;
+  margin: 0;
+}
+.trust-badge p strong {
+  color: var(--accent-color);
+}
