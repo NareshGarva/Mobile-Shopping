@@ -6,12 +6,10 @@ const { Product, ProductColor, ProductSize, ProductSpecification, ProductImage }
 
 // Create Product with related data
 exports.createProduct = async (req, res) => {
-    try {
+    
       if (!req.body) {
         return res.status(400).json({ message: 'Please provide product data' });
       }
-  
-     
   
       // Destructure and parse fields from req.body
       const {
@@ -33,7 +31,7 @@ exports.createProduct = async (req, res) => {
         : typeof req.body.casualImages === 'string'
         ? [req.body.casualImages]
         : [];
-  
+        try {
       // Create main product
       const product = await Product.create({
         productTitle,
@@ -77,21 +75,13 @@ exports.createProduct = async (req, res) => {
           await ProductImage.create({ productId: product.id, imageUrl });
         }
       }
-  
+  console.log('Product created successfully:', product);
       res.status(201).json({ message: 'Product created successfully', product });
     } catch (error) {
       console.error('Create Product Error:', error);
       res.status(500).json({ message: 'Server error', error });
     }
   };
-
-  
-
-
-
-
-
-
 
 
 
@@ -166,7 +156,7 @@ exports.updateProduct = async (req, res) => {
 exports.deleteProduct = async (req, res) => {
     try {
         const { id } = req.params;
-
+        console.log('Deleting product with ID:', id);
         await ProductColor.destroy({ where: { productId: id } });
         await ProductSize.destroy({ where: { productId: id } });
         await ProductSpecification.destroy({ where: { productId: id } });

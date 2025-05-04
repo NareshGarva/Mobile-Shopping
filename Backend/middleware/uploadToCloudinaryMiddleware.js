@@ -1,5 +1,7 @@
 const { uploadImageToCloudinary } = require('../utils/uploadeToCloudinary.Util');
 
+
+
 const uploadToCloudinaryMiddleware = async (req, res, next) => {
 
   try {
@@ -19,7 +21,8 @@ const uploadToCloudinaryMiddleware = async (req, res, next) => {
     }
 
     next();
-  } catch (error) {
+  }catch (error) {
+    console.error("Cloudinary upload failed:", error);
     return res.status(500).json({ success: false, message: 'Cloudinary upload failed' });
   }
 };

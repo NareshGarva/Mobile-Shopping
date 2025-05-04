@@ -163,98 +163,58 @@
       </div>
     </div>
   </div>
-</div>`;
+</div>
 
-//   // Initial products data
-// let products = [
-//   {
-//     id: "VIVO-SMA-001",
-//     title: "Vivo X100 Pro",
-//     description: "Vivo X100 Pro with Snapdragon 8 Gen 2, 120Hz AMOLED Display.",
-//     originalPrice: 79999,
-//     sellingPrice: 74999,
-//     colors: [
-//       "#000000",
-//       "#FFFFFF",
-//       "linear-gradient(45deg, #1F1C2C, #928DAB)"
-//     ],
-//     sizes: {
-//       "RAM": "8GB",
-//       "Storage": "128GB",
-//       "Processor": "Snapdragon 8 Gen 2"
-//     },
-//     specifications: {
-//       "Display": "6.78-inch AMOLED, 120Hz",
-//       "Battery": "5000mAh, 80W Fast Charging",
-//       "Camera": "50MP + 12MP + 8MP Triple Camera",
-//       "OS": "Funtouch OS based on Android 14"
-//     },
-//     mainImage: "/api/placeholder/200/200?text=Vivo+X100+Pro",
-//     casualImages: [
-//       "/api/placeholder/200/200?text=X100+Side",
-//       "/api/placeholder/200/200?text=X100+Back"
-//     ],
-//     category: "Smartphones",
-//     stock: 0,
-//     warranty: "1 Year"
-//   },
-//   {
-//     id: "VIVO-SMA-002",
-//     title: "Vivo V27",
-//     description: "Vivo V27 with MediaTek Dimensity 920, 120Hz AMOLED Display.",
-//     originalPrice: 35999,
-//     sellingPrice: 32999,
-//     colors: ["#1E90FF", "#FFC0CB", "linear-gradient(45deg, #FF6B6B, #FFD700)"],
-//     sizes: {
-//       "RAM": "8GB",
-//       "Storage": "128GB",
-//       "Processor": "MediaTek Dimensity 920"
-//     },
-//     specifications: {
-//       "Display": "6.78-inch AMOLED, 120Hz",
-//       "Battery": "4600mAh, 66W Fast Charging",
-//       "Camera": "50MP + 8MP + 2MP Triple Camera",
-//       "OS": "Funtouch OS based on Android 13"
-//     },
-//     mainImage: "/api/placeholder/200/200?text=Vivo+V27",
-//     casualImages: [
-//       "/api/placeholder/200/200?text=V27+Side",
-//       "/api/placeholder/200/200?text=V27+Back"
-//     ],
-//     category: "Smartphones",
-//     stock: 10,
-//     warranty: "1 Year"
-//   },
-//   {
-//     id: "VIVO-SMA-003",
-//     title: "Vivo Y100",
-//     description: "Vivo Y100 with MediaTek Dimensity 900, 90Hz AMOLED Display.",
-//     originalPrice: 24999,
-//     sellingPrice: 22999,
-//     colors: ["#8B0000", "#FFFFFF", "linear-gradient(45deg, #FF4500, #FFD700)"],
-//     sizes: {
-//       "RAM": "6GB",
-//       "Storage": "128GB",
-//       "Processor": "MediaTek Dimensity 900"
-//     },
-//     specifications: {
-//       "Display": "6.67-inch AMOLED, 90Hz",
-//       "Battery": "4500mAh, 44W Fast Charging",
-//       "Camera": "64MP + 8MP + 2MP Triple Camera",
-//       "OS": "Funtouch OS based on Android 12"
-//     },
-//     mainImage: "/api/placeholder/200/200?text=Vivo+Y100",
-//     casualImages: [
-//       "/api/placeholder/200/200?text=Y100+Side",
-//       "/api/placeholder/200/200?text=Y100+Back"
-//     ],
-//     category: "Smartphones",
-//     stock: 10,
-//     warranty: "1 Year"
-//   }
-// ];
+`;
 
 
+
+// Render Products Table
+const renderTable = async () => {
+  let products;
+  try {
+    const response = await fetch('http://localhost:3000/api/product/all', {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' }
+    });
+    products = await response.json();
+  } catch (error) {
+    console.error("Error fetching products:", error);
+  }
+
+  const tbody = document.querySelector("#productsTable tbody");
+  tbody.innerHTML = "";  // Clear the table body before re-rendering
+
+  products.forEach(product => {
+    const discount = Math.round(((product.originalPrice - product.sellingPrice) / product.originalPrice) * 100);
+
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${product.id}</td>
+      <td><img src="${product.mainImage}" alt="${product.productTitle}" class="product-image"></td>
+      <td>${product.title}</td>
+      <td>₹${product.sellingPrice.toLocaleString('en-IN')}</td>
+      <td>${discount}%</td>
+      <td>${product.category}</td>
+      <td>${product.stock > 0 ? product.stock : '<span class="text-danger">Out of stock</span>'}</td>
+      <td>
+        <button class="btn btn-muted border btn-sm" onclick="viewProduct('${product.id}')">
+          <img src="./assets/icons/eye.svg"> 
+        </button>
+        <button class="btn bg-dark text-white btn-sm" onclick="editProduct('${product.id}')">
+          <img src="./assets/icons/edit.svg"> 
+        </button>
+        <button class="btn btn-sm" onclick="deleteProduct('${product.id}')" style="background:rgba(255, 133, 133, 0.54); border: none;">
+          <img src="./assets/icons/delete.svg"> 
+        </button>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+
+renderTable();
 
 
 // Get highest product ID number to set current ID counter
@@ -450,16 +410,16 @@ casualImagesInput.addEventListener('change', function() {
 
 
 
-// Form Submit Handler
 productForm.addEventListener('submit', async function(e) {
   e.preventDefault();
+
+
 
   const formData = new FormData();
 
   const idField = document.getElementById('productId');
   const isEdit = idField.value !== "";
-  
-  // Get sizes from form
+
   const sizeRows = sizesContainer.querySelectorAll('.row');
   const sizes = {};
   sizeRows.forEach(row => {
@@ -471,9 +431,6 @@ productForm.addEventListener('submit', async function(e) {
     }
   });
 
-
-
-  // Get specifications from form
   const specRows = specificationsContainer.querySelectorAll('.row');
   const specifications = {};
   specRows.forEach(row => {
@@ -485,79 +442,70 @@ productForm.addEventListener('submit', async function(e) {
     }
   });
 
-
-
-  // Calculate discount
   const originalPrice = parseFloat(originalPriceInput.value);
   const sellingPrice = parseFloat(sellingPriceInput.value);
   const discount = Math.round(((originalPrice - sellingPrice) / originalPrice) * 100);
 
+  const mainImageUrl = document.getElementById('mainImage').files[0];
+  if (!mainImageUrl) {
+    alert("Please select a main image.");
+    loader.style.display = 'none';
+    return;
+  }
 
-
-
-
-   // Set default image URL in case no file is selected
-   const mainImageUrl = document.getElementById('mainImage').files[0];
-
-
-
-// Handle casual images
-if (casualImagesInput.files && casualImagesInput.files.length > 0) {
-  Array.from(casualImagesInput.files).forEach((file, i) => {
-    formData.append('casualImages', file); // No JSON.stringify
-  });  
-} else {
-  console.warn("No casual images selected.");
-}
-
+  if (casualImagesInput.files && casualImagesInput.files.length > 0) {
+    Array.from(casualImagesInput.files).forEach(file => {
+      formData.append('casualImages', file);
+    });
+  }
 
   const category = document.getElementById('productCategory').value;
   const colors = colorInput.value.split(',').map(c => c.trim()).filter(c => c);
 
+  formData.append('productId', idField.value);
+  formData.append('productTitle', document.getElementById('productTitle').value);
+  formData.append('productDescription', document.getElementById('productDescription').value);
+  formData.append('originalPrice', originalPrice);
+  formData.append('sellingPrice', sellingPrice);
+  formData.append('colors', JSON.stringify(colors));
+  formData.append('category', category);
+  formData.append('stock', document.getElementById('productStock').value);
+  formData.append('warranty', document.getElementById('productWarranty').value);
+  formData.append('sizes', JSON.stringify(sizes));
+  formData.append('specifications', JSON.stringify(specifications));
+  formData.append('mainImage', mainImageUrl);
 
+ 
+    const res = await fetch('http://localhost:3000/api/product/create', {
+      method: 'POST',
+      body: formData
+    });
 
-formData.append('productId', idField.value);
-formData.append('productTitle', document.getElementById('productTitle').value);
-formData.append('productDescription', document.getElementById('productDescription').value);
-formData.append('originalPrice', originalPrice);
-formData.append('sellingPrice', sellingPrice);
-formData.append('colors', JSON.stringify(colors));
-formData.append('category', category);
-formData.append('stock', document.getElementById('productStock').value);
-formData.append('warranty', document.getElementById('productWarranty').value);
-formData.append('sizes', JSON.stringify(sizes));
-formData.append('specifications', JSON.stringify(specifications));
-formData.append('mainImage', mainImageUrl);
-
-
-
-try{
-  const res = await fetch('http://localhost:3000/api/product/create', {
-    method: 'POST',
-    body: formData // DO NOT add Content-Type header
-  });
-  
-  const result = await res.json();
-  alert(result.message);
-
-  // Update existing product or add new one
-  if (isEdit) {
-    const index = products.findIndex(p => p.id === product.id);
-    if (index !== -1) {
-      products[index] = product;
+    if (!res.ok) {
+      const errorMessage = await res.text();
+      throw new Error(`Server error ${res.status}: ${errorMessage}`);
     }
-  } else {
-    products.push(product);
-  }
-  
-}
-catch{
-  alert("Error uploading product. Please try again.");
-}
-renderTable();
-  productModal.hide();
-  
+
+    const result = await res.json();
+    alert(result.message || "Product uploaded!");
+
+    // Fix: Use returned product data
+    const savedProduct = result.product || null;
+
+    if (savedProduct) {
+      if (isEdit) {
+        const index = products.findIndex(p => p.id === savedProduct.id);
+        if (index !== -1) {
+          products[index] = savedProduct;
+        }
+      } else {
+        products.push(savedProduct);
+      }
+    }
+    renderTable();
+    productModal.hide();
 });
+
  
 
 
@@ -671,142 +619,133 @@ document.getElementById('viewEditBtn').addEventListener('click', function() {
   editProduct(id);
 });
 
-// Edit Product Function
-window.editProduct = function (id) {
-  const product = products.find(p => p.id === id);
+window.editProduct = async (id) => {
+  let product;
+  try {
+    const response = await fetch(`http://localhost:3000/api/product/${id}`);
+    product = await response.json();
+    console.log(product);
+  } catch (error) {
+    console.error("Error fetching product:", error);
+    return;
+  }
+
   if (!product) return;
 
-  // Set form title
+  // Set form fields
   document.getElementById('productModalLabel').textContent = "Edit Product";
-  
-  // Fill form with product data
   document.getElementById('productId').value = product.id;
-  document.getElementById('productTitle').value = product.title;
-  document.getElementById('productDescription').value = product.description;
+  document.getElementById('productTitle').value = product.productTitle;
+  document.getElementById('productDescription').value = product.productDescription;
   document.getElementById('originalPrice').value = product.originalPrice;
   document.getElementById('sellingPrice').value = product.sellingPrice;
-  document.getElementById('productColors').value = product.colors.join(", ");
   document.getElementById('productCategory').value = product.category;
   document.getElementById('productStock').value = product.stock;
   document.getElementById('productWarranty').value = product.warranty;
-  
-  // Update discount display
+
+
+
   updateDiscount();
-  
-  // Update color preview
   updateColorPreview();
-  
-  // Add existing size fields
+
+  // Fill Sizes
   sizesContainer.innerHTML = "";
-  Object.entries(product.sizes).forEach(([key, value]) => {
+  (product.ProductSizes || []).forEach(size => {
     const div = document.createElement("div");
     div.classList.add("row", "mb-2", "align-items-center");
     div.innerHTML = `
       <div class="col-5">
-        <input type="text" class="form-control" value="${key}" required>
+        <input type="text" class="form-control" value="${size.key}" required>
       </div>
       <div class="col-5">
-        <input type="text" class="form-control" value="${value}" required>
+        <input type="text" class="form-control" value="${size.value}" required>
       </div>
       <div class="col-2">
         <button type="button" class="btn btn-sm remove-row" style="background:rgba(255, 133, 133, 0.54); border: none;">
           <img src="./assets/icons/delete.svg"> 
         </button>
       </div>`;
-    
     sizesContainer.appendChild(div);
-    
-    div.querySelector('.remove-row').addEventListener('click', function() {
-      div.remove();
-    });
+    div.querySelector('.remove-row').addEventListener('click', () => div.remove());
   });
-  
-  // Add existing specification fields
+
+  // Fill Specifications
   specificationsContainer.innerHTML = "";
-  Object.entries(product.specifications).forEach(([key, value]) => {
+  (product.ProductSpecifications || []).forEach(spec => {
     const div = document.createElement("div");
     div.classList.add("row", "mb-2", "align-items-center");
     div.innerHTML = `
       <div class="col-5">
-        <input type="text" class="form-control" value="${key}" required>
+        <input type="text" class="form-control" value="${spec.key}" required>
       </div>
       <div class="col-5">
-        <input type="text" class="form-control" value="${value}" required>
+        <input type="text" class="form-control" value="${spec.value}" required>
       </div>
       <div class="col-2">
         <button type="button" class="btn btn-sm remove-row" style="background:rgba(255, 133, 133, 0.54); border: none;">
           <img src="./assets/icons/delete.svg"> 
         </button>
       </div>`;
-    
     specificationsContainer.appendChild(div);
-    
-    div.querySelector('.remove-row').addEventListener('click', function() {
-      div.remove();
-    });
+    div.querySelector('.remove-row').addEventListener('click', () => div.remove());
   });
-  
-  // Show image previews
-  if (product.mainImage) {
+
+  // Main image preview
+  if (product.mainImage && mainImagePreview) {
     mainImagePreview.innerHTML = `<img src="${product.mainImage}" class="product-image">`;
   }
-  
-  if (product.casualImages && product.casualImages.length > 0) {
-    casualImagesPreview.innerHTML = product.casualImages
-      .map(img => `<img src="${img}" class="product-image me-2">`)
-      .join('');
-  }
-  
+
+
+
+  // Handle Casual Images
+const productImages = product.ProductImages || [];
+casualImagesPreview.innerHTML = productImages
+  .map(img => {
+    const url = productImages.imageUrl;
+    return url ? `<img src="${url}" class="product-image me-2">` : '';
+  })
+  .join('');
+
+
+
+// Handle ProductColors
+const productColors = product.ProductColors || [];
+const colorNames = productColors
+  .map(c => {
+    if (typeof c === 'string') return c; // Fallback if string
+    if (c.color) return c.color;
+    if (c.name) return c.name;
+    return null;
+  })
+  .filter(Boolean)
+  .join(", ");
+document.getElementById('productColors').value = colorNames;
+
+
+
+
+  // Show modal
   productModal.show();
-}
+};
+
 
 // Delete Product
-window.deleteProduct  = function (id) {
+window.deleteProduct  = async (id) => {
+
   if (confirm("Are you sure you want to delete this product?")) {
-    products = products.filter(p => p.id !== id);
+    try {
+      const response = await fetch(`http://localhost:3000/api/product/${id}`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      const result = await response.json();
+      alert(result.message);
+      
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    }
     renderTable();
   }
 }
 
-// Render Products Table
-const renderTable = async () => {
-  const tbody = document.querySelector("#productsTable tbody");
-  tbody.innerHTML = "";
 
-const products = await fetch('http://localhost:3000/api/product/all', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data)
-    });
-
-  products.forEach(product => {
-    // Calculate discount percentage
-    const discount = Math.round(((product.originalPrice - product.sellingPrice) / product.originalPrice) * 100);
-    
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td>${product.id}</td>
-      <td><img src="${product.mainImage}" alt="${product.title}" class="product-image"></td>
-      <td>${product.title}</td>
-      <td>₹${product.sellingPrice.toLocaleString('en-IN')}</td>
-      <td>${discount}%</td>
-      <td>${product.category}</td>
-      <td>${product.stock > 0 ? product.stock : '<span class="text-danger">Out of stock</span>'}</td>
-      <td>
-        <button class="btn btn-muted border btn-sm" onclick="viewProduct('${product.id}')">
-          <img src="./assets/icons/eye.svg"> 
-        </button>
-        <button class="btn bg-dark text-white btn-sm" onclick="editProduct('${product.id}')">
-          <img src="./assets/icons/edit.svg"> 
-        </button>
-        <button class="btn btn-sm" onclick="deleteProduct('${product.id}')" style="background:rgba(255, 133, 133, 0.54); border: none;">
-          <img src="./assets/icons/delete.svg"> 
-        </button>
-      </td>
-    `;
-    tbody.appendChild(tr);
-  });
-}
-
-// Initialize the table
-renderTable();
