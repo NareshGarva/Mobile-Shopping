@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 require('dotenv').config();
 const authanticationRoutes = require('./routes/authRoutes');
 const productRoutes = require('./routes/productRoutes');
+const categoryRoutes = require('./routes/categoryRoutes');
 
 // Apply middleware BEFORE routes
 app.use(cors());
@@ -17,6 +18,9 @@ app.use('/api/auth', authanticationRoutes);
 // Product  routes
 app.use('/api/product', productRoutes);
 
+
+// category  routes
+app.use('/api/category', categoryRoutes);
 
 
 

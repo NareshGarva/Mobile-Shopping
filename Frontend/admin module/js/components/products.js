@@ -447,7 +447,6 @@ productForm.addEventListener('submit', async function(e) {
   const mainImageUrl = document.getElementById('mainImage').files[0];
   if (!mainImageUrl && !isEdit) {
     alert("Please select a main image.");
-    loader.style.display = 'none';
     return;
   }
 

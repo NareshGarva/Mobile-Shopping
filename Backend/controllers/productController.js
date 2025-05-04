@@ -136,7 +136,7 @@ exports.createProduct = async (req, res) => {
           req.files.mainImage[0].pathOnCloudinary;
       }
   
-      // 🔁 Update casual images
+      // Update casual images
       if (req.files?.casualImages?.length > 0) {
         // Delete old images
         for (const img of product.ProductImages) {
@@ -150,25 +150,25 @@ exports.createProduct = async (req, res) => {
         }
       }
   
-      // 🔁 Update colors
+      // Update colors
       await ProductColor.destroy({ where: { productId: product.id } });
       for (const color of colors) {
         await ProductColor.create({ productId: product.id, colorValue: color });
       }
   
-      // 🔁 Update sizes
+      // Update sizes
       await ProductSize.destroy({ where: { productId: product.id } });
       for (const [type, value] of Object.entries(sizes)) {
         await ProductSize.create({ productId: product.id, type, value });
       }
   
-      // 🔁 Update specifications
+      // Update specifications
       await ProductSpecification.destroy({ where: { productId: product.id } });
       for (const [key, value] of Object.entries(specifications)) {
         await ProductSpecification.create({ productId: product.id, specKey: key, specValue: value });
       }
   
-      // 🔁 Final product table update
+      // Final product table update
       await product.update(productDetailsUP);
   
       res.status(200).json({ message: 'Product updated successfully', product });
