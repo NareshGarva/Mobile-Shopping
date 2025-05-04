@@ -22,7 +22,18 @@ router.post('/create',upload.fields([
 
 router.get('/all', productController.getAllProducts);
 router.get('/:id', productController.getProductById);
-router.put('/:id', productController.updateProduct);
+
+// routes/productRoutes.js
+router.put(
+  '/:id',
+  upload.fields([
+    { name: 'mainImage', maxCount: 1 },
+    { name: 'casualImages', maxCount: 5 }
+  ]),
+  uploadToCloudinaryMiddleware,
+  productController.updateProduct
+);
+
 router.delete('/:id', productController.deleteProduct);
 
 module.exports = router;

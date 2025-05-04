@@ -8,6 +8,7 @@ const uploadToCloudinaryMiddleware = async (req, res, next) => {
     // Upload main image
     if (req.files?.mainImage) {
       const result = await uploadImageToCloudinary(req.files.mainImage[0].path);
+      console.log(result);
       req.body.mainImage = result.secure_url;
     }
 

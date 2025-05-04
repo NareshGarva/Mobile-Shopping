@@ -192,7 +192,7 @@ const renderTable = async () => {
     tr.innerHTML = `
       <td>${product.id}</td>
       <td><img src="${product.mainImage}" alt="${product.productTitle}" class="product-image"></td>
-      <td>${product.title}</td>
+      <td>${product.productTitle}</td>
       <td>₹${product.sellingPrice.toLocaleString('en-IN')}</td>
       <td>${discount}%</td>
       <td>${product.category}</td>
@@ -409,11 +409,9 @@ casualImagesInput.addEventListener('change', function() {
 
 
 
-
+// handles form submission for creating/editing products  
 productForm.addEventListener('submit', async function(e) {
   e.preventDefault();
-
-
 
   const formData = new FormData();
 
@@ -447,7 +445,7 @@ productForm.addEventListener('submit', async function(e) {
   const discount = Math.round(((originalPrice - sellingPrice) / originalPrice) * 100);
 
   const mainImageUrl = document.getElementById('mainImage').files[0];
-  if (!mainImageUrl) {
+  if (!mainImageUrl && !isEdit) {
     alert("Please select a main image.");
     loader.style.display = 'none';
     return;
@@ -460,9 +458,12 @@ productForm.addEventListener('submit', async function(e) {
   }
 
   const category = document.getElementById('productCategory').value;
-  const colors = colorInput.value.split(',').map(c => c.trim()).filter(c => c);
+  const colors = colorInput.value
+    .match(/(?:\(.*?\)|[^,])+/g) // split commas only outside gradients
+    .map(c => c.trim())
+    .filter(Boolean);
 
-  formData.append('productId', idField.value);
+  if (isEdit) formData.append('productId', idField.value);
   formData.append('productTitle', document.getElementById('productTitle').value);
   formData.append('productDescription', document.getElementById('productDescription').value);
   formData.append('originalPrice', originalPrice);
@@ -473,11 +474,22 @@ productForm.addEventListener('submit', async function(e) {
   formData.append('warranty', document.getElementById('productWarranty').value);
   formData.append('sizes', JSON.stringify(sizes));
   formData.append('specifications', JSON.stringify(specifications));
-  formData.append('mainImage', mainImageUrl);
+  if (mainImageUrl) formData.append('mainImage', mainImageUrl);
 
- 
-    const res = await fetch('http://localhost:3000/api/product/create', {
-      method: 'POST',
+
+  for (let pair of formData.entries()) {
+    console.log(pair[0] + ':', pair[1]);
+  }
+  
+  try {
+    const url = isEdit
+      ? `http://localhost:3000/api/product/${idField.value}`
+      : 'http://localhost:3000/api/product/create';
+
+    const method = isEdit ? 'PUT' : 'POST';
+console.log("Form Data:", formData);
+    const res = await fetch(url, {
+      method,
       body: formData
     });
 
@@ -487,24 +499,17 @@ productForm.addEventListener('submit', async function(e) {
     }
 
     const result = await res.json();
-    alert(result.message || "Product uploaded!");
+    alert(result.message || (isEdit ? "Product updated!" : "Product uploaded!"));
 
-    // Fix: Use returned product data
-    const savedProduct = result.product || null;
-
-    if (savedProduct) {
-      if (isEdit) {
-        const index = products.findIndex(p => p.id === savedProduct.id);
-        if (index !== -1) {
-          products[index] = savedProduct;
-        }
-      } else {
-        products.push(savedProduct);
-      }
-    }
+    resetForm();
     renderTable();
     productModal.hide();
+  } catch (error) {
+    console.error('Error submitting form:', error);
+    alert('Something went wrong. Please try again.');
+  }
 });
+
 
  
 
@@ -524,81 +529,92 @@ function resetForm() {
 }
 
 // View product details
-window.viewProduct = function (id) {
-  const product = products.find(p => p.id === id);
+window.viewProduct = async (id) => {
+  let product;
+  try {
+    const response = await fetch(`http://localhost:3000/api/product/${id}`);
+    product = await response.json();
+  } catch (error) {
+    console.error("Error fetching product:", error);
+    return;
+  }
+console.log(product);
   if (!product) return;
-  
+
   // Store id for edit button
   document.getElementById('viewEditBtn').dataset.id = id;
-  
-  // Prepare colors display
-  const colorsHtml = product.colors.map(color => 
-    `<span class="color-preview" style="background: ${color};"></span>`
+
+  // Colors
+  const colorsHtml = (product.ProductColors || []).map(colorObj =>
+    `<span class="color-preview" style="background: ${colorObj.colorValue};"></span>`
   ).join('');
-  
-  // Prepare sizes display
-  const sizesHtml = Object.entries(product.sizes).map(([key, value]) => 
-    `<div><strong>${key}:</strong> ${value}</div>`
+
+  // Sizes
+  const sizesHtml = (product.ProductSizes || []).map(sizeObj =>
+    `<div><strong>${sizeObj.type}:</strong> ${sizeObj.value}</div>`
   ).join('');
-  
-  // Prepare specifications display
-  const specsHtml = Object.entries(product.specifications).map(([key, value]) => 
-    `<tr><td width="30%"><strong>${key}</strong></td><td>${value}</td></tr>`
+
+  // Specifications
+  const specsHtml = (product.ProductSpecifications || []).map(spec =>
+    `<tr><td width="30%"><strong>${spec.specKey}</strong></td><td>${spec.specValue}</td></tr>`
   ).join('');
-  
-  // Prepare casual images display
-  const casualImagesHtml = product.casualImages.map(img => 
-    `<img src="${img}" alt="Product view" class="product-image me-2">`
+
+  // Casual images
+  const casualImagesHtml = (product.ProductImages || []).map(img =>
+    `<img src="${img.imageUrl}" alt="Product view" class="product-image me-2">`
   ).join('');
-  
-  // Calculate discount for display
-  const discount = Math.round(((product.originalPrice - product.sellingPrice) / product.originalPrice) * 100);
-  
+
+  // Discount calculation
+  const originalPrice = parseFloat(product.originalPrice);
+  const sellingPrice = parseFloat(product.sellingPrice);
+  const discount = Math.round(((originalPrice - sellingPrice) / originalPrice) * 100);
+
+  // Inject HTML into modal
   document.getElementById('viewDetails').innerHTML = `
     <div class="row">
       <div class="col-md-4 mb-3">
-        <img src="${product.mainImage}" alt="${product.title}" class="img-fluid rounded">
+        <img src="${product.mainImage}" alt="${product.productTitle}" class="img-fluid rounded">
         <div class="mt-2">
           ${casualImagesHtml}
         </div>
       </div>
       <div class="col-md-8">
-        <h4>${product.title}</h4>
+        <h4>${product.productTitle}</h4>
         <span class="badge bg-secondary">${product.id}</span>
         <span class="badge bg-primary">${product.category}</span>
         <span class="badge ${product.stock > 0 ? 'bg-success' : 'bg-danger'}">
           ${product.stock > 0 ? 'In Stock' : 'Out of Stock'}
         </span>
-        
+
         <div class="mt-3">
           <h5 class="text-danger">
-            ₹${product.sellingPrice.toLocaleString('en-IN')}
+            ₹${sellingPrice.toLocaleString('en-IN')}
             <small class="text-muted text-decoration-line-through">
-              ₹${product.originalPrice.toLocaleString('en-IN')}
+              ₹${originalPrice.toLocaleString('en-IN')}
             </small>
             <span class="badge bg-danger">${discount}% OFF</span>
           </h5>
         </div>
-        
+
         <div class="mt-3">
           <h6>Description:</h6>
-          <p>${product.description}</p>
+          <p>${product.productDescription}</p>
         </div>
-        
+
         <div class="mt-3">
           <h6>Available Colors:</h6>
           <div>${colorsHtml}</div>
         </div>
-        
+
         <div class="mt-3">
           <h6>Variants:</h6>
           <div>${sizesHtml}</div>
         </div>
-        
+
         <div class="mt-3">
           <h6>Warranty: ${product.warranty}</h6>
         </div>
-        
+
         <div class="mt-3">
           <h6>Specifications:</h6>
           <table class="table table-bordered">
@@ -608,9 +624,15 @@ window.viewProduct = function (id) {
       </div>
     </div>
   `;
-  
+
   viewModal.show();
-}
+};
+
+
+
+
+
+
 
 // Edit product from view modal
 document.getElementById('viewEditBtn').addEventListener('click', function() {
@@ -619,12 +641,13 @@ document.getElementById('viewEditBtn').addEventListener('click', function() {
   editProduct(id);
 });
 
+
+
 window.editProduct = async (id) => {
   let product;
   try {
     const response = await fetch(`http://localhost:3000/api/product/${id}`);
     product = await response.json();
-    console.log(product);
   } catch (error) {
     console.error("Error fetching product:", error);
     return;
@@ -655,7 +678,7 @@ window.editProduct = async (id) => {
     div.classList.add("row", "mb-2", "align-items-center");
     div.innerHTML = `
       <div class="col-5">
-        <input type="text" class="form-control" value="${size.key}" required>
+        <input type="text" class="form-control" value="${size.type}" required>
       </div>
       <div class="col-5">
         <input type="text" class="form-control" value="${size.value}" required>
@@ -676,10 +699,10 @@ window.editProduct = async (id) => {
     div.classList.add("row", "mb-2", "align-items-center");
     div.innerHTML = `
       <div class="col-5">
-        <input type="text" class="form-control" value="${spec.key}" required>
+        <input type="text" class="form-control" value="${spec.specKey}" required>
       </div>
       <div class="col-5">
-        <input type="text" class="form-control" value="${spec.value}" required>
+        <input type="text" class="form-control" value="${spec.specValue}" required>
       </div>
       <div class="col-2">
         <button type="button" class="btn btn-sm remove-row" style="background:rgba(255, 133, 133, 0.54); border: none;">
@@ -697,11 +720,15 @@ window.editProduct = async (id) => {
 
 
 
-  // Handle Casual Images
-const productImages = product.ProductImages || [];
-casualImagesPreview.innerHTML = productImages
+// Handle Casual Images
+const casualImages = product.ProductImages || [];
+
+
+casualImagesPreview.innerHTML = casualImages
   .map(img => {
-    const url = productImages.imageUrl;
+
+    const url = img.imageUrl;
+   
     return url ? `<img src="${url}" class="product-image me-2">` : '';
   })
   .join('');
@@ -711,16 +738,11 @@ casualImagesPreview.innerHTML = productImages
 // Handle ProductColors
 const productColors = product.ProductColors || [];
 const colorNames = productColors
-  .map(c => {
-    if (typeof c === 'string') return c; // Fallback if string
-    if (c.color) return c.color;
-    if (c.name) return c.name;
-    return null;
-  })
-  .filter(Boolean)
-  .join(", ");
-document.getElementById('productColors').value = colorNames;
+  .map(c => c.colorValue) //  return value directly
+  .filter(Boolean)        //  filter out falsy (null/undefined/empty)
+  .join(", ");            //  join with comma and space
 
+document.getElementById('productColors').value = colorNames;
 
 
 
