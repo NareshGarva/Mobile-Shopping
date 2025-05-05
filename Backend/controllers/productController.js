@@ -1,4 +1,5 @@
-const { Product, ProductColor, ProductSize, ProductSpecification, ProductImage } = require('../models/initAssociations');
+const { where } = require('sequelize');
+const { Product, ProductColor, ProductSize, ProductSpecification, ProductImage,Category } = require('../models/initAssociations');
 const { deleteFromCloudinary } = require('../utils/deleteFromCloudinary.Util'); 
 
 
@@ -20,7 +21,8 @@ exports.createProduct = async (req, res) => {
         category,
         stock,
         warranty,
-        mainImage
+        mainImage,
+        categoryId
       } = req.body;
   
       const colors = req.body.colors ? JSON.parse(req.body.colors) : [];
@@ -41,7 +43,8 @@ exports.createProduct = async (req, res) => {
         category,
         stock,
         warranty,
-        mainImage
+        mainImage,
+        categoryId
       });
   
       if (!product) {
@@ -185,17 +188,24 @@ exports.createProduct = async (req, res) => {
 
 
 
+  
 // Get All Products with related data
 exports.getAllProducts = async (req, res) => {
   try {
-      const products = await Product.findAll({
-          include: [ProductColor, ProductSize, ProductSpecification, ProductImage]
-      });
-      res.status(200).json(products);
+    const products = await Product.findAll({ 
+      include: [
+        ProductColor, 
+        ProductSize, 
+        ProductSpecification, 
+        ProductImage
+      ]
+    });
+    res.status(200).json(products);
   } catch (error) {
-      res.status(500).json({ message: 'Error fetching products', error });
+    res.status(500).json({ message: 'Error fetching products', error });
   }
 };
+
 
 
 

@@ -37,8 +37,8 @@ document.getElementById("adminCategory").innerHTML = `
           <div class="mb-3">
             <label for="categoryStatus" class="form-label">Category Status</label>
             <select class="form-select" id="categoryStatus" required>
-              <option value="active">Active</option>
-              <option value="inactive">Inactive</option>
+              <option value="1">Active</option>
+              <option value="0">Inactive</option>
             </select>
           </div>
           <div class="modal-footer">
@@ -70,39 +70,115 @@ document.getElementById("adminCategory").innerHTML = `
     });
 
 
+    window.editCategory = async function(id) {
+      try {
+        const response = await fetch(`http://localhost:3000/api/category/${id}`, {
+          method: 'GET'
+        });
+        if (!response.ok) {
+          throw new Error(`Error fetching category with ID ${id}`);
+        }
+    
+        const categoryToEdit = await response.json();
+    
+        if (categoryToEdit) {
+          document.getElementById('categoryName').value = categoryToEdit.categoryName;
+          document.getElementById('categoryStatus').value = categoryToEdit.categoryStatus;
+          addCategoryModal.show();
+          document.getElementById('addCategoryForm').setAttribute('data-edit-id', id);
+        }
+    
+      } catch (error) {
+        console.error("Error fetching category:", error);
+        alert("Failed to fetch category data. Please try again.");
+      }
+    };
+
+    
     addCategoryForm.addEventListener('submit', async function(e) {
-     
       e.preventDefault();
+    
+      const isEdit = addCategoryForm.getAttribute('data-edit-id');
       const payload = {
         categoryName: document.getElementById('categoryName').value,
         categoryStatus: document.getElementById('categoryStatus').value
       };
-      try{
-      const res = await fetch('http://localhost:3000/api/category/create', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(payload)
-      });
+    
+      try {
+        const url = isEdit
+          ? `http://localhost:3000/api/category/${isEdit}`
+          : 'http://localhost:3000/api/category/create';
+    
+        const method = isEdit ? 'PUT' : 'POST';
+    
+        const res = await fetch(url, {
+          method,
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+    
         if (!res.ok) {
           const errorMessage = await res.text();
           throw new Error(`Server error ${res.status}: ${errorMessage}`);
         }
     
         const result = await res.json();
-        alert(result.message);
-      }catch(error){
+        alert(result.message || (isEdit ? "Category updated!" : "Category uploaded!"));
+    
+        addCategoryForm.reset();
+        addCategoryForm.removeAttribute('data-edit-id');
+        addCategoryModal.hide();
+        renderCategory();
+    
+      } catch (error) {
         console.error('Error submitting form:', error);
-        alert(error.message);
- 
+        alert('Something went wrong. Please try again.');
       }
-
-
-      addCategoryForm.reset();
-      addCategoryModal.hide();
-      renderCategory();
     });
+
+    
+
+
+  //   addCategoryForm.addEventListener('submit', async function(e) {
+  //     e.preventDefault();
+
+  //     let isEdit = null;
+  //     isEdit = document.getElementById('addCategoryForm').getAttribute('data-edit-id', id);
+  //     const payload = {
+  //       categoryName: document.getElementById('categoryName').value,
+  //       categoryStatus: document.getElementById('categoryStatus').value
+  //     };
+  //     try {
+  //   const url = isEdit
+  //     ? `http://localhost:3000/api/category/${isEdit}`
+  //     : 'http://localhost:3000/api/category/create';
+
+  //   const method = isEdit ? 'PUT' : 'POST';
+  //   const res = await fetch(url, {
+  //     method,
+  //     headers: { 'Content-Type': 'application/json' },
+  //     body: payload
+  //   });
+
+  //   if (!res.ok) {
+  //     const errorMessage = await res.text();
+  //     throw new Error(`Server error ${res.status}: ${errorMessage}`);
+  //   }
+
+  //   const result = await res.json();
+  //   alert(result.message || (isEdit ? "Category updated!" : "Category uploaded!"));
+
+  //   addCategoryForm.reset();
+  //   addCategoryModal.hide();
+  //   renderCategory();
+  // } catch (error) {
+  //   console.error('Error submitting form:', error);
+  //   alert('Something went wrong. Please try again.');
+  // }
+
+
+  
+  //   });
 
 
 
@@ -126,7 +202,7 @@ document.getElementById("adminCategory").innerHTML = `
         newRow.innerHTML = `
           <td>${cat.id}</td>
           <td>${cat.categoryName}</td>
-          <td>${cat.categoryStatus}</td>
+          <td>${cat.categoryStatus?"Active":"Inactive"}</td>
           <td>
             <button class="btn btn-dark btn-sm" onclick="editCategory(${cat.id})"><img src="./assets/icons/edit.svg"> Edit</button>
             <button class="btn btn-sm" style="background:rgba(255, 133, 133, 0.54); border: none;" onclick="deleteCategory(${cat.id})"><img src="./assets/icons/delete.svg"></button>
@@ -159,31 +235,33 @@ document.getElementById("adminCategory").innerHTML = `
  
 
 
-    window.editCategory = async function(id) {
-      try {
-        const response = await fetch(`http://localhost:3000/api/category/${id}`);
-        if (!response.ok) {
-          throw new Error(`Error fetching category with ID ${id}`);
-        }
+    // window.editCategory = async function(id) {
+    //   try {
+    //     const response = await fetch(`http://localhost:3000/api/category/${id}`,{
+    //       method:'GET'
+    //     });
+    //     if (!response.ok) {
+    //       throw new Error(`Error fetching category with ID ${id}`);
+    //     }
     
-        const categoryToEdit = await response.json();
+    //     const categoryToEdit = await response.json();
     
-        if (categoryToEdit) {
-          // Populate form fields
-          document.getElementById('categoryName').value = categoryToEdit.categoryName;
-          document.getElementById('categoryStatus').value = categoryToEdit.categoryStatus;
+    //     if (categoryToEdit) {
+    //       // Populate form fields
+    //       document.getElementById('categoryName').value = categoryToEdit.categoryName;
+    //       document.getElementById('categoryStatus').value = categoryToEdit.categoryStatus;
     
-          // Show the modal
-          addCategoryModal.show();
+    //       // Show the modal
+    //       addCategoryModal.show();
     
-          // Store current category ID temporarily (for use in submit handler)
-          document.getElementById('addCategoryForm').setAttribute('data-edit-id', id);
-        }
+    //       // Store current category ID temporarily (for use in submit handler)
+    //       document.getElementById('addCategoryForm').setAttribute('data-edit-id', id);
+    //     }
     
-      } catch (error) {
-        console.error("Error fetching category:", error);
-        alert("Failed to fetch category data. Please try again.");
-      }
-    };
+    //   } catch (error) {
+    //     console.error("Error fetching category:", error);
+    //     alert("Failed to fetch category data. Please try again.");
+    //   }
+    // };
     
   });

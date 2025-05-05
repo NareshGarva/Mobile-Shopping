@@ -178,6 +178,7 @@ const renderTable = async () => {
       headers: { 'Content-Type': 'application/json' }
     });
     products = await response.json();
+  
   } catch (error) {
     console.error("Error fetching products:", error);
   }
@@ -239,8 +240,8 @@ renderTable();
 
 // initializeCurrentId();
 
-// Category options
-const categoryOptions = ["Smartphones", "Tablets", "Laptops", "Accessories", "Wearables"];
+
+
 
 // Initialize modal objects
 const productModal = new bootstrap.Modal(document.getElementById('productModal'));
@@ -262,13 +263,39 @@ const mainImagePreview = document.getElementById('mainImagePreview');
 const casualImagesInput = document.getElementById('casualImages');
 const casualImagesPreview = document.getElementById('casualImagesPreview');
 
-// Populate category options
-categoryOptions.forEach(cat => {
+let categoryName;
+//fetch category 
+const fetchCategory = async () => {
+  try {
+    const res = await fetch('http://localhost:3000/api/category/all', {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' }
+    }); // Assuming it returns all categories
+    if (!res.ok) throw new Error('Failed to fetch categories');
+    
+    const data = await res.json();
+    console.log(data);
+    // Filter only active categories
+    const activeCategories = data.filter(cat => cat.categoryStatus == true);
+
+   // Populate select options
+activeCategories.forEach(cat => {
   const option = document.createElement('option');
-  option.value = cat;
-  option.textContent = cat;
+  option.value = cat.id;
+  option.textContent = cat.categoryName;
+  option.setAttribute('data-categoryName', cat.categoryName);
   categorySelect.appendChild(option);
 });
+
+  } catch (error) {
+    console.error('Error fetching categories:', error);
+    alert('Could not load category options',error);
+  }
+};
+
+// Call function
+fetchCategory();
+
 
 // Open form button click handler
 openFormBtn.addEventListener('click', () => {
@@ -408,8 +435,7 @@ casualImagesInput.addEventListener('change', function() {
 });
 
 
-
-// handles form submission for creating/editing products  
+// Handles form submission for creating/editing products  
 productForm.addEventListener('submit', async function(e) {
   e.preventDefault();
 
@@ -456,9 +482,12 @@ productForm.addEventListener('submit', async function(e) {
     });
   }
 
-  const category = document.getElementById('productCategory').value;
+  const categorySelect = document.getElementById('productCategory');
+  const category = categorySelect.value;
+  const categoryName = categorySelect.options[categorySelect.selectedIndex].getAttribute('data-categoryName');
+  
   const colors = colorInput.value
-    .match(/(?:\(.*?\)|[^,])+/g) // split commas only outside gradients
+    .match(/(?:\(.*?\)|[^,])+/g) // Split commas only outside gradients
     .map(c => c.trim())
     .filter(Boolean);
 
@@ -467,26 +496,30 @@ productForm.addEventListener('submit', async function(e) {
   formData.append('productDescription', document.getElementById('productDescription').value);
   formData.append('originalPrice', originalPrice);
   formData.append('sellingPrice', sellingPrice);
+  formData.append('discount', discount);
   formData.append('colors', JSON.stringify(colors));
   formData.append('category', category);
+  formData.append('categoryName', categoryName); // Append categoryName attribute here
+  formData.append('categoryId', category);
   formData.append('stock', document.getElementById('productStock').value);
   formData.append('warranty', document.getElementById('productWarranty').value);
   formData.append('sizes', JSON.stringify(sizes));
   formData.append('specifications', JSON.stringify(specifications));
   if (mainImageUrl) formData.append('mainImage', mainImageUrl);
 
-
+  // Log form data for debugging
   for (let pair of formData.entries()) {
     console.log(pair[0] + ':', pair[1]);
   }
-  
+
   try {
     const url = isEdit
       ? `http://localhost:3000/api/product/${idField.value}`
       : 'http://localhost:3000/api/product/create';
 
     const method = isEdit ? 'PUT' : 'POST';
-console.log("Form Data:", formData);
+    console.log("Form Data:", formData);
+
     const res = await fetch(url, {
       method,
       body: formData
