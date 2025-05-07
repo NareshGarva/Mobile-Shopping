@@ -1,5 +1,5 @@
 // importing the products array from another fiel 
-import vivoProducts from "../products.js";
+// import vivoProducts from "../products.js";
 import {getRecentlyViewedProducts,displayProductCard} from "../global-product.js";
 
 
@@ -13,9 +13,9 @@ document.getElementById("userRecentlyViwedProduct").innerHTML = `
   </section>
 `;
 
-function renderRecentlyViewed() {
-      const recentViewed = getRecentlyViewedProducts(vivoProducts,10);
-      displayProductCard("recentlyViewProductContainer",recentViewed,"1", "swiper");
-    }
+// function renderRecentlyViewed() {
+//       // const recentViewed = getRecentlyViewedProducts(vivoProducts,10);
+//       displayProductCard("recentlyViewProductContainer",recentViewed,"1", "swiper");
+//     }
     
-renderRecentlyViewed();
+// renderRecentlyViewed();

@@ -51,10 +51,10 @@ exports.login = async (req, res) => {
 
 exports.adminLogin = async (req, res) => {
   const {email, password} = req.body;
-  console.log(req.body)
+
 
   const admin = await Admin.findOne({ where: { email } });
-console.log(admin)
+
   if (!admin || !(await bcrypt.compare(password, admin.password))) {
     return res.status(401).json({ message: "Invalid email or password" });
   }
@@ -86,7 +86,7 @@ if(!user){
 }
 // Generate a reset token and send it to the user's email
 const Token = jwt.sign({id:user.id}, process.env.JWT_SECRET_KEY, {expiresIn: '10m'});
-console.log("Generated Token:", Token);
+
 
 //set expiry time for the token in the database or in-memory store
 const expiryTime = Date.now() + 10 * 60 * 1000; // 10 minutes from now

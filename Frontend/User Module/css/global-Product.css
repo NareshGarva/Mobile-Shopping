@@ -33,14 +33,14 @@
 
     .product-img {
       width: 100%;
-      height: 150px;
-      
+      height: 100%;
       border-radius: 10px;
       background: #E6E6E675;
     }
  .product-img img {
    width: 100%;
-   height : 150px;
+   height : 100%;
+   aspect-ratio:1/1 ;
    object-fit: cover;
  }
     .truncate-title {

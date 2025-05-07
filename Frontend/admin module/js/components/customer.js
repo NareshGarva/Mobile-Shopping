@@ -10,7 +10,7 @@ document.getElementById("adminCustomer").innerHTML = `
         <th scope="col">Customer ID</th>
         <th scope="col">Name</th>
         <th scope="col">Email</th>
-        <th scope="col">Status</th>
+      
         <th scope="col">Actions</th>
       </tr>
     </thead>
@@ -21,21 +21,30 @@ document.getElementById("adminCustomer").innerHTML = `
   
   `;
 
-  let customers = [
-    { id: 1, name: "John Doe", email: "john.doe@example.com", status: "active" },
-    { id: 2, name: "Jane Smith", email: "jane.smith@example.com", status: "inactive" },
-    { id: 3, name: "Mike Johnson", email: "mike.johnson@example.com", status: "active" },
-    { id: 4, name: "Emily Davis", email: "emily.davis@example.com", status: "pending" },
-    { id: 5, name: "David Wilson", email: "david.wilson@example.com", status: "inactive" },
-    { id: 6, name: "Sophia Brown", email: "sophia.brown@example.com", status: "active" },
-    { id: 7, name: "Chris Lee", email: "chris.lee@example.com", status: "pending" },
-    { id: 8, name: "Olivia Martin", email: "olivia.martin@example.com", status: "active" },
-    { id: 9, name: "Daniel Garcia", email: "daniel.garcia@example.com", status: "inactive" },
-    { id: 10, name: "Isabella Clark", email: "isabella.clark@example.com", status: "active" }
-  ];
+  let customers;
+
+  async function allCustomers() {
+    try {
+      const res = await fetch('http://localhost:3000/api/customer/all');
+      if (!res.ok) {
+        alert("Customers fetch failed");
+        return [];
+      }
+      customers = await res.json();
+      return customers;
+    } catch (error) {
+      alert("Error fetching customers on customer page");
+      return [];
+    }
+  }
+  
 
   
-  document.addEventListener("DOMContentLoaded", function () {
+
+  
+  document.addEventListener("DOMContentLoaded", async function () {
+    await allCustomers();
+   
     function randerCustomerTable()
     {
         document.getElementById("customerTableBody").innerHTML = customers.map(customers => `
@@ -43,7 +52,6 @@ document.getElementById("adminCustomer").innerHTML = `
             <td>${customers.id}</td>
             <td>${customers.name}</td>
             <td>${customers.email}</td>
-            <td>${customers.status}</td>
             <td>
             <button class="btn btn-danger btn-sm" onclick="deleteCustomer(${customers.id})">Delete</button>
             </td>
@@ -51,10 +59,26 @@ document.getElementById("adminCustomer").innerHTML = `
     }
 randerCustomerTable();
 
-window.deleteCustomer = function (id) {
-    customers = customers.filter(customers => customers.id !== id);
-    randerCustomerTable();
-} 
+
+window.deleteCustomer = async function (id) {
+  try {
+    const res = await fetch(`http://localhost:3000/api/customer/${id}`, {
+      method: 'DELETE',
+    });
+
+    if (!res.ok) {
+      const errorData = await res.json(); // Get the error message from the response
+      return alert(errorData.message);
+    }
+    randerCustomerTable(); // Make sure this is the correct function name
+    return alert("Customer deleted successfully");
+  } catch (error) {
+    console.log("error comes in catch block");
+    console.error("Error:", error.message);
+    alert("Error deleting customer");
+  }
+};
+
 });
 
 

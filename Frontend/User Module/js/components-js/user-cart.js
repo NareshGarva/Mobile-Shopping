@@ -36,7 +36,7 @@ document.getElementById("userCart").innerHTML = `
 `;
 
 // Import products array
-import vivoProducts from "../products.js";
+// import vivoProducts from "../products.js";
 // Import products array
 import {showNotification} from "../notifications.js";
 

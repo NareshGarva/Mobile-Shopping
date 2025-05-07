@@ -10,7 +10,10 @@ const Product = sequelize.define('Product', {
     },
     productTitle: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
+        validate: {
+            len: [1, 255],  // Title should not be empty and should be under 255 characters
+          },
     },
     productDescription: {
         type: DataTypes.TEXT,
@@ -18,11 +21,17 @@ const Product = sequelize.define('Product', {
     },
     originalPrice: {
         type: DataTypes.DECIMAL(10, 2),
-        allowNull: false
+        allowNull: false,
+        validate: {
+            min: 0,  // Price should not be negative
+          },
     },
     sellingPrice: {
         type: DataTypes.DECIMAL(10, 2),
-        allowNull: false
+        allowNull: false,
+        validate: {
+            min: 0,  // Price should not be negative
+          },
     },
     category: {
         type: DataTypes.STRING,

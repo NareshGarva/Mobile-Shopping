@@ -1,4 +1,4 @@
-import vivoProducts from "../products.js";
+// import vivoProducts from "../products.js";
 import productReviews from "../review.js";
 
 document.addEventListener("DOMContentLoaded", () => {

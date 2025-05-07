@@ -1,9 +1,11 @@
 // importing the products array from another fiel 
-import vivoProducts from "./products.js";
+// import vivoProducts from "./products.js";
+
 import {handleAddToCart} from "./components-js/user-cart.js";
 window.handleAddToCart = handleAddToCart;
 
-const allProducts = window.vivoProducts;
+
+// const allProducts = window.vivoProducts;
 
 // function to show star rating
 export function renderStars(rating) {
@@ -39,7 +41,7 @@ export function checkInStock(id) {
 
 //to display products in card
 export function displayProductCard(productContainerId, productsArray, btnstyle, cardstyle) {
-  
+  console.log("display products in card : ",productsArray );
   const productContainer = document.getElementById(productContainerId);
   productContainer.innerHTML = ""; // Clear previous content
   
@@ -98,10 +100,10 @@ export function displayProductCard(productContainerId, productsArray, btnstyle, 
                 <div class="productLink">
           <span class="badge badge-custom  bg-danger">${calculateDiscountHTML(product.originalPrice,product.sellingPrice)}% OFF</span>
           <div class="product-img mb-2">
-          <img src="${product.mainImage}" alt="${product.title}">
+          <img src="${product.mainImage}" alt="${product.productTitle}">
           </div>
 
-          <div class="truncate-title" title="${product.title}">${product.title}</div>
+          <div class="truncate-title" title="${product.productTitle}">${product.productTitle}</div>
                     <div class="rating text-warning">${renderStars(product.rating || 0)}</div>
               <p class="mb-1">
                 <span class="RVSellingPrice fw-bold">₹${product.sellingPrice}</span>
@@ -147,10 +149,10 @@ if (productLink) {
         <div class="productLink">
           <span class="badge badge-custom text-dark bg-danger">${calculateDiscountHTML(product.originalPrice,product.sellingPrice)}% OFF</span>
           <div class="product-img mb-2">
-          <img src="${product.mainImage}" alt="${product.title}">
+          <img src="${product.mainImage}" alt="${product.productTitle}">
           </div>
 
-          <div class="truncate-title" title="${product.title}">${product.title}</div>
+          <div class="truncate-title" title="${product.productTitle}">${product.productTitle}</div>
                     <div class="rating text-warning">${renderStars(product.rating || 0)}</div>
               <p class="mb-1">
                 <span class="RVSellingPrice fw-bold">₹${product.sellingPrice}</span>

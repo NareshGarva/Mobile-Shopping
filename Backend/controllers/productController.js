@@ -21,8 +21,8 @@ exports.createProduct = async (req, res) => {
         category,
         stock,
         warranty,
-        mainImage,
-        categoryId
+        mainImage
+        
       } = req.body;
   
       const colors = req.body.colors ? JSON.parse(req.body.colors) : [];
@@ -43,8 +43,7 @@ exports.createProduct = async (req, res) => {
         category,
         stock,
         warranty,
-        mainImage,
-        categoryId
+        mainImage
       });
   
       if (!product) {

@@ -1,9 +1,8 @@
-// Importing the products array from another file
-import vivoProducts from "../products.js";
-import { getRecentlyViewedProducts, displayProductCard, getByCategory } from "../global-product.js";
+import { displayProductCard, getByCategory } from "../global-product.js";
 
 let filteredProducts = [];
 let allFilteredBase = [];
+let vivoProducts = []; // Declare the products array globally
 
 const itemsPerPage = 10;
 let currentPage = 1;
@@ -91,7 +90,9 @@ function generatePaginationButtons(totalPages) {
     `;
   }
 }
-window.goToPage = function (pageNumber) {
+
+// Making goToPage globally accessible
+window.goToPage = function(pageNumber) {
   currentPage = pageNumber;
   displayAllProducts(filteredProducts, currentPage);
 };
@@ -108,7 +109,7 @@ function applyFilters() {
 
   filteredProducts = allFilteredBase.filter(product => {
     const matchCategory = selectedCategories.length === 0 || selectedCategories.includes(product.category);
-    const matchRating = selectedRatings.length === 0 || selectedRatings.includes(Math.floor(product.rating));
+    const matchRating = selectedRatings.length === 0 || selectedRatings.some(r => product.rating >= r);
     const matchLabel = selectedLabels.length === 0 || selectedLabels.includes(product.warranty);
     const matchPrice = selectedPrices.length === 0 || selectedPrices.some(range => product.originalPrice >= range.min && product.originalPrice <= range.max);
     return matchCategory && matchRating && matchLabel && matchPrice;
@@ -136,55 +137,88 @@ document.addEventListener("change", e => {
   if (e.target.closest("#filterCanvas")) applyFilters();
 });
 
+// Fetch products from the server
+async function fetchAllProducts() {
+  try {
+    const res = await fetch('http://localhost:3000/api/product/all');
+    if (!res.ok) {
+      throw new Error("Product fetch failed");
+    }
+    const products = await res.json(); 
+    return products;
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    return [];
+  }
+}
 
+// Initialize the page with products and filters
+async function initializePage() {
+  try {
+    // Fetch products first
+    vivoProducts = await fetchAllProducts();
+    
+    const urlParams = new URLSearchParams(window.location.search);
+    const productCategory = urlParams.get("Category") || "";
+    const productSearch = urlParams.get("q") || "";
+    const productLabel = urlParams.get("Label") || "";
 
+    const allCategories = getUniqueValues(vivoProducts, "category").map(c => c.toLowerCase());
 
+    // First, check what q matches
+    let qMatchedCategory = "";
+    let qSearchProducts = [];
+
+    if (productSearch !== "") {
+      const lowerQ = productSearch.toLowerCase();
+
+      // Case 1: q matches a category name
+      if (allCategories.includes(lowerQ)) {
+        qMatchedCategory = productSearch;
+      } else {
+        // Case 2: q is a partial product name
+        qSearchProducts = vivoProducts.filter(p => p.title.toLowerCase().includes(lowerQ));
+      }
+    }
+
+    // Now apply logic
+    if (!productCategory && !productLabel && !productSearch) {
+      allFilteredBase = [...vivoProducts];
+    } else if (productCategory && !productLabel) {
+      allFilteredBase = getByCategory(vivoProducts, productCategory);
+    } else if (!productCategory && productLabel) {
+      allFilteredBase = vivoProducts.filter(p => p.warranty?.toLowerCase() === productLabel.toLowerCase());
+    } else if (productCategory && productLabel) {
+      allFilteredBase = getByCategory(vivoProducts, productCategory).filter(p =>
+        p.warranty?.toLowerCase() === productLabel.toLowerCase()
+      );
+    } else if (productSearch) {
+      if (qMatchedCategory) {
+        allFilteredBase = getByCategory(vivoProducts, qMatchedCategory);
+      } else {
+        allFilteredBase = qSearchProducts;
+      }
+    }
+
+    filteredProducts = [...allFilteredBase];
+
+    // Populate filters after we have the products
+    populateFilters();
+    
+    // Display products
+    displayAllProducts(filteredProducts, currentPage);
+  } catch (error) {
+    console.error("Error initializing page:", error);
+    // Show error message to user
+    document.getElementById("productsListSection").innerHTML = `
+      <div class="alert alert-danger">
+        Failed to load products. Please try again later.
+      </div>
+    `;
+  }
+}
+
+// Start everything when DOM is loaded
 document.addEventListener("DOMContentLoaded", () => {
-  const urlParams = new URLSearchParams(window.location.search);
-
-  const productCategory = urlParams.get("Category") || "";
-  const productSearch = urlParams.get("q") || "";
-  const productLabel = urlParams.get("Label") || "";
-
-  const allCategories = getUniqueValues(vivoProducts, "category").map(c => c.toLowerCase());
-
-  // First, check what q matches
-  let qMatchedCategory = "";
-  let qSearchProducts = [];
-
-  if (productSearch !== "") {
-    const lowerQ = productSearch.toLowerCase();
-
-    // Case 1: q matches a category name
-    if (allCategories.includes(lowerQ)) {
-      qMatchedCategory = productSearch;
-    } else {
-      // Case 2: q is a partial product name
-      qSearchProducts = vivoProducts.filter(p => p.title.toLowerCase().includes(lowerQ));
-    }
-  }
-
-  // Now apply logic
-  if (!productCategory && !productLabel && !productSearch) {
-    allFilteredBase = [...vivoProducts];
-  } else if (productCategory && !productLabel) {
-    allFilteredBase = getByCategory(vivoProducts, productCategory);
-  } else if (!productCategory && productLabel) {
-    allFilteredBase = vivoProducts.filter(p => p.warranty?.toLowerCase() === productLabel.toLowerCase());
-  } else if (productCategory && productLabel) {
-    allFilteredBase = getByCategory(vivoProducts, productCategory).filter(p =>
-      p.warranty?.toLowerCase() === productLabel.toLowerCase()
-    );
-  } else if (productSearch) {
-    if (qMatchedCategory) {
-      allFilteredBase = getByCategory(vivoProducts, qMatchedCategory);
-    } else {
-      allFilteredBase = qSearchProducts;
-    }
-  }
-
-  filteredProducts = [...allFilteredBase];
-
-  populateFilters();
-  displayAllProducts(filteredProducts, currentPage);
+  initializePage();
 });

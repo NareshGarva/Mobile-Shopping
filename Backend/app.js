@@ -6,6 +6,7 @@ require('dotenv').config();
 const authanticationRoutes = require('./routes/authRoutes');
 const productRoutes = require('./routes/productRoutes');
 const categoryRoutes = require('./routes/categoryRoutes');
+const customerRoutes = require('./routes/customerRoutes');
 
 // Apply middleware BEFORE routes
 app.use(cors());
@@ -21,6 +22,10 @@ app.use('/api/product', productRoutes);
 
 // category  routes
 app.use('/api/category', categoryRoutes);
+
+
+// customer  routes
+app.use('/api/customer', customerRoutes);
 
 
 

@@ -21,10 +21,10 @@
   `;
 
 // Importing the products array from another file
-import vivoProducts from "../products.js";
+// import vivoProducts from "../products.js";
 import { redirectToProductPage, displayProductCard, getByCategory,viewProduct } from "../global-product.js";
 
-const allProducts = vivoProducts;
+// const allProducts = vivoProducts;
 
   const searchInput = document.getElementById("searchInput");
   const searchResults = document.getElementById("searchResults");

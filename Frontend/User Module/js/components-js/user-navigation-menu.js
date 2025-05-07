@@ -24,10 +24,10 @@ document.getElementById("userNavigationMenu").innerHTML = `
             </a>
             <ul class="submenu">
               <hr style="display: block">
-              <li><a class="dropdown-item product-nav-btn" href="../pages/product-list.html?Category=Smartphones">Smartphones</a></li>
-              <li><a class="dropdown-item product-nav-btn" href="../pages/product-list.html?Category=Smartwatches">Smartwatches</a></li>
-              <li><a class="dropdown-item product-nav-btn" href="../pages/product-list.html?Category=Earbuds">Earbuds</a></li>
-              <li><a class="dropdown-item product-nav-btn" href="../pages/product-list.html?Category=Tablets">Tablets</a></li>
+              <li><a class="dropdown-item product-nav-btn" href="../pages/product-list.html?Category=Smartphone">Smartphones</a></li>
+              <li><a class="dropdown-item product-nav-btn" href="../pages/product-list.html?Category=Smartwatche">Smartwatches</a></li>
+              <li><a class="dropdown-item product-nav-btn" href="../pages/product-list.html?Category=Audio">Audio</a></li>
+              <li><a class="dropdown-item product-nav-btn" href="../pages/product-list.html?Category=Accessories">Accessories</a></li>
             </ul>
           </li>
           <hr />

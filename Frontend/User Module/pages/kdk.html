@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Page</title>
+</head>
+<body>
+    <h1>This is H1, you understand?</h1>
+
+    <script>
+        // Step 1: Declare the products array
+        let products = [];
+
+        // Step 2: Fetch products from the server
+        async function allProducts() {
+            try {
+                const res = await fetch('http://localhost:3000/api/product/all');
+                if (!res.ok) {
+                    alert("Product fetch failed");
+                    return [];
+                }
+                products = await res.json();
+                console.log("Inside try block:", products);
+            } catch (error) {
+                console.log(error);
+                alert("Error fetching products");
+            }
+        }
+
+        // Step 3: Call the function to fetch data
+        allProducts();
+
+        // Step 4: Polling check every 500ms to see if products are ready
+        const interval = setInterval(() => {
+            if (products.length > 0) {
+                console.log("🔥 Products are now globally accessible:", products);
+
+                // Optional: Call a function to render products
+                renderProducts(); 
+
+                // Step 5: Stop polling when data is ready
+                clearInterval(interval);
+            }
+        }, 500);
+
+        // Optional: Function to render products
+        function renderProducts() {
+            products.forEach((product, index) => {
+                console.log(`Product ${index + 1}:`, product);
+            });
+        }
+
+        
+    </script>
+</body>
+</html>

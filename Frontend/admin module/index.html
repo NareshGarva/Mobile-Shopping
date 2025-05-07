@@ -87,10 +87,6 @@ fetch('http://localhost:3000/api/auth/deshboard', {
     window.location.href = "/Frontend/admin%20module/login.html";
   }
   return res.json();
-})
-.then(data => {
-  console.log(data);
-  document.getElementById("profileName").textContent = data.user.email;
 });
 
 </script>

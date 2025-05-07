@@ -9,11 +9,11 @@ const Category = require('./category');
 // Category ↔ Product
 // ---------------------
 Category.hasMany(Product, {
-  foreignKey: 'categoryId',
+  foreignKey: 'category',
   onDelete: 'SET NULL', // optional: decide based on logic
 });
 Product.belongsTo(Category, {
-  foreignKey: 'categoryId',
+  foreignKey: 'category',
 });
 
 // ---------------------

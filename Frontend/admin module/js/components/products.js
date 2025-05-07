@@ -274,14 +274,14 @@ const fetchCategory = async () => {
     if (!res.ok) throw new Error('Failed to fetch categories');
     
     const data = await res.json();
-    console.log(data);
+
     // Filter only active categories
     const activeCategories = data.filter(cat => cat.categoryStatus == true);
 
    // Populate select options
 activeCategories.forEach(cat => {
   const option = document.createElement('option');
-  option.value = cat.id;
+  option.value = cat.categoryName;
   option.textContent = cat.categoryName;
   option.setAttribute('data-categoryName', cat.categoryName);
   categorySelect.appendChild(option);
