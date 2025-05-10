@@ -97,7 +97,9 @@
     const result = await res.json();
 alert(result.message);
     if (res.ok) {
-      localStorage.setItem("token", result.token); // save JWT in local storage
+      localStorage.setItem("admin-access-token", result.token); // save JWT in local storage
+      localStorage.setItem("admin-access-id", result.id); // save JWT in local storage
+      localStorage.setItem("admin-session-expiry-time", result.expireTime); // save JWT in local storage
       window.location.href = "/Frontend/admin%20module/index.html";
     }
   });

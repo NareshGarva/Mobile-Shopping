@@ -115,6 +115,9 @@ document.getElementById("accountPageAddress").innerHTML=`
 
 
 
+
+
+
 let addresses = []; // Your full address list
     let defaultAddresses = []; // Only the default addresses
     let editingIndex = null;
@@ -190,6 +193,9 @@ let addresses = []; // Your full address list
       });
     }
     
+
+
+
     function setDefaultAddress(index) {
       addresses.forEach((address, i) => {
         address.default = i === index;
@@ -197,6 +203,8 @@ let addresses = []; // Your full address list
       renderAddresses(addresses, "addressContainerId");
     }
     
+
+
     function deleteAddress(index) {
       addresses.splice(index, 1);
       if (
@@ -208,7 +216,9 @@ let addresses = []; // Your full address list
       renderAddresses(addresses, "addressContainerId");
     }
     
-    document.getElementById("address-form").addEventListener("submit", function(e) {
+
+
+    document.getElementById("address-form").addEventListener("submit", async function(e) {
       e.preventDefault();
       e.stopPropagation();
       
@@ -220,22 +230,50 @@ let addresses = []; // Your full address list
       }
       
       const address = {
-        type: document.getElementById("type").value,
-        name: document.getElementById("name").value,
-        street: document.getElementById("street").value,
-        apt: document.getElementById("apt").value,
-        city: document.getElementById("city").value,
+        userId: localStorage.getItem("user-access-id"),
+        addressType: document.getElementById("type").value,
+        defaultAddress: editingIndex === null && addresses.length === 0,
+        fullName: document.getElementById("name").value,
+        addressLine1: document.getElementById("street").value,
+        localityArea: document.getElementById("apt").value,
+        cityTown: document.getElementById("city").value,
         state: document.getElementById("state").value,
-        zip: document.getElementById("zip").value,
+        pinCode: document.getElementById("zip").value,
         country: document.getElementById("country").value,
-        phone: document.getElementById("phone").value,
-        default: editingIndex === null && addresses.length === 0,
+        mobileNumber: document.getElementById("phone").value,
       };
       
       if (editingIndex === null) {
-        addresses.push(address);
+      
+        try{
+          const response = await fetch("http://localhost:3000/api/address/add-address", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(address),
+          });
+          const data = await response.json();
+          if(response.ok){console.log("Address added successfully", data);
+          }
+        }catch(error){
+          console.log("error in adding address : ", error);
+        }
       } else {
-        addresses[editingIndex] = address;
+         try{
+          const response = await fetch(`http://localhost:3000/api/address/${id}`, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(address),
+          });
+          const data = await response.json();
+          if(response.ok){console.log("Address Updated successfully", data);
+          }
+        }catch(error){
+          console.log("error in adding address : ", error);
+        }
       }
       
       bootstrap.Modal.getInstance(document.getElementById("address-form-modal")).hide();
@@ -243,6 +281,8 @@ let addresses = []; // Your full address list
       form.classList.remove("was-validated"); // Reset validation state after successful submission
     });
     
+
+
     //rendring the default address for deshbord tab
     function updateDefaultAddresses() {
       defaultAddresses = addresses.filter(addr => addr.default === true);

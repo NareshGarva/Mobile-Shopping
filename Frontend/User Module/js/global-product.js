@@ -152,7 +152,7 @@ if (productLink) {
           <img src="${product.mainImage}" alt="${product.productTitle}">
           </div>
 
-          <div class="truncate-title" title="${product.productTitle}">${product.productTitle}</div>
+          <div class="" title="${product.productTitle}">${product.productTitle}</div>
                     <div class="rating text-warning">${renderStars(product.rating || 0)}</div>
               <p class="mb-1">
                 <span class="RVSellingPrice fw-bold">₹${product.sellingPrice}</span>

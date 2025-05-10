@@ -83,6 +83,9 @@ fetch('http://localhost:3000/api/auth/deshboard', {
 })
 .then(res => {
   if (res.status === 401 || res.status === 403) {
+  localStorage.removeItem("admin-access-token"); // Remove JWT token
+  localStorage.removeItem("admin-access-id"); // Remove  access id
+  localStorage.removeItem("admin-session-expiry-time"); // Remove expiry time
     alert("Please login to access this page.");
     window.location.href = "/Frontend/admin%20module/login.html";
   }

@@ -78,7 +78,9 @@ document.getElementById("accountPageHeader").innerHTML = `
 `;
 
 function logout() {
-  localStorage.removeItem("token"); // Remove JWT token
+  localStorage.removeItem("admin-access-token"); // Remove JWT token
+  localStorage.removeItem("admin-access-id"); // Remove  access id
+  localStorage.removeItem("admin-session-expiry-time"); // Remove expiry time
   window.location.href = "/Frontend/admin%20module/login.html"; // Redirect to login page
 }
 

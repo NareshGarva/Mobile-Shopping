@@ -38,20 +38,19 @@ exports.login = async (req, res) => {
     return res.status(401).json({ message: "Invalid email or password" });
   }
 
-  // Generate token with id and email, and an expiry time of 1 hour
+  const expireTime = new Date().getTime() + 60 * 60 * 1000; // 1 hour from now
+  
   const token = jwt.sign(
-    { id: user.id, email: user.email }, // Payload
-    process.env.JWT_SECRET_KEY,          // Secret key
-    { expiresIn: '1h' }                 // Options: Expiry time
+    { id: user.id, email: user.email },
+    process.env.JWT_SECRET_KEY,
+    { expiresIn: '1h' }
   );
 
-  res.json({ message: "User logged in successfully", token });
+  res.json({ message: "User logged in successfully", token, id: user.id, expireTime });
 };
 
-
 exports.adminLogin = async (req, res) => {
-  const {email, password} = req.body;
-
+  const { email, password } = req.body;
 
   const admin = await Admin.findOne({ where: { email } });
 
@@ -59,15 +58,16 @@ exports.adminLogin = async (req, res) => {
     return res.status(401).json({ message: "Invalid email or password" });
   }
 
+  const expireTime = new Date().getTime() + 60 * 60 * 1000; // 1 hour from now
+  
   const token = jwt.sign(
-    {id: admin.id, email: admin.email },
+    { id: admin.id, email: admin.email },
     process.env.JWT_SECRET_KEY,
-    {expiresIn: '5h'}
+    { expiresIn: '1h' }
   );
 
-  res.json({message: "User logged in successfully", token});
-
-}
+  res.json({ message: "Admin logged in successfully", token, id: admin.id, expireTime });
+};
 
 exports.getAdminProfile = async (req, res) => {
   // req.user was attached in middleware

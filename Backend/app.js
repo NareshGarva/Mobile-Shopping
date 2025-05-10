@@ -7,6 +7,8 @@ const authanticationRoutes = require('./routes/authRoutes');
 const productRoutes = require('./routes/productRoutes');
 const categoryRoutes = require('./routes/categoryRoutes');
 const customerRoutes = require('./routes/customerRoutes');
+const cartRoutes = require('./routes/cartRoutes');
+const userAddressRoutes = require('./routes/userAddressRoutes');
 
 // Apply middleware BEFORE routes
 app.use(cors());
@@ -26,6 +28,12 @@ app.use('/api/category', categoryRoutes);
 
 // customer  routes
 app.use('/api/customer', customerRoutes);
+
+// cart  routes
+app.use('/api/cart', cartRoutes);
+
+// address  routes
+app.use('/api/address', userAddressRoutes);
 
 
 

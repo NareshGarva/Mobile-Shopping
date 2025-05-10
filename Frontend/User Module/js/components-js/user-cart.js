@@ -36,13 +36,10 @@ document.getElementById("userCart").innerHTML = `
 `;
 
 // Import products array
-// import vivoProducts from "../products.js";
-// Import products array
-import {showNotification} from "../notifications.js";
+import { showNotification } from "../notifications.js";
+// import { products as vivoProducts } from "../products.js"; // Import products - this was missing
 
-// Initialize empty cart
-let cart = [];
-
+  let cart = []; // Initialize the cart as an empty array
 
 // Update Cart Counter
 function updateCartCount() {
@@ -54,7 +51,7 @@ function updateCartCount() {
 
 // Update Total Price
 function updateCartTotal() {
-  const total = cart.reduce((sum, item) => sum + item.sellingPrice * item.quantity, 0);
+  const total = cart.reduce((sum, item) => sum + item.Product.sellingPrice * item.quantity, 0);
   document.getElementById("cratTotal").textContent = total;
 }
 
@@ -71,34 +68,32 @@ function renderCartItems() {
   }
   
   cart.forEach((item) => {
-    
     const cartItem = document.createElement("div");
     cartItem.className = "fade-in cartproductlistitems d-flex justify-content-between align-items-center";
     cartItem.innerHTML = `
       <div class="cartproductimg d-flex justify-content-left align-items-center gap-2">
-        <div class="rounded" style="width:90px; height:90px;background:gray">
-          <img class="rounded" src="${item.mainImage}" alt="${item.title}"/>
+        <div class="rounded" style="width:90px; height:90px;background:#efefef">
+          <img class="rounded" src="${item.Product.mainImage}" alt="${item.Product.productTitle}"/>
         </div>
         <div class="cartproductcontent">
-<p class="product-title m-0">${item.title}</p>
+          <p class="product-title  m-0">${item.Product.productTitle}</p>
 
-<p class="product-variant text-muted small m-0 w-100">
-  ${item.selectedColor ? `<span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:${item.selectedColor};margin-left:5px;"></span> / ` : ""}
-  ${Object.entries(item.selectedVariant || {}).map(([key, value]) => `
-    ${ value }
-    `).join(" / ")}
+        <p class="product-variant text-muted small m-0 w-100">
+  ${item.color ? `<span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:${item.color};margin-left:5px;"></span> / ` : ""}
+  ${item.cartVarients.map(variant => `${variant.value}`).join(" / ")}
 </p>
+
           <div>
-            <p>Price: ₹<span>${item.sellingPrice * item.quantity}</span></p>
+            <p>Price: ₹<span>${item.Product.sellingPrice * item.quantity}</span></p>
           </div>
           <div class="d-flex justify-content-between align-items-center" >
             <div class="cartproductquality d-flex justify-content-center align-items-center">
-              <button class="quantity-btn decrease" data-id="${item.id}">−</button>
+              <button class="quantity-btn decrease" data-id="${item.cartId}">−</button>
               <input type="text" class="quantity-input" value="${item.quantity}" readonly>
-              <button class="quantity-btn increase" data-id="${item.id}">+</button>
+              <button class="quantity-btn increase" data-id="${item.cartId}">+</button>
             </div>
             <div class="cartdeleteicon">
-              <a href="#" class="remove-item" data-id="${item.id}">
+              <a href="#" class="remove-item" data-id="${item.cartId}">
                 <img src="../assets/icons/delete.svg" alt="">
               </a>
             </div>
@@ -111,11 +106,11 @@ function renderCartItems() {
 }
 
 // Toggle Coupon Field
-document.getElementById("applyCoupon").addEventListener("click", function() {
+document.getElementById("applyCoupon").addEventListener("click", function(e) {
+  e.preventDefault(); // Prevent default link behavior
   let cartCoupon = document.querySelector(".cartCoupon");
   cartCoupon.style.display = cartCoupon.style.display === "none" ? "flex" : "none";
 });
-
 
 function getDefaultVariant(product) {
   const sizes = product.sizes;
@@ -136,23 +131,22 @@ function getDefaultVariant(product) {
   return { variant, color };
 }
 
+export async function handleAddToCart(id, passedVariant = {}, passedQuantity) {
+ 
+  if(localStorage.getItem("session-expiry-time") < Date.now()){
+    showNotification(`Please <a href="../pages/Authentication.html" style="color: red">Login</a> to add in cart`, "error");
+    return;
+  }
 
-
-export function handleAddToCart(id, passedVariant = {}, passedPrice, passedQuantity) {
-  
-  const product = vivoProducts.find(p => p.id === id);
-  const inCart = cart.find(item => item.id === id);
   
   function skipFirst(obj) {
-  return Object.fromEntries(Object.entries(obj).slice(1));
-}
+    if (!obj || Object.keys(obj).length === 0) return {};
+    return Object.fromEntries(Object.entries(obj).slice(1));
+  }
 
-let finalVariant = skipFirst(passedVariant);
-
-  let finalColor = passedVariant.Color;
-  
-  let finalPrice = passedPrice;
-  let finalQuantity = passedQuantity;
+  let finalVariant = skipFirst(passedVariant);
+  let finalColor = passedVariant?.Color || null;
+  let finalQuantity = passedQuantity > 0 ? passedQuantity : 1;
   
   // If required data not passed, use defaults
   if (!passedVariant || Object.keys(passedVariant).length === 0) {
@@ -161,54 +155,50 @@ let finalVariant = skipFirst(passedVariant);
     finalColor = defaultColor;
   }
   
-  if (!passedPrice) {
-    finalPrice = product.sellingPrice;
-  }
+    try{
+      const res = await fetch("http://localhost:3000/api/cart/add-to-cart",{
+method: "POST",
+headers:{
+  "Content-Type":"application/json",
+},
+body: JSON.stringify({
+  userId: localStorage.getItem("user-access-id"),
+  productId: id,
+  quantity: finalQuantity,
+       selectedVariant: finalVariant,
+       selectedColor: finalColor,
+})
+      })
+      const data = await res.json();
+      if(!res.ok){
+ showNotification(data.message, "error");
+      }
+      
+      showNotification(data.message, "success");
+    }catch(err){
+      console.log(err);
+    }
   
-  if (!passedQuantity || passedQuantity <= 0) {
-    finalQuantity = 1;
-  }
-  
-  if (inCart) {
-    inCart.quantity += finalQuantity;
-  } else {
-    cart.push({
-      ...product,
-      sellingPrice: finalPrice,
-      quantity: finalQuantity,
-      selectedVariant: finalVariant,
-      selectedColor: finalColor
-    });
-  }
-  
+  loadCart();
   renderCartItems();
   updateCartCount();
   updateCartTotal();
-  saveCart();
-  showNotification("Added to cart");
 }
-
-
-
-
 
 // Handle Button Events
 document.getElementById("cartproductlist").addEventListener("click", function(e) {
   const target = e.target;
   
-  // Increase Quantity
   if (target.classList.contains("increase")) {
     const id = target.dataset.id;
     handleIncreaseQty(id);
   }
-  
-  // Decrease Quantity
+
   if (target.classList.contains("decrease")) {
     const id = target.dataset.id;
     handleDecreaseQty(id);
   }
-  
-  // Remove Item
+
   if (target.closest(".remove-item")) {
     e.preventDefault();
     const id = target.closest(".remove-item").dataset.id;
@@ -216,52 +206,164 @@ document.getElementById("cartproductlist").addEventListener("click", function(e)
   }
 });
 
+
+
 // Increase Quantity
-function handleIncreaseQty(id) {
-  const item = cart.find(p => p.id === id);
-  if (item && item.quantity < 10) {
-    item.quantity++;
-    renderCartItems();
-    updateCartCount();
-    updateCartTotal();
-    saveCart();
+async function handleIncreaseQty(id) {
+id = Number(id);
+const item = cart.find(c => c.cartId === id);
+console.log(item);
+
+  if (item) {
+    try {
+      const res = await fetch("http://localhost:3000/api/cart/update-quantity", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          cartId: item.cartId,
+          quantity: item.quantity + 1
+        })
+      });
+
+      if (res.ok) {
+        await loadCart(); // Reload the cart data
+        renderCartItems(); // Re-render the cart UI
+        updateCartCount(); // Update the cart item count
+        updateCartTotal(); // Update the total price
+        showNotification("Quantity increased successfully.", "success");
+      } else {
+        const errorData = await res.json();
+        showNotification(errorData.message);
+      }
+    } catch (err) {
+      console.error("Error increasing quantity:", err);
+      showNotification("Failed to increase quantity. Please try again.", "error");
+    }
+  } else {
+    console.log("Item not found for ID:", id);
   }
 }
+
 
 // Decrease Quantity
-function handleDecreaseQty(id) {
-  const item = cart.find(p => p.id === id);
+async function handleDecreaseQty(id) {
+  id = Number(id);
+  // Convert the id to a number
+  const item = cart.find(p => p.cartId === Number(id));  
+
+
   if (item && item.quantity > 1) {
-    item.quantity--;
+    try {
+      const res = await fetch("http://localhost:3000/api/cart/update-quantity", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          cartId: item.cartId,
+          quantity: item.quantity - 1
+        })
+      });
+const data = await res.json();
+      if (res.ok) {
+        await loadCart(); // Reload the cart data
+        renderCartItems(); // Re-render the cart UI
+        updateCartCount(); // Update the cart item count
+        updateCartTotal(); // Update the total price
+         showNotification(data.message, "success");
+      } else {
+        
+        showNotification(data.message, "error");
+      }
+    } catch (err) {
+      console.error("Error decreasing quantity:", err);
+      showNotification("Failed to decrease quantity. Please try again.", "error");
+    }
+  } else {
+    console.log("Item not found for ID or Quantity is 1:", id);
+  }
+}
+
+
+// Remove Item
+async function handleRemoveItem(id) {
+  try {
+    // Then sync with server
+    const res = await fetch(`http://localhost:3000/api/cart/${id}`, {
+      method: "DELETE",
+    });
+const data = await res.json();
+    if(!res.ok){
+      showNotification(data.message, "error");
+      // throw new error(`HTTP error! status: ${res.status}`);
+    }
+    
+    loadCart();
     renderCartItems();
     updateCartCount();
     updateCartTotal();
-    saveCart();
+    showNotification(data.message, "success");
+  } catch (err) {
+    console.error("Error removing item:", err);
+    showNotification("Failed to remove item. Please try again.", "error");
   }
 }
 
-// Remove Item
-function handleRemoveItem(id) {
-  cart = cart.filter(item => item.id !== id);
-  renderCartItems();
-  updateCartCount();
-  updateCartTotal();
-  saveCart();
-}
 
 
-function saveCart() {
-  localStorage.setItem("userCartData", JSON.stringify(cart));
-}
 
 
-function loadCart() {
-  const savedCart = localStorage.getItem("userCartData");
-  if (savedCart) {
-    cart = JSON.parse(savedCart);
-    renderCartItems(); // This should be a defined function
-    updateCartCount(); // Optional function to show cart count
-    updateCartTotal(); // Optional function to show total
+async function loadCart() {
+
+
+  try {
+    // Try to load from API first
+    const response = await fetch("http://localhost:3000/api/cart/get-cart-products", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "userid": localStorage.getItem("user-access-id"), // Ensure correct header format (lowercase "userid")
+      },
+    });
+
+    // Check if the response is not OK
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.log(errorData.message);
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    // Parse the JSON response
+    const data = await response.json();
+
+    // Assign fetched data to the cart
+    cart = data.cartProducts;
+
+  } catch (err) {
+    console.error("Error loading cart:", err.message);
   }
+
+
+
+  // Render the UI
+  renderCartItems();    // Pass the cart as a parameter
+  updateCartCount();    // Pass the cart as a parameter
+  updateCartTotal();    // Pass the cart as a parameter
 }
+
+// Add checkout event listener
+document.querySelector(".carCheckout").addEventListener("click", function() {
+  if (cart.length === 0) {
+    showNotification("Your cart is empty");
+    return;
+  }
+  // Redirect to checkout page or show checkout modal
+  window.location.href = "/checkout";
+});
+
+document.addEventListener("DOMContentLoaded", function(){
+// Initialize cart on page load
 loadCart();
+});

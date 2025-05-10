@@ -69,6 +69,8 @@ document.getElementById("accountPageHeader").innerHTML=`
 
 function logout() {
   localStorage.removeItem("token"); // Remove JWT token
+  localStorage.removeItem("user-access-id"); // Remove user id
+  localStorage.removeItem("session-expiry-time"); // Remove expiry time
   window.location.href = "/Frontend/User%20Module/pages/Authentication.html"; // Redirect to login page
 }
 

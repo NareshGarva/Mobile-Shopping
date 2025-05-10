@@ -1,3 +1,17 @@
+const sessionExpiryTime = localStorage.getItem("session-expiry-time");
+// Assuming sessionExpiryTime is already defined somewhere in your script
+const accountNavHtml = sessionExpiryTime > Date.now() 
+  ? `<li class="nav-item Account-Nva">
+        <a class="nav-link dropdown-toggle" role="button" href="../pages/account.html">
+          Account <img src="../assets/icons/rightarrow.svg">
+        </a>
+     </li>`
+  : `<li class="nav-item">
+        <a class="nav-link d-flex justify-content-between align-items-center" href="../pages/Authentication.html">
+          Login <img src="../assets/icons/rightarrow.svg">
+        </a>
+     </li>`;
+
 document.getElementById("userNavigationMenu").innerHTML = `
   <nav>
     <div class="offcanvas offcanvas-start" tabindex="-1" id="menuoffcanvas">
@@ -25,33 +39,27 @@ document.getElementById("userNavigationMenu").innerHTML = `
             <ul class="submenu">
               <hr style="display: block">
               <li><a class="dropdown-item product-nav-btn" href="../pages/product-list.html?Category=Smartphone">Smartphones</a></li>
-              <li><a class="dropdown-item product-nav-btn" href="../pages/product-list.html?Category=Smartwatche">Smartwatches</a></li>
+              <li><a class="dropdown-item product-nav-btn" href="../pages/product-list.html?Category=Smartwatch">Smartwatches</a></li>
               <li><a class="dropdown-item product-nav-btn" href="../pages/product-list.html?Category=Audio">Audio</a></li>
               <li><a class="dropdown-item product-nav-btn" href="../pages/product-list.html?Category=Accessories">Accessories</a></li>
             </ul>
           </li>
           <hr />
           <li class="nav-item">
-            <a class="nav-link product-nav-btn" href="../pages/product-list.html?Category=Tablets" >Special Sell</a>
+            <a class="nav-link product-nav-btn" href="../pages/product-list.html?Category=Tablets">Special Sell</a>
           </li>
           <hr />
           <li class="nav-item">
             <a class="nav-link" href="../pages/Contact-us.html">Contact</a>
           </li>
           <hr />
-          <li class="nav-item">
-            <a class="nav-link d-flex justify-content-between align-items-center" href="../pages/Authentication.html">Login <img src="../assets/icons/rightarrow.svg"></a>
-          </li>
-          <li class="nav-item Account-Nva d-none">
-            <a class="nav-link dropdown-toggle" role="button">
-              Account <img src="../assets/icons/plus.svg">
-            </a>
-          </li>
+          ${accountNavHtml}
         </ul>
       </div>
     </div>
   </nav>
 `;
+
 
 
   // Custom Dropdown Toggle (Accordion Style)

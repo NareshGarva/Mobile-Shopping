@@ -165,5 +165,53 @@ input:focus, textarea:focus, select:focus { border-color: var(--light-gray-bg); 
 
 
 
+        /* Container */
+    #notification-container {
+        position: fixed;
+        top: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 1000;
+        text-align: center;
+    }
+
+    /* Base notification */
+    .custom-alert {
+        display: flex;
+        align-items: center;
+        background: #f6f6f6;
+        color: #000000;
+        padding:7px 15px;
+        margin: 10px 0;
+        border-radius:6px;
+        font-size: 12px;
+        animation: slideIn 0.5s ease-in-out, fadeOut 0.5s ease-in-out 2.5s forwards;
+        overflow: hidden;
+        border: 1px solid, #b0b0b0;
+        font-weight: 600;
+    }
+
+
+    .alert-error { border-color: #ff9494; color: #500000;background: #fff0f0; }
+    .alert-success { border-color: #7df880; color:#023105; background:#effeef}
+
+    /* Icon */
+    .icon {
+        margin-right: 5px;
+    }
+
+    /* Slide-in animation */
+    @keyframes slideIn {
+        from { transform: translateY(-50px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+    }
+
+    /* Fade-out animation */
+    @keyframes fadeOut {
+        to { opacity: 0; }
+    }
+
+
+    
 
     

@@ -156,6 +156,8 @@ console.log(data);
 
     if (res.ok) {
       localStorage.setItem("token", result.token); // save JWT in local storage
+      localStorage.setItem("user-access-id", result.id); // save JWT in local storage
+      localStorage.setItem("session-expiry-time", result.expireTime); // save JWT in local storage
       window.location.href = "/Frontend/User%20Module/pages/account.html";
     }
   });

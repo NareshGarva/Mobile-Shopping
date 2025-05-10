@@ -4,7 +4,7 @@ import { handleAddToCart } from "./components-js/user-cart.js";
 // Declare the product variable globally
 let product = null;
 const storecurrency = '₹';
-
+let productId =null;
 // Fetch products from the server
 async function getProductById(productId) {
   try {
@@ -46,7 +46,7 @@ async function initializePage(productId) {
   try {
     // Fetch product data
     product = await getProductById(productId);
-    console.log(product);
+
    
     // Handle product not found
     if (!product) {
@@ -290,6 +290,8 @@ function setupQuantityControls(isAvailable, productId) {
       inputField.value = value;
     });
     
+
+    
     // Setup cart button
     const addToCartBtn = document.getElementById('addToCartBtn');
     if (addToCartBtn) {
@@ -297,8 +299,7 @@ function setupQuantityControls(isAvailable, productId) {
         const quantity = parseInt(inputField.value) || 1;
         // Use selectedOptions from storage or create empty object
         const selectedOptions = window.productSelectedOptions || {};
-        const price = document.querySelector('.sellingPrice')?.textContent.replace(storecurrency, '').trim() || 0;
-        handleAddToCart(productId, selectedOptions, price, quantity);
+        handleAddToCart(productId, selectedOptions, quantity);
       });
     }
     
@@ -404,8 +405,7 @@ function setupVariantSelector(product, isAvailable, productId) {
 
 // Render variants in the offcanvas
 function renderVariants(product) {
-  console.log("Rendering Product variants", product);
-
+  
   const variantContainer = document.getElementById("variantContainer");
   if (!variantContainer) return;
 
@@ -550,7 +550,7 @@ function updateSelectedVariantDisplay() {
 document.addEventListener("DOMContentLoaded", () => {
   // Get product ID from URL
   const urlParams = new URLSearchParams(window.location.search);
-  const productId = urlParams.get("id");
+  productId = urlParams.get("id");
   
   if (!productId) {
     document.getElementById("userProductPageInfo").innerHTML = `
