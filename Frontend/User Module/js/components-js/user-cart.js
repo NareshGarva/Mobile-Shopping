@@ -359,9 +359,15 @@ document.querySelector(".carCheckout").addEventListener("click", function() {
     showNotification("Your cart is empty");
     return;
   }
+  if(localStorage.getItem("session-expiry-time")< Date.now()){
+    showNotification(`Please <a href="../pages/Authentication.html" style="color: red">Login</a> to proceed to checkout`, "error");
+    return;
+  }
   // Redirect to checkout page or show checkout modal
-  window.location.href = "/checkout";
+  window.location.href = "./Checkout.html";
 });
+
+
 
 document.addEventListener("DOMContentLoaded", function(){
 // Initialize cart on page load

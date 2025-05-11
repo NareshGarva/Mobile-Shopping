@@ -1,11 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const { addUserAddress, getUserAddress, updateUserAddress,setDefaultAddress, deleteUserAddress } = require('../controllers/userAddressControllers');
+const { addUserAddress, getUserAddress, updateUserAddress,setDefaultAddress, deleteUserAddress, getDefaultAddress } = require('../controllers/userAddressControllers');
 
 router.post('/add-address', addUserAddress);
-router.delete('/:id', deleteUserAddress);
-router.get('/get-address', getUserAddress); // Protected route
-router.patch('/:id', setDefaultAddress);
-router.put('/:id', updateUserAddress);
+router.delete('/:addressId', deleteUserAddress);
+router.get('/get-address/:userId', getUserAddress);
+router.get('/get-default-address/:userId', getDefaultAddress); 
+router.put('/set-default/:addressId/:userId', setDefaultAddress);
+router.put('/update-address/:addressId', updateUserAddress);
 
 module.exports = router;

@@ -1,14 +1,14 @@
 document.getElementById("accountPageAddress").innerHTML=`
-    <div >
+    <div>
       <div class="container py-5">
         <div class="mb-4">
           <h2 class="fw-bold">Your Addresses</h2>
           <p class="text-muted">Manage your shipping and billing addresses</p>
         </div>
         
-        <div class="row g-4">
+        <div>
           <!-- Add New Address Card -->
-          <div class="col-12 col-md-6 col-lg-4">
+          <div class="col-12 col-md-6 col-lg-4 mb-3">
             <div class="border border-dashed border-secondary rounded p-4 text-center">
               <div class="text-secondary display-4 mb-3">
                 <img onclick="openAddressForm()" class="p-2 rounded-full bg-light-gray" src="../assets/icons/plus.svg" alt="" />
@@ -22,7 +22,7 @@ document.getElementById("accountPageAddress").innerHTML=`
               </button>
             </div>
           </div>
-          <div id="addressContainerId"></div>
+          <div id="addressContainerId" class="row g-4"></div>
         </div>
       </div>
       
@@ -108,192 +108,377 @@ document.getElementById("accountPageAddress").innerHTML=`
           </div>
         </div>
       </div>
-      
-      
     </div>
 `;
 
+// Global variables to store addresses data
+let addresses = [];
+let editingIndex = null;
+
+// Function to open address form modal for adding new or editing existing address
+function openAddressForm(index = null) {
+  editingIndex = index;
+  const form = document.getElementById("address-form");
+  
+  if (index !== null && addresses[index]) {
+    // Editing existing address
+    document.getElementById("form-title").innerText = "Edit Address";
+    const address = addresses[index];
+    document.getElementById("type").value = address.addressType || "";
+    document.getElementById("name").value = address.fullName || "";
+    document.getElementById("street").value = address.addressLine1 || "";
+    document.getElementById("apt").value = address.localityArea || "";
+    document.getElementById("city").value = address.cityTown || "";
+    document.getElementById("state").value = address.state || "";
+    document.getElementById("zip").value = address.pinCode || "";
+    document.getElementById("country").value = address.country || "India";
+    document.getElementById("phone").value = address.mobileNumber || "";
+  } else {
+    // Adding new address
+    document.getElementById("form-title").innerText = "Add Address";
+    form.reset();
+  }
+  
+  // Reset validation state
+  form.classList.remove("was-validated");
+  
+  // Show modal
+  new bootstrap.Modal(document.getElementById("address-form-modal")).show();
+}
 
 
 
 
 
-let addresses = []; // Your full address list
-    let defaultAddresses = []; // Only the default addresses
-    let editingIndex = null;
+// Function to render addresses in the specified container
+async function renderAddresses(containerId) {
+  try {
+    // Get user ID from local storage
+    const userId = localStorage.getItem('user-access-id');
     
-    function openAddressForm(index = null) {
-      editingIndex = index;
-      if (index !== null) {
-        const address = addresses[index];
-        document.getElementById("form-title").innerText = "Edit Address";
-        document.getElementById("type").value = address.type;
-        document.getElementById("name").value = address.name;
-        document.getElementById("street").value = address.street;
-        document.getElementById("apt").value = address.apt;
-        document.getElementById("city").value = address.city;
-        document.getElementById("state").value = address.state;
-        document.getElementById("zip").value = address.zip;
-        document.getElementById("country").value = address.country;
-        document.getElementById("phone").value = address.phone;
-      } else {
-        document.getElementById("form-title").innerText = "Add Address";
-        document.getElementById("address-form").reset();
-      }
-      new bootstrap.Modal(
-        document.getElementById("address-form-modal")
-      ).show();
+    if (!userId) {
+      console.log("User ID not found in local storage");
+      return;
     }
     
-    // Renders the list of saved addresses into the given container by ID
-    function renderAddresses(addressesArray, addressContainerId) {
-      const addressList = document.getElementById(addressContainerId); // Use the passed ID
-      addressList.innerHTML = ''; // Clear existing content
+    // Fetch addresses from API
+    const response = await fetch(`http://localhost:3000/api/address/get-address/${userId}`, {
+      method: 'GET',
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.log("Error fetching addresses:", errorData.message);
+      return;
+    }
+
+    // Store fetched addresses in global variable
+    addresses = await response.json();
+    addresses = await addresses.addresses || [];
+    console.log("Fetched addresses : ", addresses);
+    // Get the container
+    const addressContainer = document.getElementById(containerId);
+    if (!addressContainer) {
+      console.log(`Container with ID '${containerId}' not found`);
+      return;
+    }
+    
+    // Clear previous content
+    addressContainer.innerHTML = '';
+
+    // If no addresses found
+    if (!addresses || addresses.length === 0) {
+      addressContainer.innerHTML = '<div class="col-12"><p class="text-muted">No addresses found.</p></div>';
+      return;
+    }
+
+    // Sort addresses - default addresses first
+    const sortedAddresses = [...addresses].sort((a, b) => {
+      if (a.defaultAddress) return -1;
+      if (b.defaultAddress) return 1;
+      return 0;
+    });
+
+    // Render each address
+    sortedAddresses.forEach((address, index) => {
+      addressContainer.innerHTML += `
+        <div class="col-12 col-md-6 col-lg-4 mb-3">
+          <div class="border p-3 rounded-main">
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <h5 class="card-title mb-0 gap-1 d-flex justify-content-left align-items-center fw-bold small">
+                  <img src="../assets/icons/${address.addressType}.svg" alt="" /> ${address.addressType}
+                </h5>
+                ${address.defaultAddress ? '<span class="default-address-badge">Default</span>' : ''}
+              </div>
+              <p class="card-text mb-1">${address.fullName}</p>
+              <p class="card-text mb-1">${address.addressLine1}</p>
+              ${address.localityArea ? `<p class="card-text mb-1">${address.localityArea}</p>` : ''}
+              <p class="card-text mb-1">${address.cityTown}, ${address.state} ${address.pinCode}</p>
+              <p class="card-text mb-1">${address.country}</p>
+              <p class="card-text mb-1">${address.mobileNumber}</p>
+              <div class="d-flex flex-wrap mt-2">
+                <span>
+                  ${!address.defaultAddress ? `<button class="btn btn-sm btn-dark text-white me-2 mb-1" onclick="setDefaultAddress('${address.addressId}')">Set as Default</button>` : ''}
+                </span>
+                <button class="btn btn-sm btn-outline-dark me-2 mb-1" onclick="openAddressForm(${index})">
+                  <img src="../assets/icons/edit.svg" alt=""> Edit
+                </button>
+                <button class="btn btn-sm btn-outline-danger mb-1" onclick="deleteAddress('${address.addressId}')">
+                  <img src="../assets/icons/delete.svg" alt="">
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    });
+  } catch (error) {
+    console.log("Error rendering addresses:", error);
+  }
+}
+
+
+
+// Function to set an address as default
+async function setDefaultAddress(addressId) {
+  try {
+    const userId = localStorage.getItem('user-access-id');
+    
+    if (!userId || !addressId) {
+      console.log("Missing user ID or address ID");
+      return;
+    }
+    
+    const response = await fetch(`http://localhost:3000/api/address/set-default/${addressId}/${userId}`, {
+      method: 'PUT',
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.log("Error setting default address:", errorData.message);
+      return;
+    }
+
+    console.log("Default address updated successfully");
+    // Refresh addresses
+    renderAddresses("addressContainerId");
+    
+    // Also update dashboard default address if that container exists
+    const dashboardContainer = document.getElementById("deshbordDefaultAddress");
+    if (dashboardContainer) {
+      renderDefaultAddresses();
+    }
+  } catch (error) {
+    console.log("Error setting default address:", error);
+  }
+}
+
+
+
+// Function to delete an address
+async function deleteAddress(addressId) {
+  try {
+    if (!confirm("Are you sure you want to delete this address?")) {
+      return;
+    }
+    
+    if (!addressId) {
+      console.log("Address ID is required");
+      return;
+    }
+    
+    const response = await fetch(`http://localhost:3000/api/address/${addressId}`, {
+      method: 'DELETE',
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.log("Error deleting address:", errorData.message);
+      return;
+    }
+
+    console.log("Address deleted successfully");
+    // Refresh addresses
+    renderAddresses("addressContainerId");
+    
+    // Also update dashboard default address if that container exists
+    const dashboardContainer = document.getElementById("deshbordDefaultAddress");
+    if (dashboardContainer) {
+      renderDefaultAddresses();
+    }
+  } catch (error) {
+    console.log("Error deleting address:", error);
+  }
+}
+
+
+// Function to render only default addresses (for dashboard)
+async function renderDefaultAddresses() {
+  try {
+    const userId = localStorage.getItem('user-access-id');
+    
+    if (!userId) {
+      console.log("User ID not found in local storage");
+      return;
+    }
+    
+    const response = await fetch(`http://localhost:3000/api/address/get-default-address/${userId}`, {
+      method: 'GET',
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.log("Error fetching default address:", errorData.message);
+      return;
+    }
+
+    const defaultAddress = await response.json();
+    const dashboardContainer = document.getElementById("deshbordDefaultAddress");
+    
+    if (!dashboardContainer) {
+      console.log("Dashboard default address container not found");
+      return;
+    }
+    
+    dashboardContainer.innerHTML = '';
+    
+    if (!defaultAddress) {
+      dashboardContainer.innerHTML = '<div class="col-12"><p class="text-muted">No default address set.</p></div>';
+      return;
+    }
+    
+    dashboardContainer.innerHTML = `
+      <div class="col-12">
+        <div class="border p-3 rounded-main">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <h5 class="card-title mb-0 gap-1 d-flex justify-content-left align-items-center fw-bold small">
+                <img src="../assets/icons/${defaultAddress.addressType}.svg" alt="" /> ${defaultAddress.addressType}
+              </h5>
+              <span class="default-address-badge">Default</span>
+            </div>
+            <p class="card-text mb-1">${defaultAddress.fullName}</p>
+            <p class="card-text mb-1">${defaultAddress.addressLine1}</p>
+            ${defaultAddress.localityArea ? `<p class="card-text mb-1">${defaultAddress.localityArea}</p>` : ''}
+            <p class="card-text mb-1">${defaultAddress.cityTown}, ${defaultAddress.state} ${defaultAddress.pinCode}</p>
+            <p class="card-text mb-1">${defaultAddress.country}</p>
+            <p class="card-text mb-1">${defaultAddress.mobileNumber}</p>
+          </div>
+        </div>
+      </div>
+    `;
+  } catch (error) {
+    console.log("Error rendering default address:", error);
+  }
+}
+
+
+
+// Handle form submission
+document.getElementById("address-form").addEventListener("submit", async function(e) {
+  e.preventDefault();
+  e.stopPropagation();
+  
+  const form = this;
+  
+  // Check form validity
+  if (!form.checkValidity()) {
+    form.classList.add("was-validated");
+    return;
+  }
+  
+  // Get user ID
+  const userId = localStorage.getItem("user-access-id");
+  if (!userId) {
+    console.log("User ID not found");
+    return;
+  }
+  
+  // Collect form data
+  const addressData = {
+    userId: userId,
+    addressType: document.getElementById("type").value,
+    fullName: document.getElementById("name").value,
+    addressLine1: document.getElementById("street").value,
+    localityArea: document.getElementById("apt").value,
+    cityTown: document.getElementById("city").value,
+    state: document.getElementById("state").value,
+    pinCode: document.getElementById("zip").value,
+    country: document.getElementById("country").value,
+    mobileNumber: document.getElementById("phone").value,
+    // Set as default if it's the first address
+    defaultAddress: editingIndex === null && addresses.length === 0
+  };
+  
+  try {
+    let response;
+    
+    if (editingIndex === null) {
+      // Add new address
+      response = await fetch("http://localhost:3000/api/address/add-address", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(addressData),
+      });
+    } else {
+      // Update existing address
+      const addressId = Number(addresses[editingIndex]?.addressId);
       
-      // Check if addresses array is empty
-      if (addressesArray.length === 0) {
-        addressList.innerHTML = '<p class="text-muted">No Address Found.</p>';
+      if (!addressId) {
+        console.log("Invalid address ID for update");
         return;
       }
-      
-      // Sort addresses to show 'default' ones first or recent additions (optional)
-      const sortedAddresses = [...addressesArray].sort((a, b) => {
-        if (a.default) return -1;
-        if (b.default) return 1;
-        return 0;
-      });
-      
-      // Loop through each address and create its card
-      sortedAddresses.forEach((address, index) => {
-        addressList.innerHTML += `
-            <div class="col-12 col-md-6 col-lg-4 mb-3">
-                <div class="border p-3 rounded-main">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <h5 class="card-title mb-0 gap-1 d-flex justify-content-left align-items-center fw-bold small"><img src="../assets/icons/${address.type}.svg" alt="" /> ${address.type}</h5>
-                            
-                            ${address.default ? '<span class="default-address-badge">Default</span>' : ''}
-                        </div>
-                        <p class="card-text mb-1">${address.name}</p>
-                        <p class="card-text mb-1">${address.street}</p>
-                        ${address.apt ? `<p class="card-text mb-1">${address.apt}</p>` : ''}
-                        <p class="card-text mb-1">${address.city}, ${address.state} ${address.zip}</p>
-                        <p class="card-text mb-1">${address.country}</p>
-                        <p class="card-text mb-2">${address.phone}</p>
-                        <div class="d-flex flex-wrap mt-2">
-                        <span>
-                            ${!address.default ? `<button class="btn btn-sm btn-dark text-white me-2 mb-1" onclick="setDefaultAddress(${index})">Set as Default</button>` : ''}</span>
-                            <button class="btn btn-sm btn-outline-dark me-2 mb-1" onclick="openAddressForm(${index})"><img src="../assets/icons/edit.svg" alt=""> Edit</button>
-                            <button class="btn btn-sm btn-outline-danger mb-1" onclick="deleteAddress(${index})"><img  src="../assets/icons/delete.svg" alt=""> Delete</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        `;
+      console.log("Address id for update: ", addressId)
+      response = await fetch(`http://localhost:3000/api/address/update-address/${addressId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(addressData),
       });
     }
     
-
-
-
-    function setDefaultAddress(index) {
-      addresses.forEach((address, i) => {
-        address.default = i === index;
-      });
-      renderAddresses(addresses, "addressContainerId");
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.log(`Address not ${editingIndex === null ? 'added' : 'updated'}:`, errorData.message);
+      return;
     }
     
-
-
-    function deleteAddress(index) {
-      addresses.splice(index, 1);
-      if (
-        addresses.length > 0 &&
-        !addresses.some((address) => address.default)
-      ) {
-        addresses[0].default = true;
-      }
-      renderAddresses(addresses, "addressContainerId");
+    console.log(`Address ${editingIndex === null ? 'added' : 'updated'} successfully`);
+    
+    // Hide modal
+    bootstrap.Modal.getInstance(document.getElementById("address-form-modal")).hide();
+    
+    // Refresh addresses
+    renderAddresses("addressContainerId");
+    
+    // Update dashboard default address if that container exists
+    const dashboardContainer = document.getElementById("deshbordDefaultAddress");
+    if (dashboardContainer) {
+      renderDefaultAddresses();
     }
     
+    // Reset form validation state
+    form.classList.remove("was-validated");
+    
+  } catch (error) {
+    console.log(`Error ${editingIndex === null ? 'adding' : 'updating'} address:`, error);
+  }
+});
 
 
-    document.getElementById("address-form").addEventListener("submit", async function(e) {
-      e.preventDefault();
-      e.stopPropagation();
-      
-      const form = this;
-      
-      if (!form.checkValidity()) {
-        form.classList.add("was-validated");
-        return; // Don't proceed if the form is invalid
-      }
-      
-      const address = {
-        userId: localStorage.getItem("user-access-id"),
-        addressType: document.getElementById("type").value,
-        defaultAddress: editingIndex === null && addresses.length === 0,
-        fullName: document.getElementById("name").value,
-        addressLine1: document.getElementById("street").value,
-        localityArea: document.getElementById("apt").value,
-        cityTown: document.getElementById("city").value,
-        state: document.getElementById("state").value,
-        pinCode: document.getElementById("zip").value,
-        country: document.getElementById("country").value,
-        mobileNumber: document.getElementById("phone").value,
-      };
-      
-      if (editingIndex === null) {
-      
-        try{
-          const response = await fetch("http://localhost:3000/api/address/add-address", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(address),
-          });
-          const data = await response.json();
-          if(response.ok){console.log("Address added successfully", data);
-          }
-        }catch(error){
-          console.log("error in adding address : ", error);
-        }
-      } else {
-         try{
-          const response = await fetch(`http://localhost:3000/api/address/${id}`, {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(address),
-          });
-          const data = await response.json();
-          if(response.ok){console.log("Address Updated successfully", data);
-          }
-        }catch(error){
-          console.log("error in adding address : ", error);
-        }
-      }
-      
-      bootstrap.Modal.getInstance(document.getElementById("address-form-modal")).hide();
-      renderAddresses(addresses, "addressContainerId");
-      form.classList.remove("was-validated"); // Reset validation state after successful submission
-    });
-    
 
-
-    //rendring the default address for deshbord tab
-    function updateDefaultAddresses() {
-      defaultAddresses = addresses.filter(addr => addr.default === true);
-      renderAddresses(defaultAddresses, "deshbordDefaultAddress");
-    }
-    
-    
-    
-    
-        // Initial page load then function calling 
-    setInterval(() => {
-      updateDefaultAddresses();
-    }, 1000);
-    renderAddresses(addresses, "addressContainerId");
+// Initialize the page
+document.addEventListener("DOMContentLoaded", function() {
+  // Render all addresses
+  renderAddresses("addressContainerId");
+  
+  // Render default address for dashboard if the container exists
+  const dashboardContainer = document.getElementById("deshbordDefaultAddress");
+  if (dashboardContainer) {
+    renderDefaultAddresses();
+  }
+});

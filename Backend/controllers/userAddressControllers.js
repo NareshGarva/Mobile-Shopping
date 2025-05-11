@@ -1,4 +1,3 @@
-const { where } = require("sequelize");
 const {
   User,
   userAddress
@@ -20,10 +19,10 @@ exports.addUserAddress = async (req, res) =>{
             return res.status(400).json({message: "User not found"});
         }
 
-        //make the first address as default 
-        if(userAddress.length == 0){
-            defaultAddress = true;
-        }
+        // //make the first address as default 
+        // if(userAddress.length == 0){
+        //     defaultAddress = true;
+        // }
         //create a new address
         const newAddress = await userAddress.create({userId,addressType,defaultAddress,fullName,addressLine1,localityArea,cityTown,state,pinCode,country,mobileNumber});
 
@@ -32,6 +31,8 @@ exports.addUserAddress = async (req, res) =>{
             return res.status(400).json({message: "Address not created"
             });
         }
+        console.log("Address created : ", newAddress)
+        return res.status(200).json({message: "Address created", newAddress})
     }catch(error){
         console.log("Error in creating address: ", error);
         return res.status(500).json({message: "Internal server error"});
@@ -40,6 +41,7 @@ exports.addUserAddress = async (req, res) =>{
 
 exports.getUserAddress = async (req, res) =>{
     const {userId} =  req.params;
+    console.log("userId :", userId)
     try{
         //check if user exists
         const user = await User.findOne({where: {id: userId}});
@@ -65,8 +67,9 @@ exports.getUserAddress = async (req, res) =>{
 }
 
 
-exports.updateUserAddress = async (res, req) =>{
+exports.updateUserAddress = async (req, res) =>{
     const {addressId} = req.params;
+
     const {userId,addressType,defaultAddress,fullName,addressLine1,localityArea,cityTown,state,pinCode,country,mobileNumber} = req.body;
 
     try{
@@ -97,7 +100,7 @@ exports.updateUserAddress = async (res, req) =>{
 
 exports.setDefaultAddress = async (req, res) =>{
     const {addressId, userId} = req.params;
-
+console.log("addressId :",addressId, "UserId :", userId);
     try{
         //check if the address exixts
         const address = await userAddress.findOne({where: {addressId:addressId} && {userId:userId}});
@@ -122,6 +125,32 @@ exports.setDefaultAddress = async (req, res) =>{
 }
 
 
+exports.getDefaultAddress =  async(req, res) =>{
+    const {userId} = req.params;
+    try{
+    //check if the user exists or not
+    const user = await User.findOne({where: {id: userId}});
+    if(!user){
+        console.log("User not found :", userId);
+        return res.status(400).json({message: "User not found"});
+    }
+
+    //get the degault address
+    const defaultaddress = await userAddress.findOne({where:{userId: userId, defaultAddress: true}});
+    if(!defaultaddress){
+        console.log("Failed to get default address for user : ", userId);
+        return res.status(400).json({message: "Failed to get default address"});
+    }
+
+    console.log("Default address found");
+    return res.status(200).json({message: "default address found", defaultaddress});
+}catch(error){
+    console.log("Error in getting default address :", error);
+    return res.status(500).json({message: "Internal server error"});
+}
+}
+
+
 exports.deleteUserAddress = async (req, res) =>{
     const {addressId}= req.params;
     try{
@@ -140,7 +169,7 @@ exports.deleteUserAddress = async (req, res) =>{
         }
 
         console.log("Adddress deleted :", addressId);
-        return res.status(200).josn({message: "Address deleted"});
+        return res.status(200).json({message: "Address deleted"});
     }catch(error){
         console.log("error in deleting address : ", error);
         return res.status(500).json({message: "Internal server error"});
