@@ -1,36 +1,48 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/db');
-const Orders = require('./order');
+const Order = require('./order'); // Corrected from Orders to Order
 
-const OrderItems = sequelize.define('OrderItems',{
-    orderItemsId:{
+
+const OrderItem = sequelize.define('OrderItem', {
+    orderItemId: {  // Changed to PascalCase
         type: DataTypes.INTEGER,
         autoIncrement: true,
-        primaryKey:true,
+        primaryKey: true,
         allowNull: false,
     },
-    orderId:{
+    orderId: {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-            model: Orders,
+            model: Order, // Corrected from Orders to Order
             key: 'orderId'
-              }
+        }
     },
-    itemTitle:{
-        type:DataTypes.STRING,
-        allowNull:false,
+    minImage:{
+        type: DataTypes.STRING,
+        allowNull: false,
     },
-    itemQty:{
-        type: DataTypes.NUMBER,
-        allowNull:false,
+    itemTitle: {
+        type: DataTypes.STRING,
+        allowNull: false,
     },
-    itemPrice:{
+    itemQty: {
+        type: DataTypes.INTEGER, // Corrected Data Type
+        allowNull: false,
+    },
+    itemPrice: {
         type: DataTypes.FLOAT,
         allowNull: false,
         defaultValue: 0.0,
-    }
-})
+    },
+    itemColor: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
+   
+}, {
+    tableName: 'orderItems',
+    timestamps: true,
+});
 
-
-module.exports = OrderItems;
+module.exports = OrderItem;

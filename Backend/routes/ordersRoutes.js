@@ -1,17 +1,24 @@
 const express = require('express');
 const router = express.Router();
 const orderController = require('../controllers/ordersController');
+const razorpayTransistionController = require('../controllers/razorpayTransistionController');
 
 // Create a new order
-router.post('/orders', orderController.createOrder);
+router.post('/create-Order', orderController.createOrder);
+
+// Create a new order
+router.post('/capture-payment',razorpayTransistionController.capturePayment );
 
 // Get all orders
-router.get('/orders', orderController.getAllOrders);
+router.get('/get-All-Order', orderController.getAllOrders);
 
 // Get a single order by ID
-router.get('/orders/:id', orderController.getOrderById);
+router.get('/:id', orderController.getOrderById);
+
+// Get a single order by ID
+router.get('/update_order/:id', orderController.getOrderById);
 
 // Update order status
-router.patch('/orders/:id/status', orderController.updateOrderStatus);
+router.patch('/:id/status', orderController.updateOrderStatus);
 
 module.exports = router;

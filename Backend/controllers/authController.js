@@ -21,6 +21,34 @@ exports.register = async (req, res) =>{
 }
 
 
+exports.getUserById = async (req, res) => {
+  const { userId } = req.params;
+
+  if (!userId) {
+    console.log("User ID not provided in the request.");
+    return res.status(400).json({ message: "User ID not found" });
+  }
+
+  try {
+    const user = await User.findOne({ where: { id: userId } });
+
+    if (!user) {
+      console.log("User not found with the given ID:", userId);
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    console.log("User found:", user);
+    return res.status(200).json({ message: "User found", user :{
+      name: user.name,
+      email: user.email,
+      mobile: user.mobile
+    } });
+    
+  } catch (error) {
+    console.error("Error while fetching user:", error.message);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
 
 
 exports.getProfile = async (req, res) => {

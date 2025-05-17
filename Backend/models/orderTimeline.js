@@ -21,11 +21,12 @@ const OrderTimeline = sequelize.define('OrderTimeline',{
         type:DataTypes.STRING,
         allowNull:false,
     },
-    Date:{
-        type: DataTypes.DATE,
-        allowNull:false,
-        defaultValue: DataTypes.NOW,
-    }
+    date: {
+    type: DataTypes.DATE,
+    allowNull: false,
+    defaultValue: DataTypes.NOW,
+}
+
 })
 
 

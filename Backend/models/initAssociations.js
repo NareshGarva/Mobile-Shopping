@@ -8,6 +8,59 @@ const cartProducts = require('./cartProducts');
 const cartVarient = require('./cartVarient');
 const User = require('./user');
 const userAddress = require('./userAddress');
+const Order = require('./order');
+const OrderItems = require('./orderItems');
+const OrderTimeline = require('./orderTimeline');
+const OrderItemsVarient = require('./orderItemVarient');
+
+
+// ---------------------
+// cartProducts ↔ cartVarient
+// ---------------------
+OrderItems.hasMany(OrderItemsVarient, {
+  foreignKey: 'orderItemId',
+  onDelete: 'CASCADE',
+});
+OrderItemsVarient.belongsTo(OrderItems, {
+  foreignKey: 'orderItemId',
+});
+
+// ---------------------
+// User ↔ Order
+// ---------------------
+User.hasMany(Order, {
+  foreignKey: 'userId',
+  onDelete: 'CASCADE',
+});
+Order.belongsTo(User, {
+  foreignKey: 'userId',
+});
+
+
+// ---------------------
+// Order ↔ Items
+// ---------------------
+Order.hasMany(OrderItems, {
+  foreignKey: 'orderId',
+  onDelete: 'CASCADE',
+});
+OrderItems.belongsTo(Order, {
+  foreignKey: 'orderId',
+});
+
+
+// ---------------------
+// Order ↔ OrderTimeline
+// ---------------------
+Order.hasMany(OrderTimeline, {
+  foreignKey: 'orderId',
+  onDelete: 'CASCADE',
+});
+OrderTimeline.belongsTo(Order, {
+  foreignKey: 'orderId',
+});
+
+
 
 // ---------------------
 // Category ↔ Product
@@ -41,6 +94,7 @@ User.hasMany(cartProducts, {
 cartProducts.belongsTo(User, {
   foreignKey: 'userId', // Fixed
 });
+
 
 // ---------------------
 // cartProducts ↔ cartVarient
@@ -109,4 +163,8 @@ module.exports = {
   cartVarient,
   cartProducts,
   userAddress,
+  Order,
+  OrderItems,
+  OrderTimeline,
+  OrderItemsVarient,
 };
