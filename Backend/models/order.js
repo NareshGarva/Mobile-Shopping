@@ -76,6 +76,11 @@ razorpayPaymentId: {
   allowNull: true,
   defaultValue: null,
 },
+razorpaySignature: {
+  type: DataTypes.STRING,
+  allowNull: true,
+  defaultValue: null,
+},
 
 }, {
     tableName: 'orders', // Optional: if you want the table name to be lowercase

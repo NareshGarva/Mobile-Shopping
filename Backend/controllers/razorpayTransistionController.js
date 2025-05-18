@@ -3,8 +3,9 @@ const { Order, OrderTimeline } = require("../models/initAssociations");
 
 exports.capturePayment = async (req, res) => {
   try {
-    console.log("Function call");
+    console.log("Function call", req.body);
     const { orderId, paymentMethod, orderAmount } = req.body;
+
 
     if (!orderId || !orderAmount || !paymentMethod) {
       return res.status(400).json({ message: 'Invalid data provided.' });

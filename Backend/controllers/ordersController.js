@@ -216,14 +216,15 @@ exports.updateOrderDetails = async (req, res) => {
     orderStatus,
     paymentMethod,
     paymentStatus,
-    orderTrackingId,
-    orderTransactionId,
+    razorpayOrderId,
+    razorpayPaymentId,
+    razorpaySignature,
   } = req.body;
 
   try {
     const order = await Order.findByPk(orderId);
 
-    if (!order || order.status !== "Draft") {
+    if (!order || order.orderStatus !== "Draft") {
       return res.status(404).json({ message: "Draft Order not found." });
     }
 
@@ -235,8 +236,9 @@ exports.updateOrderDetails = async (req, res) => {
       orderStatus: orderStatus || "Processing",
       paymentMethod,
       paymentStatus,
-      orderTrackingId,
-      orderTransactionId,
+      razorpayOrderId,
+      razorpayPaymentId,
+      razorpaySignature,
     });
 
     // Add timeline entry

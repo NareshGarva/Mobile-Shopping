@@ -16,7 +16,7 @@ router.get('/get-All-Order', orderController.getAllOrders);
 router.get('/:id', orderController.getOrderById);
 
 // Get a single order by ID
-router.get('/update_order/:id', orderController.getOrderById);
+router.put('/update_order/:orderId', orderController.updateOrderDetails);
 
 // Update order status
 router.patch('/:id/status', orderController.updateOrderStatus);
