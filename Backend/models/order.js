@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/db');
 const User = require('./user');
-const UserAddress = require('./userAddress'); // Changed to PascalCase
+
 
 const Order = sequelize.define("Order", {
     orderId: {
@@ -48,24 +48,6 @@ const Order = sequelize.define("Order", {
         allowNull: false,
         defaultValue: 'Cash on Delivery',
     },
-    shippingAddressId: {
-        type: DataTypes.INTEGER,
-        allowNull: true,
-        defaultValue: null,
-        references: {
-            model: UserAddress,  // Changed to PascalCase
-            key: 'addressId',
-        }
-    },
-    billingAddressId: {
-        type: DataTypes.INTEGER,
-        allowNull: true,
-        defaultValue: null,
-        references: {
-            model: UserAddress,  // Changed to PascalCase
-            key: 'addressId',
-        }
-    },
 razorpayOrderId: {
   type: DataTypes.STRING,
   allowNull: true,
@@ -81,10 +63,14 @@ razorpaySignature: {
   allowNull: true,
   defaultValue: null,
 },
-
+trackId:{
+    type:DataTypes.STRING,
+    allowNull:true,
+    defaultValue: null
+}
 }, {
-    tableName: 'orders', // Optional: if you want the table name to be lowercase
-    timestamps: true, // Adds createdAt and updatedAt
+    tableName: 'orders',
+    timestamps: true,
 });
 
 module.exports = Order;

@@ -1,32 +1,22 @@
 
 const {
   User,
-   userAddress,
+  userAddress,
+   shippingAddress,
+   billingAddress,
   Order,
   OrderItems,
   OrderTimeline,
   OrderItemsVarient,
 } = require("../models/initAssociations");
+ 
 
 
 
 
-//    // Now create Razorpay order if paymentMethod is Online (or Razorpay)
-//     let razorpayOrder = null;
-//     if (paymentMethod === 'Online') {
-//       const options = {
-//         amount: Math.round(orderAmount * 100), // in paise
-//         currency: 'INR',
-//         receipt: `order_rcptid_${order.orderId}`,
-//         payment_capture: 1,
-//       };
 
-//       razorpayOrder = await razorpay.orders.create(options);
 
-//       // Save razorpayOrderId in your order record
-//       order.razorpayOrderId = razorpayOrder.id;
-//       await order.save();
-//     }
+
 
 
 
@@ -39,11 +29,12 @@ exports.createOrder = async (req, res) => {
         }
 
         const { userId, orderAmount, paymentStatus, shippingStatus, shippingAddressId, billingAddressId, orderTrackingId, orderTransactionId, items } = req.body;
-        console.log("the cart items: ",items);
+       
         // 📝 **No need for JSON.parse here**
         if (!Array.isArray(items)) {
             return res.status(400).json({ message: 'Items should be an array.' });
         }
+     
 
         // Create order
         const order = await Order.create({
@@ -114,6 +105,9 @@ exports.getAllOrders = async (req, res) => {
 
 //get all orders by user id 
 exports.getAllOrdersByUserId = async (req, res) => {
+    // Get the ID from request params
+        const { userId } = req.params;
+    console.log("user Id : ", userId)
     if(!userId){
         return res.status(400).json({message: 'Please provide user id.'});
     }
@@ -123,8 +117,26 @@ exports.getAllOrdersByUserId = async (req, res) => {
         if(!user){
             return res.status(400).json({message: 'User not found.'});
         }
+const orders = await Order.findAll({
+  where: { userId },
+  include: [
+    {
+      model: OrderItems,
+      include: [OrderItemsVarient]
+    },
+    {
+      model: OrderTimeline
+    },
+      {
+      model: billingAddress
+    },
+      {
+      model: shippingAddress
+    }
+  ]
+});
 
-        const orders = await Order.findAll({where: {userId: userId}});
+
 
         if(!orders){
             return res.status(400).json({message: 'No orders found.'});
@@ -228,11 +240,9 @@ exports.updateOrderDetails = async (req, res) => {
       return res.status(404).json({ message: "Draft Order not found." });
     }
 
-    // Update fields only when the order is in Draft status
+    // Update order
     await order.update({
       orderAmount,
-      shippingAddressId,
-      billingAddressId,
       orderStatus: orderStatus || "Processing",
       paymentMethod,
       paymentStatus,
@@ -241,9 +251,94 @@ exports.updateOrderDetails = async (req, res) => {
       razorpaySignature,
     });
 
-    // Add timeline entry
+    // Fetch shipping address from user's saved addresses
+    const shippingAddressData = await userAddress.findOne({
+      where: { addressId: shippingAddressId },
+    });
+
+    if (!shippingAddressData) {
+      return res.status(404).json({ message: "Shipping address not found." });
+    }
+
+    const {
+      addressType,
+      fullName,
+      addressLine1,
+      localityArea,
+      cityTown,
+      state,
+      pinCode,
+      country,
+      mobileNumber,
+    } = shippingAddressData;
+
+    // Create shipping address entry
+    await shippingAddress.create({
+      orderId,
+      addressType,
+      fullName,
+      addressLine1,
+      localityArea,
+      cityTown,
+      state,
+      pinCode,
+      country,
+      mobileNumber,
+    });
+
+    // Handle billing address
+    if (shippingAddressId === billingAddressId) {
+      // If both are same, copy shipping data
+      await billingAddress.create({
+        orderId,
+        addressType,
+        fullName,
+        addressLine1,
+        localityArea,
+        cityTown,
+        state,
+        pinCode,
+        country,
+        mobileNumber,
+      });
+    } else {
+      const billingAddressData = await userAddress.findOne({
+        where: { addressId: billingAddressId },
+      });
+
+      if (!billingAddressData) {
+        return res.status(404).json({ message: "Billing address not found." });
+      }
+
+      const {
+        addressType: billingType,
+        fullName: billingName,
+        addressLine1: billingLine1,
+        localityArea: billingLocality,
+        cityTown: billingCity,
+        state: billingState,
+        pinCode: billingPin,
+        country: billingCountry,
+        mobileNumber: billingMobile,
+      } = billingAddressData;
+
+      await billingAddress.create({
+        orderId,
+        addressType: billingType,
+        fullName: billingName,
+        addressLine1: billingLine1,
+        localityArea: billingLocality,
+        cityTown: billingCity,
+        state: billingState,
+        pinCode: billingPin,
+        country: billingCountry,
+        mobileNumber: billingMobile,
+      });
+    }
+
+    // Create timeline entry
     await OrderTimeline.create({
-      orderId: order.orderId,
+      orderId: orderId,
       label: "Order Purchased",
       date: new Date(),
     });
@@ -254,6 +349,6 @@ exports.updateOrderDetails = async (req, res) => {
     });
   } catch (error) {
     console.error("Error updating order:", error);
-    res.status(500).json({ message: "Internal server error." });
+    return res.status(500).json({ message: "Internal server error." });
   }
 };

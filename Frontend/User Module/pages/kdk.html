@@ -3,55 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Page</title>
+    <title>Document</title>
+    <link href="https://www.canva.com/design/DAGngPbs1ho/SKlfWI6f0hFunCDCX2sGDA/watch">
 </head>
 <body>
-    <h1>This is H1, you understand?</h1>
-
-    <script>
-        // Step 1: Declare the products array
-        let products = [];
-
-        // Step 2: Fetch products from the server
-        async function allProducts() {
-            try {
-                const res = await fetch('http://localhost:3000/api/product/all');
-                if (!res.ok) {
-                    alert("Product fetch failed");
-                    return [];
-                }
-                products = await res.json();
-                console.log("Inside try block:", products);
-            } catch (error) {
-                console.log(error);
-                alert("Error fetching products");
-            }
-        }
-
-        // Step 3: Call the function to fetch data
-        allProducts();
-
-        // Step 4: Polling check every 500ms to see if products are ready
-        const interval = setInterval(() => {
-            if (products.length > 0) {
-                console.log("🔥 Products are now globally accessible:", products);
-
-                // Optional: Call a function to render products
-                renderProducts(); 
-
-                // Step 5: Stop polling when data is ready
-                clearInterval(interval);
-            }
-        }, 500);
-
-        // Optional: Function to render products
-        function renderProducts() {
-            products.forEach((product, index) => {
-                console.log(`Product ${index + 1}:`, product);
-            });
-        }
-
-        
-    </script>
+    <div style="position: relative; width: 100%; height: 0; padding-top: 393.5578%;
+ padding-bottom: 0; box-shadow: 0 2px 8px 0 rgba(63,69,81,0.16); margin-top: 1.6em; margin-bottom: 0.9em; overflow: hidden;
+ border-radius: 8px; will-change: transform;">
+  <iframe loading="lazy" style="position: absolute; width: 100%; height: 100%; top: 0; left: 0; border: none; padding: 0;margin: 0;"
+    src="https://www.canva.com/design/DAGngPbs1ho/SKlfWI6f0hFunCDCX2sGDA/watch?embed" allowfullscreen="allowfullscreen" allow="fullscreen">
+  </iframe>
+</div>
+<a href="https:&#x2F;&#x2F;www.canva.com&#x2F;design&#x2F;DAGngPbs1ho&#x2F;SKlfWI6f0hFunCDCX2sGDA&#x2F;watch?utm_content=DAGngPbs1ho&amp;utm_campaign=designshare&amp;utm_medium=embeds&amp;utm_source=link" target="_blank" rel="noopener">Design</a> by Artifyr
 </body>
 </html>

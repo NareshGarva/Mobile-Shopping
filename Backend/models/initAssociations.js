@@ -12,6 +12,8 @@ const Order = require('./order');
 const OrderItems = require('./orderItems');
 const OrderTimeline = require('./orderTimeline');
 const OrderItemsVarient = require('./orderItemVarient');
+const shippingAddress = require('./shippingAddress');
+const billingAddress = require('./billingAddress');
 
 
 // ---------------------
@@ -60,7 +62,27 @@ OrderTimeline.belongsTo(Order, {
   foreignKey: 'orderId',
 });
 
+// ---------------------
+// Order ↔ shippingAddress
+// ---------------------
+Order.hasOne(shippingAddress, {
+  foreignKey: 'orderId',
+  onDelete: 'CASCADE',
+});
+shippingAddress.belongsTo(Order, {
+  foreignKey: 'orderId',
+});
 
+// ---------------------
+// Order ↔ billingAddress
+// ---------------------
+Order.hasOne(billingAddress, {
+  foreignKey: 'orderId',
+  onDelete: 'CASCADE',
+});
+billingAddress.belongsTo(Order, {
+  foreignKey: 'orderId',
+});
 
 // ---------------------
 // Category ↔ Product
@@ -167,4 +189,6 @@ module.exports = {
   OrderItems,
   OrderTimeline,
   OrderItemsVarient,
+  shippingAddress,
+  billingAddress
 };

@@ -3,7 +3,7 @@ const Admin = require('../models/admin'); // Sequelize model
 const PasswordReset = require('../models/passwordReset'); // Sequelize model
 const jwt = require('jsonwebtoken'); // jsonwebtoken for token generation
 const bcrypt = require('bcrypt'); // bcrypt for password hashing
-const transporterMail = require('../config/nodemailer'); // nodemailer for sending emails
+const sendMail = require('../utils/mailer'); // nodemailer for sending emails
 
 exports.register = async (req, res) =>{
   const {name, email, password} = req.body;
@@ -12,6 +12,38 @@ exports.register = async (req, res) =>{
 
   try{
     const user = await User.create({name, email, password:hashedPassword});
+
+     const mailResult = await sendMail(
+      `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Welcome to Mobile Shopping</title>
+  <style>
+    body { font-family: Arial, sans-serif; background-color: #f2f2f2; padding: 20px; }
+    .email-container { background-color: #ffffff; padding: 30px; border-radius: 8px; max-width: 600px; margin: auto; }
+    h2 { color: #001F55; }
+    p { font-size: 16px; }
+    .btn { display: inline-block; padding: 10px 20px; background-color:rgb(20, 20, 20); color: #fff; text-decoration: none; border-radius: 5px; margin-top: 20px; }
+  </style>
+</head>
+<body>
+  <div class="email-container">
+    <h2>Welcome to Mobile Shopping!</h2>
+    <p>Hello ${name},</p>
+    <p>Thank you for registering with us. We're excited to have you onboard.</p>
+    <p>Start exploring our services by visiting your dashboard.</p>
+    <a href="http://127.0.0.1:5500/Frontend/User%20Module/pages/Authentication.html" class="btn">Go to Dashboard</a>
+    <p>If you have any questions, feel free to contact our support team.</p>
+    <p>Best regards,<br>Team Mobile Shopping</p>
+  </div>
+</body>
+</html>
+`,
+      "Welcome to Mobile Shopping",
+      email
+    );
+
     res.json({message: "User registered successfully", user});
   }
   catch(error){
@@ -129,16 +161,15 @@ await PasswordReset.create({
 // Send email logic here (using nodemailer or similar)
 const resetLink = `http://127.0.0.1:5500/Frontend/admin%20module/Reset%20password.html?token=${Token}&time=${expiryTime}`;
 
-// Then send `resetLink` in the email
-const transporter = transporterMail;
+   const mailResult = await sendMail(
+      `<p>Click <a href="${resetLink}">here</a> to reset your password. This link expires in 10 minutes.</p>`,
+      "Reset your password",
+      email
+    );
 
-await transporter.sendMail({
-  from: '"Mobile Shopping" <demoaddress0123456@gmail.com>', // sender address
-  to: user.email,
-  subject: "Password Reset",
-  html: `<p>Click <a href="${resetLink}">here</a> to reset your password. This link expires in 10 minutes.</p>`
-});
-
+        if (!mailResult.success) {
+      return res.status(500).json({ message: "User registered but email failed", error: mailResult.error });
+    }
 res.status(200).json({ message: "Password reset link sent to your email." });
 
 };
@@ -177,6 +208,12 @@ exports.resetPassword = async (req, res) => {
     await User.update({ password: hashedPassword }, { where: { id: userId } });
 
     await PasswordReset.destroy({ where: { token } });
+
+    const mailResult = await sendMail(
+      `<p>Your Mobile shopping password reseted successfully, <a href="http://127.0.0.1:5500/Frontend/User%20Module/pages/account.html">Click here</a> to access you profile account.</p>`,
+      "Password reseted",
+      email
+    );
 
     res.status(200).json({ message: "Password reset successfully" });
 

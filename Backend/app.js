@@ -9,7 +9,8 @@ const categoryRoutes = require('./routes/categoryRoutes');
 const customerRoutes = require('./routes/customerRoutes');
 const cartRoutes = require('./routes/cartRoutes');
 const userAddressRoutes = require('./routes/userAddressRoutes');
-const orderRoutes = require('./routes/ordersRoutes')
+const orderRoutes = require('./routes/ordersRoutes');
+
 
 // Apply middleware BEFORE routes
 app.use(cors());
@@ -38,6 +39,7 @@ app.use('/api/address', userAddressRoutes);
 
 // orders  routes
 app.use('/api/order', orderRoutes);
+
 
 
 

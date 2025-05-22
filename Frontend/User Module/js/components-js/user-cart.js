@@ -153,8 +153,9 @@ export async function handleAddToCart(id, passedVariant = {}, passedQuantity) {
     const { variant: defaultVariant, color: defaultColor } = getDefaultVariant(product);
     finalVariant = defaultVariant;
     finalColor = defaultColor;
-  }
+  } 
   
+ 
     try{
       const res = await fetch("http://localhost:3000/api/cart/add-to-cart",{
 method: "POST",
@@ -340,7 +341,7 @@ async function loadCart() {
 
     // Assign fetched data to the cart
     cart = data.cartProducts;
-
+console.log("Cart items",cart);
   } catch (err) {
     console.error("Error loading cart:", err.message);
   }
@@ -353,19 +354,54 @@ async function loadCart() {
   updateCartTotal();    // Pass the cart as a parameter
 }
 
-// Add checkout event listener
-document.querySelector(".carCheckout").addEventListener("click", function() {
+
+
+
+// event listener for checkout btn.
+document.querySelector(".carCheckout").addEventListener("click", async function() {
   if (cart.length === 0) {
     showNotification("Your cart is empty");
     return;
   }
-  if(localStorage.getItem("session-expiry-time")< Date.now()){
+
+  console.log("the cart items : ",cart)
+  
+  if (localStorage.getItem("session-expiry-time") < Date.now()) {
     showNotification(`Please <a href="../pages/Authentication.html" style="color: red">Login</a> to proceed to checkout`, "error");
     return;
   }
-  // Redirect to checkout page or show checkout modal
-  window.location.href = "./Checkout.html";
+
+  try {
+    const userId = localStorage.getItem("user-access-id");
+
+    const draftOrder = await fetch('http://localhost:3000/api/order/create-Order', {
+      method: 'POST',
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        userId,
+        orderAmount: parseFloat(document.getElementById("cratTotal").innerText),
+        items: cart, // Directly passing the array, no need for stringify
+      }),
+    });
+
+    if (!draftOrder.ok) {
+      const errorData = await draftOrder.json();
+      console.log("Order can't be created. Error:", errorData.message || "Unknown error");
+      return;
+    }
+
+    const responseData = await draftOrder.json();
+    console.log("Order created successfully:", responseData);
+
+    // Redirect to checkout page or show checkout modal
+    window.location.href = window.location.href = `./Checkout.html?orderId=${responseData.order.orderId}`;
+  } catch (err) {
+    console.log("Error in creating order", err.message);
+  }
 });
+
 
 
 
