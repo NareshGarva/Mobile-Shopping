@@ -10,6 +10,7 @@ const customerRoutes = require('./routes/customerRoutes');
 const cartRoutes = require('./routes/cartRoutes');
 const userAddressRoutes = require('./routes/userAddressRoutes');
 const orderRoutes = require('./routes/ordersRoutes');
+const sendMailRoute = require('./routes/sendMailRoute');
 
 
 // Apply middleware BEFORE routes
@@ -39,6 +40,9 @@ app.use('/api/address', userAddressRoutes);
 
 // orders  routes
 app.use('/api/order', orderRoutes);
+
+// email  routes
+app.use('/api/email', sendMailRoute);
 
 
 

@@ -2,7 +2,7 @@ const razorpay = require('../config/razorpay');
 const { Order } = require("../models/initAssociations");
 const { validatePaymentVerification } = require('razorpay/dist/utils/razorpay-utils');
 const crypto = require("crypto");
-const sendMail = require('../utils/mailer'); // nodemailer for sending emails
+const {sendMail} = require('../utils/mailer'); // nodemailer for sending emails
 
 exports.capturePayment = async (req, res) => {
   try {
@@ -82,10 +82,11 @@ function verifySignature(order_id, payment_id, signature, secret) {
 
 
 exports.verifyPayment = async (req, res) => {
-  const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
+  const { email,orderId,razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
 
   const secret = process.env.MY_RAZORPAY_SECRET_KEY;
 
+  console.log("verification process start");
   try {
     // Step 1: Verify the signature
     const isValid = verifySignature(
@@ -95,7 +96,9 @@ exports.verifyPayment = async (req, res) => {
       secret
     );
 
+    console.log("process complete");
     if (!isValid) {
+      console.log("not valid");
       return res.status(400).json({ isValid: false, message: "Invalid signature" });
     }
 
@@ -105,10 +108,141 @@ exports.verifyPayment = async (req, res) => {
     if (
       payment.status === 'captured' &&
       payment.order_id === razorpay_order_id
-      // Optional: check payment.amount === yourExpectedAmount
     ) {
+
+console.log("getting in mail");
+
+       const mailResult = sendMail(
+      `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Order Confirmation</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
+    .container {
+      max-width: 500px;
+      margin: 80px auto;
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    h1 {
+      color: #28a745;
+    }
+    p {
+      font-size: 16px;
+      margin: 15px 0;
+    }
+    .order-id {
+      font-weight: bold;
+      color: #333;
+    }
+    .btn {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 10px 20px;
+      background-color: #001f55;
+      color: white;
+      text-decoration: none;
+      border-radius: 5px;
+    }
+    .btn:hover {
+      background-color: #004aad;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🎉 Thank You for Your Order!</h1>
+    <p>Your order has been successfully placed.</p>
+    <p class="order-id">Order ID: ${orderId}</p>
+    <p>You will receive a confirmation email shortly.</p>
+    <a href="index.html" class="btn">Continue Shopping</a>
+  </div>
+</body>
+</html>
+`,
+      "Order Payment Recived!",
+      email
+    );
+
+console.log("getting out from mail")
       return res.status(200).json({ isValid: true, message: "Payment verified successfully" });
     } else {
+         const mailResult = sendMail(
+      `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Order Failed</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #fff5f5;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
+    .container {
+      max-width: 500px;
+      margin: 80px auto;
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    h1 {
+      color: #dc3545;
+    }
+    p {
+      font-size: 16px;
+      margin: 15px 0;
+      color: #333;
+    }
+    .order-id {
+      font-weight: bold;
+      color: #000;
+    }
+    .btn {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 10px 20px;
+      background-color: #001f55;
+      color: white;
+      text-decoration: none;
+      border-radius: 5px;
+    }
+    .btn:hover {
+      background-color: #004aad;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>⚠️ Verification Failed</h1>
+    <p>We’re sorry! Your order could not be verified.</p>
+    <p class="order-id">Order ID: ${orderId} (this order may not be reflect in your account.)</p>
+    <p>Your payment was received successfully.</p>
+    <p>A full refund will be processed within 5–7 working days.</p>
+    <a href="support.html" class="btn">Contact Support</a>
+  </div>
+</body>
+</html>
+
+`,
+      "Order Verification Failed!",
+      email
+    );
       return res.status(400).json({ isValid: false, message: "Payment not captured or mismatched order" });
     }
 

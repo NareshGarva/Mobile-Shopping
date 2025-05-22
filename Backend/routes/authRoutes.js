@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { login, register, getProfile,getAdminProfile, adminLogin,forgotPassword,resetPassword,getUserById } = require('../controllers/authController');
+const { login, register, getProfile,getAdminProfile, adminLogin,forgotPassword,resetPassword,getUserById,updateUserById } = require('../controllers/authController');
 const authenticateToken = require('../middleware/authMiddleware');
 
 router.post('/login-user', login);
@@ -15,4 +15,5 @@ router.get('/deshboard', authenticateToken, getAdminProfile); // Protected route
 
 
 router.get('/get-user/:userId', getUserById); // Protected route
+router.put('/update-user', updateUserById); // Protected route
 module.exports = router;

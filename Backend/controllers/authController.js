@@ -69,7 +69,6 @@ exports.getUserById = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    console.log("User found:", user);
     return res.status(200).json({ message: "User found", user :{
       name: user.name,
       email: user.email,
@@ -78,6 +77,43 @@ exports.getUserById = async (req, res) => {
     
   } catch (error) {
     console.error("Error while fetching user:", error.message);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+
+exports.updateUserById = async (req, res) => {
+  if (!req.body) {
+    console.log("Updated body not provided");
+    return res.status(400).json({ message: "Body not provided" });
+  }
+
+  const { userId, name, email, mobile } = req.body;
+
+  try {
+    // First, check if user exists
+    const existingUser = await User.findOne({ where: { id: userId } });
+
+    if (!existingUser) {
+      console.log("User not found with the given ID:", userId);
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Update the user
+    await User.update(
+      { name, email, mobile },
+      { where: { id: userId } }
+    );
+
+    // Get the updated user data
+    const updatedUser = await User.findOne({ where: { id: userId } });
+
+    return res.status(200).json({
+      message: "User updated successfully"
+    });
+
+  } catch (error) {
+    console.error("Error while updating user:", error.message);
     return res.status(500).json({ message: "Internal server error" });
   }
 };

@@ -9,14 +9,7 @@ const {
   OrderTimeline,
   OrderItemsVarient,
 } = require("../models/initAssociations");
- 
-
-
-
-
-
-
-
+const sendMail = require('../utils/mailer'); // nodemailer for sending emails 
 
 
 
@@ -118,7 +111,7 @@ exports.getAllOrdersByUserId = async (req, res) => {
             return res.status(400).json({message: 'User not found.'});
         }
 const orders = await Order.findAll({
-  where: { userId },
+  where: { userId , orderStatus : "Complete"},
   include: [
     {
       model: OrderItems,
