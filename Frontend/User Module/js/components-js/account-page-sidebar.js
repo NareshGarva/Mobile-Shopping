@@ -1,14 +1,13 @@
 document.getElementById("accountPageHeader").innerHTML=`
-  <header class="px-3 py-2 border-bottom sticky-top bg-white">
+  <header class="px-3 py-2 border-bottom sticky-top bg-white d-flex align-items-center justify-content-between">
     <button id="mobilemenutogal" class="d-md-none" type="button">
       <img src="../assets/icons/menu-open.svg" alt="Open Menu" />
     </button>
     <a class="d-none d-md-flex align-items-center gap-2 logolink" href="../pages/index.html">
-    
       <img src="../assets/images/favicon.svg" alt="" style="width: 35px; height: 35px" />
       <span class="fs-6 fw-bold">Mobile Shopping</span>
     </a>
-    
+     <a class="border rounded p-1 px-3 text-decoration-none" href="http://127.0.0.1:5500/Frontend/User%20Module/pages/index.html"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-store-icon lucide-store"><path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7"/><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><path d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4"/><path d="M2 7h20"/><path d="M22 7v3a2 2 0 0 1-2 2a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 16 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 12 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 8 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 4 12a2 2 0 0 1-2-2V7"/></svg> Store</a>
   </header>
   
   <!-- Sidebar -->

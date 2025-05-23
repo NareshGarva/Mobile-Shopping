@@ -85,7 +85,19 @@ for (const item of items) {
 // Get all orders
 exports.getAllOrders = async (req, res) => {
     try {
-        const orders = await Order.findAll();
+        const orders = await Order.findAll({include: [{
+      model: OrderItems,
+      include: [OrderItemsVarient]
+    },
+    {
+      model: OrderTimeline
+    },
+      {
+      model: billingAddress
+    },
+      {
+      model: shippingAddress
+    }]});
        res.status(200).json({ message: "All orders list:", orders });
 
     } catch (error) {
@@ -111,7 +123,7 @@ exports.getAllOrdersByUserId = async (req, res) => {
             return res.status(400).json({message: 'User not found.'});
         }
 const orders = await Order.findAll({
-  where: { userId , orderStatus : "Complete"},
+  where: { userId},
   include: [
     {
       model: OrderItems,
@@ -189,20 +201,43 @@ exports.getOrderById = async (req, res) => {
 // Update order status
 exports.updateOrderStatus = async (req, res) => {
     try {
-        const { id, status } = req.body;
+        let { orderId, shippingStatus, trackId,paymentStatus,orderStatus } = req.body;
 
 
-        const order = await Order.findByPk(id);
+        const order = await Order.findByPk(orderId);
         if (!order) {
             return res.status(404).json({ message: 'Order not found.' });
         }
-
-        if (!['Pending', 'Processing', 'Shipped', 'Delivered', 'Cancelled'].includes(status)) {
-            return res.status(400).json({ message: 'Invalid order status.' });
+        
+    // Create timeline entry
+    await OrderTimeline.create({
+      orderId: orderId,
+      label: shippingStatus || paymentStatus || orderStatus,
+      date: new Date(),
+    });
+    
+        if(( shippingStatus || paymentStatus || orderStatus )=== "Cancelled"){
+paymentStatus = shippingStatus = orderStatus = "Cancelled";
         }
 
-        order.status = status;
-        await order.save();
+        if(shippingStatus=== "Delivered"){
+orderStatus = "Complete";
+paymentStatus = "Paid";
+        }
+
+        if(shippingStatus=== "Returned"){
+orderStatus = "Complete";
+paymentStatus = "Refunded";
+        }
+       
+        await order.update({
+          shippingStatus,
+          trackId: trackId,
+          orderStatus,
+          paymentStatus
+        });
+
+    
 
         res.status(200).json({ message: 'Order status updated successfully.', order });
     } catch (error) {
@@ -210,6 +245,8 @@ exports.updateOrderStatus = async (req, res) => {
         res.status(500).json({ message: 'Internal server error.' });
     }
 };
+
+
 
 
 exports.updateOrderDetails = async (req, res) => {

@@ -62,22 +62,22 @@
                 <div id="contactPage" class="">
                     <h2 class="text-center fw-bold">Contact Us</h2>
                     <p class="text-center">We would love to hear from you!</p>
-                    <form>
+                    <form id="contactForm">
                         <div class="mb-3">
                             <label class="form-label">Full Name</label>
-                            <input type="text" class="form-control" placeholder="Your name" required>
+                            <input id="fullName" type="text" class="form-control" placeholder="Your name" required>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Email</label>
-                            <input type="email" class="form-control" placeholder="your@mobilrshopping.com" required>
+                            <input id="Email" type="email" class="form-control" placeholder="your@mobilrshopping.com" required>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Subject</label>
-                            <input type="text" class="form-control" placeholder="Subject" required>
+                            <input id="Subject" type="text" class="form-control" placeholder="Subject" required>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Message</label>
-                            <textarea class="form-control" rows="4" placeholder="Write your message here..." required></textarea>
+                            <textarea id="Message" class="form-control" rows="4" placeholder="Write your message here..." required></textarea>
                         </div>
                         <button type="submit" class="btn btn-dark w-100">Send Message</button>
                     </form>
@@ -99,4 +99,32 @@
   <script src="../js/components-js/user-search.js" type="module" defer></script>
   <script src="../js/components-js/user-cart.js" defer></script>
   <script src="../js/components-js/user-footer-section.js" defer></script>
+
+  <script>
+    const form = document.getElementById('contactForm');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const email = document.getElementById('Email').value;
+      const subject = document.getElementById('Subject').value;
+      const message = document.getElementById('Message').value;
+      const fullName = document.getElementById('fullName').value;
+
+      try {
+        const response = await fetch('http://localhost:5000/api/send-mail', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ email, subject : fullName + subject, Message: message }),
+        });
+
+        const result = await response.json();
+        alert(result.message);
+      } catch (error) {
+        console.error('Error:', error);
+        alert('Failed to send mail');
+      }
+    });
+  </script>
 </html>

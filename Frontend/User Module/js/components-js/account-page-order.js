@@ -3,7 +3,7 @@ document.getElementById("accountPageOrders").innerHTML=`
       <div class="py-4 px-1">
         <div class="mb-4">
           <h4 class="fw-bold text-xl" style="color: #000">Your Orders</h4>
-          <p class="text-secondary">View and manage your all ordes here</p>
+          <p class="text-secondary">View and manage all your orders here</p>
         </div>
         
         <div>
@@ -39,360 +39,105 @@ document.getElementById("accountPageOrders").innerHTML=`
 
 
 
-    //Sample orders array 
-    const orders = [
-    {
-      id: "ORD-2024-1001",
-      status: "Delivered",
-      paymentStatus: "Paid",
-      total: "₹129.99",
-      date: "April 5, 2024",
-      transactionId: "TXN-987654",
-      trackId: "TRK123456789",
-      items: [
-        { name: "Wireless Headphones", qty: 1, price: "$89.99" },
-        { name: "Phone Case", qty: 2, price: "$19.99" },
-      ],
-      address: {
-        name: "John Doe",
-        street: "123 Main St",
-        city: "Anytown",
-        zip: "12345",
-        country: "USA",
-      },
-      paymentDetails: {
-        method: "Credit Card",
-        card: "**** **** **** 4242",
-        expiry: "04/25",
-      },
-      timeline: [
-        { label: "Order Placed", date: "April 5, 2024" },
-        { label: "Payment Received", date: "April 5, 2024" },
-        { label: "Processing", date: "April 6, 2024" },
-        { label: "Shipped", date: "April 7, 2024" },
-        { label: "Delivered", date: "April 10, 2024" },
-      ],
-    },
-    {
-      id: "ORD-2024-1002",
-      status: "Processing",
-      paymentStatus: "Pending",
-      total: "$54.00",
-      date: "April 8, 2024",
-      transactionId: "TXN-123456",
-      trackId: "TRK987654321",
-      items: [
-        { name: "Power Bank", qty: 1, price: "$49.00" },
-        { name: "USB Cable", qty: 1, price: "$5.00" },
-      ],
-      address: {
-        name: "Jane Smith",
-        street: "456 Park Lane",
-        city: "Metro City",
-        zip: "67890",
-        country: "India",
-      },
-      paymentDetails: {
-        method: "UPI",
-        card: "jane@upi",
-        expiry: "",
-      },
-      timeline: [
-        { label: "Order Placed", date: "April 8, 2024" },
-        { label: "Processing", date: "April 9, 2024" },
-      ],
-    },
-    {
-      id: "ORD-2024-1003",
-      status: "Shipped",
-      paymentStatus: "Paid",
-      total: "$299.00",
-      date: "April 6, 2024",
-      transactionId: "TXN-112233",
-      trackId: "TRK654321987",
-      items: [
-        { name: "Bluetooth Speaker", qty: 1, price: "$99.00" },
-        { name: "Smart Watch", qty: 1, price: "$200.00" },
-      ],
-      address: {
-        name: "Ali Khan",
-        street: "89 MG Road",
-        city: "Delhi",
-        zip: "110001",
-        country: "India",
-      },
-      paymentDetails: {
-        method: "Debit Card",
-        card: "**** **** **** 1111",
-        expiry: "06/26",
-      },
-      timeline: [
-        { label: "Order Placed", date: "April 6, 2024" },
-        { label: "Payment Received", date: "April 6, 2024" },
-        { label: "Shipped", date: "April 9, 2024" },
-      ],
-    },
-    {
-      id: "ORD-2024-1004",
-      status: "Cancelled",
-      paymentStatus: "Refunded",
-      total: "$79.99",
-      date: "April 3, 2024",
-      transactionId: "TXN-445566",
-      trackId: "",
-      items: [{ name: "Gaming Mouse", qty: 1, price: "$79.99" }],
-      address: {
-        name: "Priya Sharma",
-        street: "21 Residency Road",
-        city: "Bangalore",
-        zip: "560025",
-        country: "India",
-      },
-      paymentDetails: {
-        method: "Net Banking",
-        card: "",
-        expiry: "",
-      },
-      timeline: [
-        { label: "Order Placed", date: "April 3, 2024" },
-        { label: "Cancelled", date: "April 4, 2024" },
-        { label: "Refund Initiated", date: "April 5, 2024" },
-      ],
-    },
-    {
-      id: "ORD-2024-1005",
-      status: "Returned",
-      paymentStatus: "Refunded",
-      total: "$45.00",
-      date: "March 28, 2024",
-      transactionId: "TXN-998877",
-      trackId: "TRK147258369",
-      items: [{ name: "Tripod Stand", qty: 1, price: "$45.00" }],
-      address: {
-        name: "Ravi Patel",
-        street: "12 Civil Lines",
-        city: "Ahmedabad",
-        zip: "380001",
-        country: "India",
-      },
-      paymentDetails: {
-        method: "UPI",
-        card: "ravi@ybl",
-        expiry: "",
-      },
-      timeline: [
-        { label: "Order Placed", date: "March 28, 2024" },
-        { label: "Delivered", date: "April 2, 2024" },
-        { label: "Return Requested", date: "April 3, 2024" },
-        { label: "Refunded", date: "April 5, 2024" },
-      ],
-    },
-    {
-      id: "ORD-2024-1006",
-      status: "Delivered",
-      paymentStatus: "Paid",
-      total: "$119.00",
-      date: "April 1, 2024",
-      transactionId: "TXN-334455",
-      trackId: "TRK741852963",
-      items: [{ name: "Fitness Band", qty: 1, price: "$119.00" }],
-      address: {
-        name: "Meena Reddy",
-        street: "5 Lakeview Apartments",
-        city: "Hyderabad",
-        zip: "500081",
-        country: "India",
-      },
-      paymentDetails: {
-        method: "Credit Card",
-        card: "**** **** **** 9999",
-        expiry: "09/25",
-      },
-      timeline: [
-        { label: "Order Placed", date: "April 1, 2024" },
-        { label: "Shipped", date: "April 3, 2024" },
-        { label: "Delivered", date: "April 6, 2024" },
-      ],
-    },
-    {
-      id: "ORD-2024-1007",
-      status: "Processing",
-      paymentStatus: "Paid",
-      total: "$39.99",
-      date: "April 9, 2024",
-      transactionId: "TXN-778899",
-      trackId: "TRK963852741",
-      items: [{ name: "Laptop Sleeve", qty: 1, price: "$39.99" }],
-      address: {
-        name: "Aman Verma",
-        street: "7 Ring Road",
-        city: "Mumbai",
-        zip: "400001",
-        country: "India",
-      },
-      paymentDetails: {
-        method: "UPI",
-        card: "aman@paytm",
-        expiry: "",
-      },
-      timeline: [
-        { label: "Order Placed", date: "April 9, 2024" },
-        { label: "Processing", date: "April 10, 2024" },
-      ],
-    },
-    {
-      id: "ORD-2024-1008",
-      status: "Delivered",
-      paymentStatus: "Paid",
-      total: "$210.00",
-      date: "March 30, 2024",
-      transactionId: "TXN-564738",
-      trackId: "TRK321654987",
-      items: [{ name: "Tablet", qty: 1, price: "$210.00" }],
-      address: {
-        name: "Sara Ali",
-        street: "19 Airport Road",
-        city: "Chennai",
-        zip: "600027",
-        country: "India",
-      },
-      paymentDetails: {
-        method: "Debit Card",
-        card: "**** **** **** 2020",
-        expiry: "12/26",
-      },
-      timeline: [
-        { label: "Order Placed", date: "March 30, 2024" },
-        { label: "Payment Received", date: "March 30, 2024" },
-        { label: "Delivered", date: "April 4, 2024" },
-      ],
-    },
-    {
-      id: "ORD-2024-1009",
-      status: "Delivered",
-      paymentStatus: "Paid",
-      total: "$34.00",
-      date: "April 2, 2024",
-      transactionId: "TXN-332211",
-      trackId: "TRK789456123",
-      items: [{ name: "Phone Charger", qty: 2, price: "$17.00" }],
-      address: {
-        name: "Neha Gupta",
-        street: "24 City Center",
-        city: "Pune",
-        zip: "411001",
-        country: "India",
-      },
-      paymentDetails: {
-        method: "Net Banking",
-        card: "",
-        expiry: "",
-      },
-      timeline: [
-        { label: "Order Placed", date: "April 2, 2024" },
-        { label: "Shipped", date: "April 3, 2024" },
-        { label: "Delivered", date: "April 6, 2024" },
-      ],
-    },
-    {
-      id: "ORD-2024-1010",
-      status: "Processing",
-      paymentStatus: "Pending",
-      total: "$59.00",
-      date: "April 10, 2024",
-      transactionId: "",
-      trackId: "",
-      items: [
-        { name: "Wireless Mouse", qty: 1, price: "$29.00" },
-        { name: "Keyboard", qty: 1, price: "$30.00" },
-      ],
-      address: {
-        name: "Vikram Singh",
-        street: "88 Highway Street",
-        city: "Jaipur",
-        zip: "302001",
-        country: "India",
-      },
-      paymentDetails: {
-        method: "Cash on Delivery",
-        card: "",
-        expiry: "",
-      },
-      timeline: [{ label: "Order Placed", date: "April 10, 2024" }],
-    }, ];
-    
-    
-    // Function to display a list of orders in the specified container
-    function displayOrders(orderlist, containerId) {
-      
-      const container = document.getElementById(containerId);
-      container.innerHTML = ''; // Clear previous content
-      
-      if (orderlist.length === 0) {
-        container.innerHTML = '<p class="text-muted">No orders found.</p>';
+    let orders = null;
+
+   async function loadOrders(userId){
+    try{
+      const res =await fetch(`http://localhost:3000/api/order/get-All-Order/${userId}`,{
+        method: 'GET'
+      });
+
+      if(!res.ok){
+        console.log("error in fetching orders");
         return;
       }
-      
-      // Sort orders by date (newest first)
-      orderlist.sort((a, b) => new Date(b.date) - new Date(a.date));
-      
-      
-      
-      orderlist.forEach((order, index) => {
-        // Generate item list HTML
-        const itemsHTML = order.items
-          .map(
-            (item) => `
-        <div class="d-flex align-items-start justify-content-between mb-3">
-          <div class="me-2 d-flex align-items-start gap-2">
-            <div class="item-img"></div>
-            <div>
-              <p class="mb-1">${item.name}</p>
-              <p class="text-muted small mb-1">Qty: ${item.qty}</p>
-            </div>
-          </div>
-          <div class="item-details">
-            <strong>${item.price}</strong><br>
-            <a href="#" class="small">Buy Again</a>
+      const ordersData = await res.json();
+      orders = await ordersData.orders;
+
+
+      getLastThreeOrders(orders);
+      populateFilters(orders);
+      filterOrders(orders);
+    }catch(error){
+      console.log("Error in fetching orders :", error);
+      return;
+    }
+   }
+    
+
+   // Utility: Format ISO date to dd/mm/yyyy
+function formatDate(isoDateString) {
+  const dateObj = new Date(isoDateString);
+  const day = String(dateObj.getDate()).padStart(2, '0');
+  const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+  const year = dateObj.getFullYear();
+  return `${day}/${month}/${year}`;
+}
+
+// Main Function to Display Orders
+function displayOrders(orderlist, containerId) {
+  const container = document.getElementById(containerId);
+  container.innerHTML = ''; // Clear previous content
+
+  if (!orderlist || orderlist.length === 0) {
+    container.innerHTML = '<p class="text-muted">No orders found.</p>';
+    return;
+  }
+
+  // Sort orders by date (newest first)
+orderlist.sort((a, b) => new Date(b.orderDate) - new Date(a.orderDate));
+
+
+  orderlist.forEach((order, index) => {
+    const itemsHTML = order.OrderItems.map(item => `
+      <div class="d-flex align-items-start justify-content-between mb-3">
+        <div class="me-2 d-flex align-items-start gap-2">
+          <div class="item-img"><img src="${item.minImage}" alt="${item.itemTitle}"></div>
+          <div>
+            <p class="mb-1">${item.itemTitle}</p>
+            <p class="text-muted small mb-1">Qty: ${item.itemQty}</p>
           </div>
         </div>
-      `
-          )
-          .join("");
-        
-        // Generate timeline HTML
-        const timelineHTML = order.timeline
-          .map(
-            (t) => `
-        <li>${t.label} — <span class="text-muted">${t.date}</span></li>
-      `
-          )
-          .join("");
-        
-        // Create order card element
-        const card = document.createElement("div");
-        card.className = "mb-3 col";
-        
-        // Main order summary and offcanvas details
-        card.innerHTML = `
+        <div class="item-details">
+          <strong>₹${item.itemPrice}</strong>
+        </div>
+      </div>
+    `).join("");
+
+    const timelineHTML = order.OrderTimelines.map(t => `
+      <li>${t.label} — <span class="text-muted">${formatDate(t.date)}</span></li>
+    `).join("");
+
+    const card = document.createElement("div");
+    card.className = "mb-3 col";
+
+    const orderDetailsId = `details-${containerId}-${order.orderId}`;
+
+    card.innerHTML = `
       <div class="p-3 rounded-main border">
         <div class="d-flex align-items-center justify-content-between">
-          <p class="fw-bold">${order.id}</p>
-          <p class="d-flex align-items-center justify-content-center gap-1 rounded-pill px-2 status-${order.status} small"><img src="../assets/icons/${order.status}-icon.svg" alt="">${order.status}</p>
+          <p class="fw-bold">${order.orderId}</p>
+          <p class="d-flex align-items-center justify-content-center gap-1 rounded-pill px-2 status-${order.shippingStatus} small">
+            <img src="../assets/icons/${order.shippingStatus}-icon.svg" alt="">
+            ${order.shippingStatus}
+          </p>
         </div>
-        <p class="text-muted fs-6">${order.date}</p>
+        <p class="text-muted fs-6">${formatDate(order.orderDate)}</p>
         <div class="d-flex align-items-center justify-content-between">
-          <p class="text-muted">${order.items.length} items</p>
-          <p class="fw-bold">${order.total}</p>
+          <p class="text-muted">${order.OrderItems.length} items</p>
+          <p class="fw-bold">₹${order.orderAmount}</p>
         </div>
-        <!-- Button to open order details -->
-        <button class="btn-custom fw-normal text-main btn-hover-outline border mt-3 w-100 py-2 rounded-main" data-bs-toggle="offcanvas" href="#details-${containerId}-${order.id}" role="button" aria-controls="details-${containerId}-${order.id}">
+        <button class="btn-custom fw-normal text-main btn-hover-outline border mt-3 w-100 py-2 rounded-main"
+          data-bs-toggle="offcanvas"
+          href="#${orderDetailsId}"
+          role="button"
+          aria-controls="${orderDetailsId}">
           View Order Details
         </button>
       </div>
 
       <!-- Order details offcanvas -->
-      <div id="details-${containerId}-${order.id}" tabindex="1" class="offcanvas offcanvas-bottom w-100 h-100">
+      <div id="${orderDetailsId}" tabindex="-1" class="offcanvas offcanvas-bottom w-100 h-100">
         <div class="offcanvas-header bg-light-gray rounded-bottom d-block">
           <div class="d-flex justify-content-between align-items-center">
             <h5 class="offcanvas-title">Order details</h5>
@@ -401,29 +146,21 @@ document.getElementById("accountPageOrders").innerHTML=`
             </button>
           </div>
           <div>
-            <span class="badge payment-${order.paymentStatus} small">
-              Payment: ${order.paymentStatus}
-            </span>
+            <span class="badge payment-${order.paymentStatus} small">Payment: ${order.paymentStatus}</span>
           </div>
         </div>
 
-        <!-- Offcanvas body -->
         <div class="p-4 offcanvas-body overflow-auto">
           <div class="row mb-4">
-            <div class="col-sm-12 mb-3">
+            <div class="col-sm-12 col-md-6 mb-3">
               <p class="section-title mb-2 fw-bold">Order Summary</p>
-              <p class="mb-1">${order.items.length} items</p>
-              <p class="mb-1">Total : ${order.total}</p>
+              <p class="mb-1">${order.OrderItems.length} items</p>
+              <p class="mb-1">Total: ₹${order.orderAmount}</p>
             </div>
-            <div class="col-sm-12 mb-3">
+            <div class="col-sm-12 col-md-6 mb-3">
               <p class="section-title mb-2 fw-bold">Shipping Status</p>
-              <p class="mb-1">${order.status}</p>
+              <p class="mb-1">${order.shippingStatus}</p>
               <p class="small text-primary">Track Package (${order.trackId})</p>
-            </div>
-            <div class="col-sm-12 mb-3">
-              <p class="section-title fw-bold">Payment Status</p>
-              <p class="mb-1">${order.paymentStatus}</p>
-              <p class="mb-1 small text-muted">Transaction ID: ${order.transactionId}</p>
             </div>
           </div>
 
@@ -432,25 +169,34 @@ document.getElementById("accountPageOrders").innerHTML=`
               <p class="section-title fw-bold">Items</p>
               ${itemsHTML}
             </div>
-            <div class="col-md-6 mb-3">
+            ${order.shippingAddress ? ` <div class="col-md-3 mb-3">
               <p class="section-title fw-bold">Shipping Address</p>
-              <p class="mb-1">${order.address.name}</p>
-              <p class="mb-1">${order.address.street}</p>
-              <p class="mb-1">${order.address.city}, ${order.address.zip}</p>
-              <p class="mb-1">${order.address.country}</p>
+              <p class="mb-1">${order.shippingAddress.fullName}</p>
+              <p class="mb-1">${order.shippingAddress.addressLine1}</p>
+              <p class="mb-1">${order.shippingAddress.localityArea}</p>
+              <p class="mb-1">${order.shippingAddress.cityTown}, ${order.shippingAddress.pinCode}</p>
+              <p class="mb-1">${order.shippingAddress.state}, ${order.shippingAddress.country}</p>
+              <p class="mb-1">${order.shippingAddress.mobileNumber}</p>
             </div>
+            <div class="col-md-3 mb-3">
+              <p class="section-title fw-bold">Billing Address</p>
+              <p class="mb-1">${order.billingAddress.fullName}</p>
+              <p class="mb-1">${order.billingAddress.addressLine1}</p>
+              <p class="mb-1">${order.billingAddress.localityArea}</p>
+              <p class="mb-1">${order.billingAddress.cityTown}, ${order.billingAddress.pinCode}</p>
+              <p class="mb-1">${order.billingAddress.state}, ${order.billingAddress.country}</p>
+              <p class="mb-1">${order.billingAddress.mobileNumber}</p>
+            </div>` : ""}
+           
           </div>
 
           <div class="row">
             <div class="col-md-6 mb-3">
               <p class="section-title fw-bold">Payment Details</p>
-              <p class="mb-1">Method: ${order.paymentDetails.method}</p>
-              <p class="mb-1">Card: ${order.paymentDetails.card} ${
-      order.paymentDetails.expiry ? `(Expires: ${order.paymentDetails.expiry})` : ""
-    }</p>
+              <p class="mb-1">Method: ${order.paymentMethod}</p>
               <p class="mb-1">Status: ${order.paymentStatus}</p>
-              <p class="mb-1">Payment Date: ${order.date}</p>
-              <p class="mb-1">Transaction ID: ${order.transactionId}</p>
+              <p class="mb-1">Payment Date: ${formatDate(order.orderDate)}</p>
+              <p class="mb-1">Transaction ID: ${order.razorpayPaymentId}</p>
             </div>
             <div class="col-md-6 mb-3">
               <p class="section-title fw-bold">Order Timeline</p>
@@ -459,38 +205,80 @@ document.getElementById("accountPageOrders").innerHTML=`
           </div>
         </div>
 
-        <!-- Sticky footer buttons -->
-        <div class="sticky-footer bg-light-gray py-3 rounded-top">
-          <p class="small mb-2 text-center">Need help with this order? <a href="#">Contact Support</a></p>
+        <!-- Sticky footer -->
+        <div class="sticky-footer bg-light-gray py-3 rounded-top text-center">
+          <p class="small mb-2">Need help with this order? <a href="#">Contact Support</a></p>
           <div class="d-flex justify-content-center align-items-center gap-3">
-            <button class="btn bg-dark btn-sm text-white d-flex justify-content-center align-items-center gap-1"><img src="../assets/icons/download.svg" alt=""><span>Download Invoice</span></button>
-            <button class="btn border border-dark btn-sm d-flex justify-content-center align-items-center gap-1"><img src="../assets/icons/repeat.svg" alt=""><span>Reorder</span></button>
+            <button class="btn bg-dark btn-sm text-white download-invoice-btn d-flex justify-content-center align-items-center gap-1"
+              data-order-id="${order.orderId}">
+              <img src="../assets/icons/download.svg" alt=""><span>Download Invoice</span>
+            </button>
+            <!-- <button class="btn border border-dark btn-sm d-flex justify-content-center align-items-center gap-1"><img src="../assets/icons/repeat.svg" alt=""><span>Reorder</span></button> -->
           </div>
         </div>
       </div>
     `;
-        
-        container.appendChild(card); // Append card to container
-      });
+
+    container.appendChild(card);
+  });
+
+  // Attach download invoice button events
+  document.querySelectorAll('.download-invoice-btn').forEach(button => {
+    button.addEventListener('click', async () => {
+  try {
+    const orderId = button.getAttribute('data-order-id');
+    const response = await fetch(`http://localhost:3000/api/order/${orderId}/invoice`, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/pdf',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch invoice. Status: ${response.status}`);
     }
-    
+
+    const blob = await response.blob();
+    const url = window.URL.createObjectURL(blob);
+
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `invoice_${orderId}.pdf`;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+
+    window.URL.revokeObjectURL(url);
+    alert("Invoice downloaded!");
+  } catch (error) {
+    console.error("Download error:", error);
+    alert("Error downloading invoice. Please try again.");
+  }
+});
+
+  });
+}
+
     
     // Get the last 3 orders based on date
-    function getLastThreeOrders() {
+    function getLastThreeOrders(orders) {
+      
       const recentOrders = orders
         .slice() // Clone the array
         .sort((a, b) => new Date(b.date) - new Date(a.date)) // Sort newest first
         .slice(0, 3); // Take first 3
+       
       displayOrders(recentOrders, "lastThreeOrdersSection");
     }
     
     // Populate filter dropdowns based on unique status and payment values
-    function populateFilters() {
+    function populateFilters(orders) {
+   
       const statusSet = new Set();
       const paymentSet = new Set();
       
       orders.forEach(order => {
-        statusSet.add(order.status);
+        statusSet.add(order.shippingStatus);
         paymentSet.add(order.paymentStatus);
       });
       
@@ -516,34 +304,36 @@ document.getElementById("accountPageOrders").innerHTML=`
       });
     }
     
-    // Filter orders based on search and filter dropdowns
-    function filterOrders() {
-      const search = document.getElementById('searchInput').value.toLowerCase();
-      const status = document.getElementById('statusFilter').value;
-      const payment = document.getElementById('paymentFilter').value;
-      
-      const filtered = orders.filter(order => {
-        const matchesSearch = !search || (
-          order.id.toLowerCase().includes(search) ||
-          order.address.name.toLowerCase().includes(search) ||
-          order.items.some(item => item.name.toLowerCase().includes(search))
-        );
-        const matchesStatus = !status || order.status === status;
-        const matchesPayment = !payment || order.paymentStatus === payment;
-        return matchesSearch && matchesStatus && matchesPayment;
-      });
-      
-      displayOrders(filtered, "ordersSectionContainer");
-    }
+    function filterOrders(orders) {
+  const search = document.getElementById('searchInput').value.toLowerCase();
+  const status = document.getElementById('statusFilter').value;
+  const payment = document.getElementById('paymentFilter').value;
+
+  const filtered = orders.filter(order => {
+    const matchesSearch = !search || (
+      order.orderId.toString().toLowerCase().includes(search) ||
+      order.shippingAddress?.fullName?.toLowerCase().includes(search) ||
+      order.OrderItems?.some(item => item.itemTitle?.toLowerCase().includes(search))
+    );
+
+    const matchesStatus = !status || order.shippingStatus === status;
+    const matchesPayment = !payment || order.paymentStatus === payment;
+
+    return matchesSearch && matchesStatus && matchesPayment;
+  });
+
+  displayOrders(filtered, "ordersSectionContainer");
+}
+
     
+
+document.addEventListener('DOMContentLoaded', function(){
+const userId = localStorage.getItem("user-access-id");
+loadOrders(userId);
+
+
     // Add event listeners for real-time filtering
-    document.getElementById('searchInput').addEventListener('input', () => filterOrders());
-    document.getElementById('statusFilter').addEventListener('change', () => filterOrders());
-    document.getElementById('paymentFilter').addEventListener('change', () => filterOrders());
-  
-  
-  
-  // Initial lode the page
-  getLastThreeOrders();
-populateFilters();
-filterOrders();
+    document.getElementById('searchInput').addEventListener('input', () => filterOrders(orders));
+    document.getElementById('statusFilter').addEventListener('change', () => filterOrders(orders));
+    document.getElementById('paymentFilter').addEventListener('change', () => filterOrders(orders));
+});

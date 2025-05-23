@@ -24,7 +24,7 @@ router.put('/update_order/:orderId', orderController.updateOrderDetails);
 router.get('/get-All-Order/:userId', orderController.getAllOrdersByUserId);
 
 // Update order status
-router.patch('/:id/status', orderController.updateOrderStatus);
+router.put('/update/status', orderController.updateOrderStatus);
 
 router.post('/verify-payment', razorpayTransistionController.verifyPayment);
 router.get('/:orderId/invoice', generateInvoice.getInvoice);

@@ -175,7 +175,7 @@ async function renderAddresses(containerId) {
     // Store fetched addresses in global variable
     addresses = await response.json();
     addresses = await addresses.addresses || [];
-    console.log("Fetched addresses : ", addresses);
+ 
     // Get the container
     const addressContainer = document.getElementById(containerId);
     if (!addressContainer) {
@@ -333,7 +333,9 @@ async function renderDefaultAddresses() {
       return;
     }
 
-    const defaultAddress = await response.json();
+    const addressData = await response.json();
+    const defaultAddress = await addressData.defaultaddress;
+
     const dashboardContainer = document.getElementById("deshbordDefaultAddress");
     
     if (!dashboardContainer) {
