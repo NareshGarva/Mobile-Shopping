@@ -9,7 +9,7 @@ const {
   OrderTimeline,
   OrderItemsVarient,
 } = require("../models/initAssociations");
-const sendMail = require('../utils/mailer'); // nodemailer for sending emails 
+const {sendMail} = require('../utils/mailer'); // nodemailer for sending emails 
 
 
 
@@ -202,8 +202,6 @@ exports.getOrderById = async (req, res) => {
 exports.updateOrderStatus = async (req, res) => {
     try {
         let { orderId, shippingStatus, trackId,paymentStatus,orderStatus } = req.body;
-
-
         const order = await Order.findByPk(orderId);
         if (!order) {
             return res.status(404).json({ message: 'Order not found.' });
@@ -237,7 +235,100 @@ paymentStatus = "Refunded";
           paymentStatus
         });
 
-    
+        const user = await User.findByPk(order.userId);
+      
+     const mailResult = sendMail(
+      `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Order Status Update</title>
+  <style>
+    /* Fallback styles */
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+    }
+    table {
+      border-collapse: collapse;
+    }
+    img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+    }
+    .button {
+      background-color: #FED700;
+      color: #001F55;
+      padding: 12px 24px;
+      text-decoration: none;
+      border-radius: 5px;
+      display: inline-block;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body style="font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 0; margin: 0;">
+  <table width="100%" cellpadding="0" cellspacing="0">
+    <tr>
+      <td align="center">
+        <table width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; margin: 40px auto; padding: 20px; border-radius: 8px;">
+          <tr>
+            <td align="center" style="padding: 20px 0;">
+            ${shippingStatus === "Processing"? `<!-- Order Processing Email -->
+<h1 style="color: #FFA500;">Your Order is Being Processed 🛠️</h1>
+<p>Hello ${user.name},</p>
+<p>Your order <strong>#${orderId}</strong> is currently being processed. We're getting everything ready for you.</p>
+<p style="color: #FFA500; font-weight: bold;">Status: Processing</p>
+<a href="http://127.0.0.1:5500/Frontend/User%20Module/pages/account.html" style="background-color: #FFA500; color: #fff; padding: 10px 20px; text-decoration: none;">View Order</a>
+` : shippingStatus === "Shipped" ? `<!-- Order Shipped Email -->
+<h1 style="color: #1E90FF;">Your Order Has Been Shipped 🚚</h1>
+<p>Hello ${user.name},</p>
+<p>Great news! Your order <strong>#${orderId}</strong> has been shipped and is on its way to you.</p>
+<p style="color: #1E90FF; font-weight: bold;">Status: Shipped</p>
+<a href="http://sampleTrack.com/track-order/${trackId}" style="background-color: #1E90FF; color: #fff; padding: 10px 20px; text-decoration: none;">Track Shipment</a>
+` : shippingStatus === "Delivered" ? `<!-- Order Delivered Email -->
+<h1 style="color: #28a745;">Your Order Has Been Delivered 📦</h1>
+<p>Hello ${user.name},</p>
+<p>We’re happy to inform you that your order <strong>#${orderId}</strong> has been successfully delivered.</p>
+<p style="color: #28a745; font-weight: bold;">Status: Delivered</p>
+<a href="http://127.0.0.1:5500/Frontend/User%20Module/pages/post%20review.html" style="background-color: #28a745; color: #fff; padding: 10px 20px; text-decoration: none;">Give Feedback</a>
+` : shippingStatus === "Returned" ? `<!-- Order Returned Email -->
+<h1 style="color: #800080;">Your Order Has Been Returned 🔁</h1>
+<p>Hello ${user.name},</p>
+<p>Your order <strong>#${orderId}</strong> has been returned. If you have questions or want to reorder, we’re here to help.</p>
+<p>Our shipping partner will pickup the order as soon as, and your refund will be reflected in your account.</p>
+<p style="color: #800080; font-weight: bold;">Status: Returned</p>
+` : `<!-- Order Cancelled Email -->
+<h1 style="color: #DC3545;">Your Order Has Been Cancelled ❌</h1>
+<p>Hello ${user.name},</p>
+<p>We're sorry to inform you that your order <strong>#${orderId}</strong> has been cancelled. If this was a mistake or you have questions, please reach out to us.</p>
+<p style="color: #DC3545; font-weight: bold;">Status: Cancelled</p>
+`}
+            </td>
+          </tr>
+          <tr>
+            <td style="padding: 30px 0; text-align: center; font-size: 12px; color: #888888;">
+              If you have any questions, feel free to <a href="mailto:support@example.com" style="color: #001F55;">contact our support team</a>.
+              <br><br>
+              © 2025 Your Company Name, All rights reserved.
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
+
+`,
+      shippingStatus === "Processing" ? "🛠️ Your Order is Being Processed" :
+ shippingStatus === "Shipped" ? "🚚 Your Order is On the Way!" :
+ shippingStatus === "Delivered" ? "📦 Your Order Has Been Delivered!" :
+ shippingStatus === "Returned" ? "🔁 Your Order Has Been Returned" : "❌ Your Order Has Been Cancelled",
+      user.email
+    );
 
         res.status(200).json({ message: 'Order status updated successfully.', order });
     } catch (error) {

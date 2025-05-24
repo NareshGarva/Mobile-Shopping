@@ -1,105 +1,161 @@
 const PDFDocument = require('pdfkit');
 
 function generateInvoice(doc, order) {
-  const primaryColor = '#001F55';
-  const accentColor = '#FED700';
+  const margin = 50;
+  const pageWidth = doc.page.width - margin * 2;
 
   // Header
-  doc.fillColor(primaryColor).fontSize(22).text('Mobile Shopping', { align: 'left' });
-  doc.moveDown(0.5).fontSize(10).fillColor('gray').text('Invoice', { align: 'right' });
-  doc.moveDown(1);
+  doc.fontSize(20).font('Helvetica-Bold').fillColor('#2563eb')
+     .text('Mobile Shopping', margin, margin);
+  doc.fontSize(10).font('Helvetica').fillColor('#64748b')
+     .text('Premium Mobile Store & Services', margin, doc.y + 5);
+  doc.text('support@mobileshopping.com | +91-XXXXXXXXXX', margin, doc.y + 3);
 
-  // Order Info
-  doc.fillColor(primaryColor).fontSize(12).text(`Order ID: ${order.orderId}`, { continued: true })
-    .fillColor('black').text(`   |   Order Date: ${new Date(order.orderDate).toLocaleDateString()}`, { continued: true })
-    .text(`   |   Status: ${order.shippingStatus}`, { align: 'right' });
-  doc.moveDown(1);
+  // Invoice Title
+  doc.fontSize(16).font('Helvetica-Bold').fillColor('#1e293b')
+     .text('INVOICE', margin + pageWidth - 100, margin, { align: 'right' });
+  
+  doc.fontSize(10).font('Helvetica').fillColor('#64748b');
+  doc.text(`Invoice #: INV-${order.orderId || 'N/A'}`, margin + pageWidth - 100, doc.y + 5, { align: 'right' });
+  doc.text(`Date: ${new Date(order.orderDate).toLocaleDateString('en-IN')}`, margin + pageWidth - 100, doc.y + 3, { align: 'right' });
 
-  // Billing Address
-  const startY = doc.y;
+  doc.y = 150;
+
+  // Order Information
+  doc.fontSize(12).font('Helvetica-Bold').fillColor('#1e293b')
+     .text('ORDER INFORMATION', margin, doc.y);
+  
+  doc.fontSize(9).font('Helvetica').fillColor('#64748b');
+  const orderY = doc.y + 15;
+  doc.text(`Order ID: ${order.orderId}`, margin, orderY);
+  doc.text(`Status: ${order.shippingStatus}`, margin + 120, orderY);
+  doc.text(`Payment Method: ${order.paymentMethod}`, margin + 240, orderY);
+  doc.text(`Order Date: ${new Date(order.orderDate).toLocaleDateString('en-IN')}`, margin, orderY + 12);
+  doc.text(`Payment Status: ${order.paymentStatus}`, margin + 120, orderY + 12);
+
+  doc.y = orderY + 40;
+
+  // Addresses
   const billing = order.billingAddress || {};
   const shipping = order.shippingAddress || {};
 
-  doc.fillColor(accentColor).fontSize(12).text('Billing Address:', 50, startY);
-  doc.fillColor('black').fontSize(10)
-    .text(billing.fullName || '', 50)
-    .text(billing.addressLine1 || '')
-    .text(`${billing.localityArea || ''}, ${billing.cityTown || ''}`)
-    .text(`${billing.state || ''} - ${billing.pinCode || ''}`)
-    .text(billing.country || '')
-    .text('Mobile: ' + (billing.mobileNumber || 'N/A'));
+  const addressBlock = (title, addr, x) => {
+    doc.fontSize(12).font('Helvetica-Bold').fillColor('#1e293b')
+       .text(title, x, doc.y);
+    
+    doc.fontSize(9).font('Helvetica').fillColor('#64748b');
+    let addressY = doc.y + 15;
+    doc.text(addr.fullName || 'N/A', x, addressY);
+    doc.text(addr.addressLine1 || '', x, addressY + 12);
+    doc.text(addr.localityArea || '', x, addressY + 24);
+    doc.text(`${addr.cityTown || ''} ${addr.state || ''}`, x, addressY + 36);
+    doc.text(`PIN: ${addr.pinCode || ''}`, x, addressY + 48);
+    doc.text(`Mobile: ${addr.mobileNumber || ''}`, x, addressY + 60);
+  };
 
-  // Shipping Address
-  doc.fillColor(accentColor).fontSize(12).text('Shipping Address:', 320, startY);
-  doc.fillColor('black').fontSize(10)
-    .text(shipping.fullName || '', 320, startY + 15)
-    .text(shipping.addressLine1 || '')
-    .text(`${shipping.localityArea || ''}, ${shipping.cityTown || ''}`)
-    .text(`${shipping.state || ''} - ${shipping.pinCode || ''}`)
-    .text(shipping.country || '')
-    .text('Mobile: ' + (shipping.mobileNumber || 'N/A'));
+  const yStart = doc.y;
+  addressBlock('BILLING ADDRESS', billing, margin);
+  doc.y = yStart;
+  addressBlock('SHIPPING ADDRESS', shipping, margin + 250);
 
-  doc.moveDown(3);
+  doc.y = yStart + 90;
+doc.moveDown(3);
+  // Items Table
+  doc.fontSize(12).font('Helvetica-Bold').fillColor('#1e293b')
+     .text('ITEMS ORDERED', margin, doc.y);
+  doc.moveDown(0.8);
 
-  // Table Headers
+  // Table Header
   const tableTop = doc.y;
-  doc.fontSize(11).fillColor(accentColor)
-    .text('Item', 50, tableTop)
-    .text('Color', 280, tableTop)
-    .text('Qty', 350, tableTop, { width: 50, align: 'center' })
-    .text('Price', 410, tableTop, { width: 70, align: 'right' })
-    .text('Total', 480, tableTop, { width: 70, align: 'right' });
+  doc.rect(margin, tableTop, pageWidth, 25).fill('#f1f5f9').stroke('#e2e8f0');
+  
+  doc.fontSize(10).font('Helvetica-Bold').fillColor('#1e293b');
+  doc.text('DESCRIPTION', margin + 5, tableTop + 8);
+  doc.text('QTY', margin + 300, tableTop + 8, { width: 40, align: 'center' });
+  doc.text('UNIT PRICE', margin + 350, tableTop + 8, { width: 70, align: 'center' });
+  doc.text('AMOUNT', margin + 430, tableTop + 8, { width: 70, align: 'center' });
 
-  doc.moveDown(0.5).strokeColor(accentColor).moveTo(50, doc.y).lineTo(550, doc.y).stroke();
-
-  // Order Items
+  let currentY = tableTop + 25;
   let totalAmount = 0;
-  (order.OrderItems || []).forEach(item => {
-    const variant = item.OrderItemsVarient || {};
-    const itemTotal = item.itemPrice * item.itemQty;
-    totalAmount += itemTotal;
 
-    const y = doc.y + 10;
+  (order.OrderItems || []).forEach((item) => {
+    const variants = item.orderItemVarients || item.orderItemVarient || [];
+    const qty = item.itemQty || 1;
+    const price = item.itemPrice || 0;
+    const total = qty * price;
+    totalAmount += total;
 
-    if (item.minImage) {
-      try {
-        doc.image(item.minImage, 50, y - 5, { width: 50, height: 50, fit: [50, 50] });
-      } catch {}
+    const rowHeight = 35;
+    doc.rect(margin, currentY, pageWidth, rowHeight).stroke('#e2e8f0');
+
+    // Description
+    doc.fontSize(10).font('Helvetica-Bold').fillColor('#1e293b');
+    doc.text(item.itemTitle || 'Item', margin + 5, currentY + 5, { width: 280 });
+    
+    doc.fontSize(8).font('Helvetica').fillColor('#64748b');
+    let descY = currentY + 25;
+    
+    if (Array.isArray(variants)) {
+      const variantString = variants.map(v => `${v.label}: ${v.value}`).join(' • ');
+      if (variantString) {
+        doc.text(variantString, margin + 5, descY, { width: 280 });
+        descY += 10;
+      }
+    }
+    
+    if (item.itemColor) {
+      doc.text(`Color: ${item.itemColor}`, margin + 5, descY, { width: 280 });
     }
 
-    doc.fontSize(10).fillColor(primaryColor)
-      .text(item.itemTitle || 'Untitled', 110, y, { width: 80 });
+    // Quantity, Price, Total
+    doc.fontSize(10).font('Helvetica').fillColor('#1e293b');
+    doc.text(qty.toString(), margin + 300, currentY + 12, { width: 40, align: 'center' });
+    doc.text(`Rs. ${price.toFixed(2)}`, margin + 350, currentY + 12, { width: 70, align: 'center' });
+    doc.font('Helvetica-Bold');
+    doc.text(`Rs. ${total.toFixed(2)}`, margin + 430, currentY + 12, { width: 70, align: 'center' });
 
-    doc.rect(280, y + 15, 20, 20).fill(item.itemColor || '#ccc').stroke();
-
-    doc.fillColor('black')
-      .text(item.itemQty.toString(), 350, y + 15, { width: 50, align: 'center' })
-      .text(`₹${item.itemPrice.toFixed(2)}`, 410, y + 15, { width: 70, align: 'right' })
-      .text(`₹${itemTotal.toFixed(2)}`, 480, y + 15, { width: 70, align: 'right' });
-
-    doc.moveDown(4);
+    currentY += rowHeight;
   });
 
-  doc.strokeColor(accentColor).moveTo(350, doc.y).lineTo(550, doc.y).stroke();
+  // Totals
+  const taxRate = order.taxRate || 18;
+  const taxAmount = (totalAmount * taxRate) / 100;
+  const grandTotal = totalAmount + taxAmount;
 
-  // Grand Total
-  doc.fontSize(12).fillColor(primaryColor).text('Grand Total:', 350, doc.y + 5, { width: 100, align: 'right' })
-    .fillColor('black').text(`₹${totalAmount.toFixed(2)}`, 480, doc.y + 5, { width: 70, align: 'right' });
-  doc.moveDown(2);
+  currentY += 10;
+  const totalsX = margin + 300;
 
-  // Payment Details
-  doc.fontSize(11).fillColor(accentColor).text('Payment Method:', 50)
-    .fillColor('black').text(order.paymentMethod || 'N/A', 170, doc.y - 13);
+  doc.fontSize(10).font('Helvetica').fillColor('#64748b');
+  doc.text('Subtotal:', totalsX, currentY, { width: 90, align: 'right' });
+  doc.text(`Rs. ${totalAmount.toFixed(2)}`, totalsX + 100, currentY, { width: 70, align: 'right' });
 
-  doc.fillColor(accentColor).text('Payment Status:', 320)
-    .fillColor('black').text(order.paymentStatus || 'N/A', 430, doc.y - 13);
-  doc.moveDown(2);
+  doc.text(`GST (${taxRate}%):`, totalsX, currentY + 15, { width: 90, align: 'right' });
+  doc.text(`Rs. ${taxAmount.toFixed(2)}`, totalsX + 100, currentY + 15, { width: 70, align: 'right' });
 
-  // Footer
-  doc.fontSize(10).fillColor('gray')
-    .text('Thank you for shopping with Mobile Shopping!', { align: 'center' })
-    .moveDown(0.5)
-    .text('For any queries, contact support@mobikart.com', { align: 'center' });
+  doc.font('Helvetica-Bold').fillColor('#1e293b');
+  doc.text('GRAND TOTAL:', totalsX, currentY + 30, { width: 90, align: 'right' });
+  doc.text(`Rs. ${grandTotal.toFixed(2)}`, totalsX + 100, currentY + 30, { width: 70, align: 'right' });
+
+  //footer
+doc.moveDown(5);
+// Move cursor to the left margin first
+doc.x = margin;
+
+// Now write centered text in the available page width (pageWidth)
+doc.fontSize(11).font('Helvetica-Bold').fillColor('#2563eb')
+   .text('Thank you for choosing Mobile Shopping!', {
+     width: pageWidth,
+     align: 'left',
+   });
+
+// Similarly for other lines (you can remove margin x, just text with width)
+doc.fontSize(8).font('Helvetica').fillColor('#64748b');
+doc.text('Terms & Conditions:', { width: pageWidth });
+doc.text('• For support: support@mobileshopping.com | +91-XXXXXXXXXX', { width: pageWidth });
+doc.text('• Return policy: 15 days from delivery date', { width: pageWidth });
+
+
+  // return doc;
 }
 
 module.exports = generateInvoice;

@@ -26,9 +26,7 @@ exports.getInvoice = async (req, res) => {
       return res.status(404).send('Order not found');
     }
 
-    if (order.orderStatus !== 'Complete') {
-      return res.status(403).send('Invoice available only for completed orders');
-    }
+   
 
     res.setHeader('Content-Type', 'application/pdf');
     res.setHeader('Content-Disposition', `attachment; filename=invoice_${orderId}.pdf`);
