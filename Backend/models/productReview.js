@@ -27,6 +27,14 @@ const Review = sequelize.define('Review', {
             key: 'id'
         },
     },
+    orderId: {
+        type: DataTypes.INTEGER, 
+        allowNull: false,
+        references: {
+            model: Order,
+            key: 'orderId'
+        },
+    },
     name: {
         type: DataTypes.STRING,
         allowNull: false

@@ -8,8 +8,16 @@ window.handleAddToCart = handleAddToCart;
 // const allProducts = window.vivoProducts;
 
 // function to show star rating
-export function renderStars(rating) {
+export function renderStars(Review) {
+  let ratingSum = 0;
+  Review.forEach(review => {
+    ratingSum += review.rating;
+  });
+
+  const rating = ratingSum/Review.length;
+
   let starhtml = '';
+  console.log(rating)
   const full = Math.floor(rating);
   const hasHalf = rating % 1 >= 0.25 && rating % 1 < 0.75;
   const empty = 5 - full - (hasHalf ? 1 : 0);
@@ -104,7 +112,7 @@ export function displayProductCard(productContainerId, productsArray, btnstyle, 
           </div>
 
           <div class="truncate-title" title="${product.productTitle}">${product.productTitle}</div>
-                    <div class="rating text-warning">${renderStars(product.rating || 0)}</div>
+                    <div class="rating text-warning">${renderStars(product.Reviews)}</div>
               <p class="mb-1">
                 <span class="RVSellingPrice fw-bold">₹${product.sellingPrice}</span>
                 <small class="text-muted text-decoration-line-through ms-1">₹${product.originalPrice}</small>
@@ -153,7 +161,7 @@ if (productLink) {
           </div>
 
           <div class="" title="${product.productTitle}">${product.productTitle}</div>
-                    <div class="rating text-warning">${renderStars(product.rating || 0)}</div>
+                    <div class="rating text-warning">${renderStars(product.Reviews)}</div>
               <p class="mb-1">
                 <span class="RVSellingPrice fw-bold">₹${product.sellingPrice}</span>
                 <small class="text-muted text-decoration-line-through ms-1">₹${product.originalPrice}</small>

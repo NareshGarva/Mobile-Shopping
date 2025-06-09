@@ -47,7 +47,7 @@ async function initializePage(productId) {
     // Fetch product data
     product = await getProductById(productId);
     review(product);
-   
+   console.log("this is the product : ", product)
     // Handle product not found
     if (!product) {
       document.getElementById("userProductPageInfo").innerHTML = `
@@ -68,7 +68,7 @@ async function initializePage(productId) {
       category: productCategory = "",
       stock: productInStock = 0,
       rating: productRating = 0,
-      reviews: productReviews = [],
+      Reviews,
       mainImage = "",
       ProductImages = [],
       ProductSpecifications = {},
@@ -113,7 +113,7 @@ async function initializePage(productId) {
         <!-- Product Info -->
         <div class="product-info">
           <h2 class="product-title">${productTitle}</h2>
-          <div class="star-rating">${renderStars(productRating)}</div>
+          <div class="star-rating">${renderStars(Reviews)}</div>
 
           <p class="ProductDefaultVarientDisplay">
             <span style="display:block;color:#000">Selected Specifications:</span>

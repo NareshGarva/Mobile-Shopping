@@ -11,6 +11,7 @@ const cartRoutes = require('./routes/cartRoutes');
 const userAddressRoutes = require('./routes/userAddressRoutes');
 const orderRoutes = require('./routes/ordersRoutes');
 const sendMailRoute = require('./routes/sendMailRoute');
+const reviewRoute = require('./routes/reviewRoute');
 
 
 // Apply middleware BEFORE routes
@@ -43,6 +44,9 @@ app.use('/api/order', orderRoutes);
 
 // email  routes
 app.use('/api/email', sendMailRoute);
+
+// review  routes
+app.use('/api/review', reviewRoute);
 
 
 

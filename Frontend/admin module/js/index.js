@@ -98,6 +98,7 @@ const contentSections = {
   Categories: document.getElementById("Categories"),
   Coupons: document.getElementById("Coupons"),
   Customers: document.getElementById("Customers"),
+  Reviews: document.getElementById("Reviews"),
   logout: document.getElementById("logout"),
 };
 
