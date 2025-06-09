@@ -64,10 +64,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 </h2>
                 <p class="text-center text-muted">Based on ${totalReviews} reviews</p>
                 ${ratingBars}
-                <a class="RVwriteReviewBtn w-100 mt-3 d-flex align-items-center justify-content-center gap-3" id="writeReviewBtn" href="#">Write a Review</a>
-
+                ${authUserOrder()? `
+                <a class="RVwriteReviewBtn w-100 mt-3 d-flex align-items-center justify-content-center gap-3" id="writeReviewBtn" href="#">Write a Review</a>` : "Only authorised user can write review."}
               </div>
-
             </div>
           </div>
           ${reviewCards}
@@ -79,7 +78,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const reviewBtn = document.getElementById('writeReviewBtn');
     reviewBtn.addEventListener('click', function () {
 if (reviewBtn && productId) {
-    reviewBtn.href = `../pages/post review.html?id=${productId}`;
+    reviewBtn.href = `../pages/post review.html?product_id=${productId}`;
   }
     }
     );
@@ -87,9 +86,15 @@ if (reviewBtn && productId) {
 
 
 
+async function  authUserOrder() {
+  const res = await fetch(`http://localhost:3000/api/order/auth-order/${productName},${localStorage.getItem('user-access-id')}`,{
+    method: 'GET'
+  });
 
-    
-  
+  if(res.ok){
+    return true;
+  }
+}
   
     
 // Average rating calculator

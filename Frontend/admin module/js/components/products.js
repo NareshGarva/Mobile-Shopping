@@ -218,29 +218,6 @@ const renderTable = async () => {
 renderTable();
 
 
-// Get highest product ID number to set current ID counter
-// let currentId;
-// const initializeCurrentId = () => {
-//   if (products.length > 0) {
-//     let highestId = 0;
-//     products.forEach(product => {
-//       const idParts = product.id.split('-');
-//       if (idParts.length === 3) {
-//         const idNumber = parseInt(idParts[2]);
-//         if (!isNaN(idNumber) && idNumber > highestId) {
-//           highestId = idNumber;
-//         }
-//       }
-//     });
-//     currentId = highestId + 1;
-//   } else {
-//     currentId = 1;
-//   }
-// };
-
-// initializeCurrentId();
-
-
 
 
 // Initialize modal objects

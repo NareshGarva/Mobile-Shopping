@@ -1,20 +1,31 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/db');
+const Product = require('./product');
+const User = require('./user');
+const Order = require('./order');
 
 const Review = sequelize.define('Review', {
-    id: {
+    reviewId: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
         primaryKey: true
     },
     productId: {
-        type: DataTypes.INTEGER, // Because you're using product IDs like "VIVO-SM-001"
+        type: DataTypes.INTEGER, 
         allowNull: false,
         references: {
-            model: 'Products',
+            model: Product,
             key: 'id'
         },
         onDelete: 'CASCADE'
+    },
+   userId: {
+        type: DataTypes.INTEGER, 
+        allowNull: false,
+        references: {
+            model: User,
+            key: 'id'
+        },
     },
     name: {
         type: DataTypes.STRING,

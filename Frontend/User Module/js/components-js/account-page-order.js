@@ -209,11 +209,15 @@ orderlist.sort((a, b) => new Date(b.orderDate) - new Date(a.orderDate));
         <div class="sticky-footer bg-light-gray py-3 rounded-top text-center">
           <p class="small mb-2">Need help with this order? <a href="#">Contact Support</a></p>
           <div class="d-flex justify-content-center align-items-center gap-3">
-            <button class="btn bg-dark btn-sm text-white download-invoice-btn d-flex justify-content-center align-items-center gap-1"
+          ${order.shippingStatus === "Delivered" ? `<button class="btn bg-dark btn-sm text-white download-invoice-btn d-flex justify-content-center align-items-center gap-1"
               data-order-id="${order.orderId}">
               <img src="../assets/icons/download.svg" alt=""><span>Download Invoice</span>
-            </button>
-            <!-- <button class="btn border border-dark btn-sm d-flex justify-content-center align-items-center gap-1"><img src="../assets/icons/repeat.svg" alt=""><span>Reorder</span></button> -->
+            </button> <button class="btn bg-dark btn-sm text-white return-order-btn d-flex justify-content-center align-items-center gap-1"
+              data-order-id="${order.orderId}">
+              <img src="../assets/icons/Return.svg" alt=""><span>Return</span>
+            </button>`: order.shippingStatus === "Returned" ? "" : `
+             <button class="btn border border-dark btn-sm d-flex justify-content-center align-items-center gap-1 cancle-order-btn" data-order-id="${order.orderId}">Cancle order</button>`}
+           
           </div>
         </div>
       </div>
@@ -249,7 +253,6 @@ orderlist.sort((a, b) => new Date(b.orderDate) - new Date(a.orderDate));
     link.remove();
 
     window.URL.revokeObjectURL(url);
-    alert("Invoice downloaded!");
   } catch (error) {
     console.error("Download error:", error);
     alert("Error downloading invoice. Please try again.");
@@ -257,6 +260,56 @@ orderlist.sort((a, b) => new Date(b.orderDate) - new Date(a.orderDate));
 });
 
   });
+
+  document.querySelectorAll('.return-order-btn').forEach(button => {
+    button.addEventListener('click', async () => {
+  try {
+    const orderId = button.getAttribute('data-order-id');
+  const shippingStatus = "Returned"
+    const response = await fetch('http://localhost:3000/api/order/update/status', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ orderId, shippingStatus }),
+    });
+
+
+    if (!response.ok) {
+      throw new Error(`failed to return order`);
+    }
+location.reload();
+  } catch (error) {
+    console.error("error in returning in order", error);
+    alert("Error in return order. Please try again.");
+  }
+});
+
+  });
+
+  document.querySelectorAll('.cancle-order-btn').forEach(button => {
+    button.addEventListener('click', async () => {
+  try {
+    const orderId = button.getAttribute('data-order-id');
+  const orderStatus = "Cancelled"
+    const response = await fetch('http://localhost:3000/api/order/update/status', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ orderId, orderStatus }),
+    });
+
+
+    if (!response.ok) {
+      throw new Error(`failed to cancel order`);
+    }
+location.reload();
+  } catch (error) {
+    console.error("error in canceling in order", error);
+    alert("Error in cancel order. Please try again.");
+  }
+});
+
+  });
+
+  
 }
 
     

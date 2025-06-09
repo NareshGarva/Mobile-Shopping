@@ -3,14 +3,15 @@ const Review = require('../models/review');
 // Create a new review
 exports.createReview = async (req, res) => {
     try {
-        const { productId, name, rating, comment, date } = req.body;
+        const { productId, userId, name, rating, comment, date } = req.body;
 
         const review = await Review.create({
             productId,
+            userId,
             name,
             rating,
             comment,
-            date: date || new Date()  // fallback to current date
+            date: date || new Date()  
         });
 
         res.status(201).json(review);
@@ -18,6 +19,7 @@ exports.createReview = async (req, res) => {
         res.status(500).json({ error: 'Failed to create review', details: error.message });
     }
 };
+
 
 // Get all reviews for a product
 exports.getReviewsByProductId = async (req, res) => {
@@ -35,6 +37,7 @@ exports.getReviewsByProductId = async (req, res) => {
         res.status(500).json({ error: 'Failed to fetch reviews', details: error.message });
     }
 };
+
 
 // Update a review by review ID
 exports.updateReview = async (req, res) => {
@@ -56,6 +59,7 @@ exports.updateReview = async (req, res) => {
         res.status(500).json({ error: 'Failed to update review', details: error.message });
     }
 };
+
 
 // Delete a review by review ID
 exports.deleteReview = async (req, res) => {

@@ -44,10 +44,6 @@
         <input type="text" class="form-control" id="username" placeholder="Enter your name" required>
       </div>
       <div class="mb-3">
-        <label for="reviewTitle" class="form-label">Review Title</label>
-        <input type="text" class="form-control" id="reviewTitle" placeholder="Enter review title" required>
-      </div>
-      <div class="mb-3">
         <label for="reviewText" class="form-label">Your Review</label>
         <textarea class="form-control" id="reviewText" rows="3" placeholder="Write your review here..." required></textarea>
       </div>
@@ -55,33 +51,35 @@
     </form>
   </div>
 
-  <!-- Load review array before main script -->
-  <script src="../js/review.js" type="module"></script>
-
-<script type="module">
-  import productReviews from "../js/review.js";
-
-  const urlParams = new URLSearchParams(window.location.search);
-  const productId = urlParams.get("id");
-
-  if (!productId) {
-    alert("No product selected to review.");
-    window.location.href = "product.html"; // fallback
+<script>
+  // Fetch products from the server
+async function getProductById(productId) {
+  try {
+    const res = await fetch(`http://localhost:3000/api/product/${productId}`);
+    if (!res.ok) {
+      throw new Error("Product fetch failed");
+    }
+    const product = await res.json(); 
+    return product;
+  } catch (error) {
+    console.error("Error fetching product:", error);
+    return null;
   }
+}
 
-  // Find the product object
-  const product = productReviews.find(p => p.productId === productId);
-
-  if (!product) {
-    alert("Product not found in reviews array.");
-
-  }
-
-  document.getElementById("reviewForm").addEventListener("submit", function (e) {
+async function authOrderProduct(product){
+   const res = await fetch(`http://localhost:3000/api/order/auth-order/${product.productTitle}/${localStorage.getItem('user-access-id')}`, {
+      method: 'GET'
+    });
+    const data = await res.json();
+   const order = await data.data;
+   console.log(order)
+   
+   
+    document.getElementById("reviewForm").addEventListener("submit", function (e) {
     e.preventDefault();
 
     const username = document.getElementById("username").value.trim();
-    const reviewTitle = document.getElementById("reviewTitle").value.trim();
     const reviewText = document.getElementById("reviewText").value.trim();
     const rating = document.querySelector('input[name="rating"]:checked')?.value;
 
@@ -94,19 +92,35 @@
       name: username,
       rating: parseInt(rating),
       comment: reviewText,
-      title: reviewTitle,
-      date: new Date().toISOString().split('T')[0] // YYYY-MM-DD
     };
 
-    if (product) {
-      product.reviews.push(newReview); // PUSH INTO reviews ARRAY INSIDE PRODUCT
-     
-      alert("Thank you for your review!");
-      this.reset();
-    } else {
-      alert("Error: Product not found.");
-    }
+    const addReview = fetch(``)
   });
+
+
+
+}
+
+
+  
+  
+
+
+ 
+document.addEventListener("DOMContentLoaded",async () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const productId = urlParams.get("product_id");
+  if (!productId) {
+    alert("No product selected to review.");
+    window.location.href = "product.html"; // fallback
+  }
+
+const product = await getProductById(productId);
+if(!product){
+  alert("product not found")
+}
+  const isAuth = authOrderProduct(product);
+})
 </script>
 </body>
 </html>

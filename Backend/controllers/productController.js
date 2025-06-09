@@ -1,5 +1,5 @@
 const { where } = require('sequelize');
-const { Product, ProductColor, ProductSize, ProductSpecification, ProductImage,Category } = require('../models/initAssociations');
+const { Product, ProductColor, ProductSize, ProductSpecification, ProductImage, productReviews} = require('../models/initAssociations');
 const { deleteFromCloudinary } = require('../utils/deleteFromCloudinary.Util'); 
 
 
@@ -195,7 +195,8 @@ exports.getAllProducts = async (req, res) => {
         ProductColor, 
         ProductSize, 
         ProductSpecification, 
-        ProductImage
+        ProductImage,
+        productReviews
       ]
     });
     res.status(200).json(products);
@@ -217,7 +218,7 @@ exports.getProductById = async (req, res) => {
       const { id } = req.params;
 
       const product = await Product.findByPk(id, {
-          include: [ProductColor, ProductSize, ProductSpecification, ProductImage]
+          include: [ProductColor, ProductSize, ProductSpecification, ProductImage,productReviews]
       });
 
       if (!product) {

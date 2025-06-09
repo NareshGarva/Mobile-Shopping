@@ -14,6 +14,7 @@ const OrderTimeline = require('./orderTimeline');
 const OrderItemsVarient = require('./orderItemVarient');
 const shippingAddress = require('./shippingAddress');
 const billingAddress = require('./billingAddress');
+const productReviews = require('./productReview');
 
 
 // ---------------------
@@ -171,6 +172,37 @@ ProductSize.belongsTo(Product, { foreignKey: 'productId' });
 ProductSpecification.belongsTo(Product, { foreignKey: 'productId' });
 ProductImage.belongsTo(Product, { foreignKey: 'productId' });
 
+
+
+
+// ---------------------
+// Product ↔ Review
+// ---------------------
+
+Product.hasMany(productReviews,{
+  foreignKey: 'productId',
+  onDelete: 'CASCADE',
+});
+productReviews.belongsTo(Product,{
+  foreignKey: 'productId',
+})
+
+
+// ---------------------
+// Product ↔ Review
+// ---------------------
+
+User.hasMany(productReviews,{
+  foreignKey: 'userId',
+});
+productReviews.belongsTo(User,{
+  foreignKey: 'userId',
+})
+
+
+
+
+
 // ---------------------
 // Export Models
 // ---------------------
@@ -190,5 +222,6 @@ module.exports = {
   OrderTimeline,
   OrderItemsVarient,
   shippingAddress,
-  billingAddress
+  billingAddress,
+  productReviews
 };

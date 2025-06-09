@@ -341,7 +341,6 @@ async function loadCart() {
 
     // Assign fetched data to the cart
     cart = data.cartProducts;
-console.log("Cart items",cart);
   } catch (err) {
     console.error("Error loading cart:", err.message);
   }

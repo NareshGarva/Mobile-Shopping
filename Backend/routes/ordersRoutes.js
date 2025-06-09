@@ -28,6 +28,7 @@ router.put('/update/status', orderController.updateOrderStatus);
 
 router.post('/verify-payment', razorpayTransistionController.verifyPayment);
 router.get('/:orderId/invoice', generateInvoice.getInvoice);
+router.get('/auth-order/:productTitle/:userId', orderController.authOrder);
 
 module.exports = router;
  

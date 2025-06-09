@@ -1,4 +1,5 @@
 
+const { where } = require("sequelize");
 const {
   User,
   userAddress,
@@ -471,5 +472,33 @@ exports.updateOrderDetails = async (req, res) => {
   } catch (error) {
     console.error("Error updating order:", error);
     return res.status(500).json({ message: "Internal server error." });
+  }
+};
+
+
+
+exports.authOrder = async (req, res) => {
+  const { productTitle, userId } = req.params;
+
+  if (!productTitle || !userId) {
+    return res.status(400).json({ message: 'Product title or user ID not provided' });
+  }
+  try {
+    const isauth = await Order.findOne({
+      where: { userId, shippingStatus: 'Delivered'},
+      include: [{
+        model: OrderItems,
+        where: { itemTitle: productTitle }
+      }]
+    });
+
+    if (!isauth) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+
+    return res.status(200).json({ message: "Order found", data: isauth });
+  } catch (error) {
+    console.log("this is the error: ", error);
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
