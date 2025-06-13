@@ -12,6 +12,7 @@ const userAddressRoutes = require('./routes/userAddressRoutes');
 const orderRoutes = require('./routes/ordersRoutes');
 const sendMailRoute = require('./routes/sendMailRoute');
 const reviewRoute = require('./routes/reviewRoute');
+const couponRoute = require('./routes/couponCodesRoutes');
 
 
 // Apply middleware BEFORE routes
@@ -47,6 +48,9 @@ app.use('/api/email', sendMailRoute);
 
 // review  routes
 app.use('/api/review', reviewRoute);
+
+// coupon  routes
+app.use('/api/coupon', couponRoute);
 
 
 

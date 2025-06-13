@@ -3,15 +3,18 @@ const router = express.Router();
 const couponController = require('../controllers/couponCodesController');
 
 // Create a new coupon
-router.post('/coupons', couponController.createCoupon);
+router.post('/add/coupons', couponController.createCoupon);
 
 // Apply a coupon to an order
-router.post('/coupons/apply', couponController.applyCoupon);
+router.post('/apply', couponController.applyCoupon);
 
 // Get all coupons
-router.get('/coupons', couponController.getAllCoupons);
+router.get('/get-all/coupons', couponController.getAllCoupons);
 
-// Deactivate a specific coupon by code
-router.patch('/coupons/deactivate/:code', couponController.deactivateCoupon);
+// update a specific coupon by code
+router.put('/update/coupons', couponController.updateCoupon);
+
+// delete coupon by id
+router.delete('/coupons/delete/:id', couponController.deleteCoupon);
 
 module.exports = router;

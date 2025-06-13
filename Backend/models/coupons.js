@@ -13,15 +13,8 @@ const Coupon = sequelize.define('Coupon', {
     unique: true,
   },
   expiry: {
-    type: DataTypes.DATE,
+    type: DataTypes.STRING,
     allowNull: true,
-    validate: {
-      isFutureDate(value) {
-        if (value && new Date(value) <= new Date()) {
-          throw new Error('Expiry date must be in the future.');
-        }
-      }
-    }
   },
   discountType: {
     type: DataTypes.ENUM('Fixed', 'Percentage'), 
