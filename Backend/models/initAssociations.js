@@ -15,6 +15,7 @@ const OrderItemsVarient = require('./orderItemVarient');
 const shippingAddress = require('./shippingAddress');
 const billingAddress = require('./billingAddress');
 const productReviews = require('./productReview');
+const recentlyViewed = require('./recentlyViewed');
 
 
 // ---------------------
@@ -201,6 +202,31 @@ productReviews.belongsTo(User,{
 
 
 
+// ---------------------
+// User ↔ recentlyViewed
+// ---------------------
+
+User.hasMany(recentlyViewed,{
+  foreignKey: 'userId',
+  onDelete :'CASCADE'
+});
+recentlyViewed.belongsTo(User,{
+  foreignKey: 'userId',
+})
+
+
+
+// ---------------------
+// User ↔ recentlyViewed
+// ---------------------
+
+Product.hasMany(recentlyViewed,{
+  foreignKey: 'productId',
+  onDelete :'CASCADE'
+});
+recentlyViewed.belongsTo(Product,{
+  foreignKey: 'productId',
+})
 
 
 // ---------------------
@@ -223,5 +249,6 @@ module.exports = {
   OrderItemsVarient,
   shippingAddress,
   billingAddress,
-  productReviews
+  productReviews,
+  recentlyViewed
 };

@@ -207,6 +207,38 @@ exports.getAllProducts = async (req, res) => {
 
 
 
+// Get All Products by category
+exports.getAllProductsByCat = async (req, res) => {
+  const { category } = req.params;
+  console.log("Requested category:", category);
+
+  try {
+    const products = await Product.findAll({
+      where: { category },
+      include: [
+        ProductColor,
+        ProductSize,
+        ProductSpecification,
+        ProductImage,
+        productReviews
+      ]
+    });
+
+    if (!products || products.length === 0) {
+      return res.status(404).json({ message: "No products found in this category." });
+    }
+
+    console.log("Products found:", products.length);
+    return res.status(200).json(products);
+
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    return res.status(500).json({ message: 'Error fetching products', error });
+  }
+};
+
+
+
 
 
 
