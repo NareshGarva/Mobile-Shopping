@@ -1,11 +1,6 @@
-// importing the products array from another fiel 
-// import vivoProducts from "./products.js";
-
 import {handleAddToCart} from "./components-js/user-cart.js";
 window.handleAddToCart = handleAddToCart;
 
-
-// const allProducts = window.vivoProducts;
 
 // function to show star rating
 export function renderStars(Review) {
@@ -17,7 +12,6 @@ export function renderStars(Review) {
   const rating = ratingSum/Review.length;
 
   let starhtml = '';
-  console.log(rating)
   const full = Math.floor(rating);
   const hasHalf = rating % 1 >= 0.25 && rating % 1 < 0.75;
   const empty = 5 - full - (hasHalf ? 1 : 0);
@@ -39,17 +33,14 @@ export function renderStars(Review) {
 }
 
   
-export function checkInStock(id) {
-  const product = vivoProducts.find(p => p.id === id);
-  if (!product) return false;
-  return product.stock > 0;
+export function checkInStock(stock) {
+  return stock > 0;
 }
 
 
 
 //to display products in card
 export function displayProductCard(productContainerId, productsArray, btnstyle, cardstyle) {
-  console.log("display products in card : ",productsArray );
   const productContainer = document.getElementById(productContainerId);
   productContainer.innerHTML = ""; // Clear previous content
   
@@ -97,6 +88,7 @@ export function displayProductCard(productContainerId, productsArray, btnstyle, 
     
     productsArray.map(
       (product) => {
+        
         const productCardswiper = document.createElement("div");
         productCardswiper.className = "swiper-slide";
         
@@ -119,7 +111,7 @@ export function displayProductCard(productContainerId, productsArray, btnstyle, 
               </p>
               
 </div>
-           ${generateButtons(product.id, (btnstyle))}
+           ${generateButtons(product.id,product.stock, (btnstyle))}
 
         </div>
   `;
@@ -168,7 +160,7 @@ if (productLink) {
               </p>
               </div>
 
-           ${generateButtons(product.id, (btnstyle))}
+           ${generateButtons(product.id,product.stock, (btnstyle))}
 
         </div>
       `;
@@ -187,14 +179,14 @@ if (productLink) {
 
 
 // Button Generator
-function generateButtons(id, style) {
+function generateButtons(id,stock, style) {
   
   if (style == 1) {
     return `
       <div class="product-actions mt-3 d-flex justify-content-between gap-1">
-        <a onclick="viewProduct('${id}')" href="/product-details.html?id=${id}" class="btn btn-sm bg-dark text-white w-100">View details</a>
-        ${checkInStock(id)?
-       `<button class="btn btn-sm btn-outline-dark" onclick="handleAddToCart('${id}')">
+        <a onclick="viewProduct('${id}')" href="product-details.html?id=${id}" class="btn btn-sm bg-dark text-white w-100">View details</a>
+        ${checkInStock(stock)?
+       `<button class="btn btn-sm btn-outline-dark" onclick="handleAddToCart(${id}, '',1)">
           <img src="../assets/icons/pCart.svg">
         </button>` :        `<button class="btn btn-sm btn-outline-dark notify-me" >
           <img src="../assets/icons/notification.svg">
@@ -204,7 +196,7 @@ function generateButtons(id, style) {
   } else if (style == 2) {
     return `
       <div class="text-center mt-3">
-              ${checkInStock(id)?
+              ${checkInStock(stock)?
        `<button class="btn btn-sm btn-outline-dark d-flex align-items-center justify-content-center gap-2 w-100" onclick="handleAddToCart('${id}')">
           <img style="width:20px;height:20px" src="../assets/icons/pCart.svg">
           <span>Add to cart</span>
@@ -220,7 +212,7 @@ function generateButtons(id, style) {
   } else if (style == 3) {
     return `
       <div class="mt-3">
-        <a onclick="viewProduct('${id}')" href="product-details.html?id=${id}" class="btn bg-dark w-100 text-white btn-sm">View details</a>
+        <a onclick="viewProduct(${id})" href="product-details.html?id=${id}" class="btn bg-dark w-100 text-white btn-sm">View details</a>
       </div>
     `;
   }
@@ -230,9 +222,7 @@ function generateButtons(id, style) {
 
 export function redirectToProductPage(id) {
   if (id) {
-    
     window.location.href = `../pages/product-details.html?id=${id}`;
-    
   } else {
     console.error("Product ID is required for redirection.");
   }
@@ -270,83 +260,96 @@ document.addEventListener("click", (e) => {
 
 
 // Add to Recently Viewed
-export function addToRecentlyViewed(productId, maxItems = 3) {
-  let viewed = JSON.parse(localStorage.getItem("recentlyViewed")) || [];
-  
-  // Remove if exists
-  viewed = viewed.filter(id => id !== productId);
-  
-  // Add to start
-  viewed.unshift(productId);
-  
-  // Trim to maxItems
-  if (viewed.length > maxItems) {
-    viewed = viewed.slice(0, maxItems);
-  }
-  
-  localStorage.setItem("recentlyViewed", JSON.stringify(viewed));
+export async function addToRecentlyViewed(productId) {
+try{
+const addRecentlyViewedProduct = await fetch(`http://localhost:3000/api/recently-viewed/add/${localStorage.getItem('user-access-id')}/${productId}`,{
+          method: 'POST',
+        });
+        if(!addRecentlyViewedProduct.ok){
+          console.log("Product not added");
+          return;
+        }
+        return console.log("Product added");
+}catch(error){
+  console.log("error in adding in recently viewed");
+}
 }
 
-// Get Recently Viewed with Limit
-export function getRecentlyViewedProducts(products, limit) {
-  const viewed = JSON.parse(localStorage.getItem("recentlyViewed")) || [];
-  return viewed
-    .map(id => products.find(p => p.id === id))
-    .filter(Boolean)
-    .slice(0, limit);
+// // Get Recently Viewed with Limit
+// export function getRecentlyViewedProducts(products, limit) {
+//   const viewed = JSON.parse(localStorage.getItem("recentlyViewed")) || [];
+//   return viewed
+//     .map(id => products.find(p => p.id === id))
+//     .filter(Boolean)
+//     .slice(0, limit);
+// }
+
+
+
+
+export function viewProduct(productId) {
+  console.log("this is product id :", productId)
+  addToRecentlyViewed(productId);
 }
 
 
 
 
-export function viewProduct(productId, maxRecent = 10) {
-  addToRecentlyViewed(productId, maxRecent);
-}
 
 
+// // Top Selling Products
+// function getTopSelling(products) {
+//   return products.filter(product => product.isTopSelling);
+// }
 
+// // Top Deals (Biggest Discount)
+// function getTopDeals(products, minDiscount = 10) {
+//   return products.filter(product => {
+//     const discount = ((product.originalPrice - product.sellingPrice) / product.originalPrice) * 100;
+//     return discount >= minDiscount;
+//   });
+// }
 
-
-
-// Top Selling Products
-function getTopSelling(products) {
-  return products.filter(product => product.isTopSelling);
-}
-
-// Top Deals (Biggest Discount)
-function getTopDeals(products, minDiscount = 10) {
-  return products.filter(product => {
-    const discount = ((product.originalPrice - product.sellingPrice) / product.originalPrice) * 100;
-    return discount >= minDiscount;
-  });
-}
 
 // Specific Category Products
-export function getByCategory(products, categoryName, limit) {
-  return products.filter(product => product.category.toLowerCase() === categoryName.toLowerCase()).slice(0, limit);
+export async function getProductByCategory(categoryName) {
+  
+  // try {
+  //   const res = await fetch(`http://localhost:3000/api/product/all/${categoryName}`, {
+  //     method: 'GET'
+  //   });
+
+  //   const products = await res.json();
+  //   return await products;
+  // } catch (error) {
+  //   console.log("Error in loading product:", error);
+  //   alert("Error in loading product");
+  //   return null;
+  // }
 }
 
 
-// New Arrivals (Added within the last 30 days)
-function getNewArrivals(products) {
-  const today = new Date();
-  return products.filter(product => {
-    const added = new Date(product.addedDate);
-    const diffDays = (today - added) / (1000 * 60 * 60 * 24);
-    return diffDays <= 30;
-  });
-}
 
-// Custom Function (e.g. by RAM or processor)
-function getBySpecs(products, filter = {}) {
-  return products.filter(product => {
-    return Object.entries(filter).every(([key, value]) => {
-      if (Array.isArray(product.sizes[key])) {
-        return product.sizes[key].includes(value);
-      }
-      return product.sizes[key] === value;
-    });
-  });
+// // New Arrivals (Added within the last 30 days)
+// function getNewArrivals(products) {
+//   const today = new Date();
+//   return products.filter(product => {
+//     const added = new Date(product.addedDate);
+//     const diffDays = (today - added) / (1000 * 60 * 60 * 24);
+//     return diffDays <= 30;
+//   });
+// }
+
+// // Custom Function (e.g. by RAM or processor)
+// function getBySpecs(products, filter = {}) {
+//   return products.filter(product => {
+//     return Object.entries(filter).every(([key, value]) => {
+//       if (Array.isArray(product.sizes[key])) {
+//         return product.sizes[key].includes(value);
+//       }
+//       return product.sizes[key] === value;
+//     });
+//   });
   
 
-}
+// }

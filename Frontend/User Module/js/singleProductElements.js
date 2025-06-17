@@ -20,6 +20,7 @@ async function getProductById(productId) {
     return null;
   }
 }
+
 // Format price with Indian numbering system
 const formatPrice = price => {
   // Ensure price is a number
@@ -47,7 +48,6 @@ async function initializePage(productId) {
     // Fetch product data
     product = await getProductById(productId);
     review(product);
-   console.log("this is the product : ", product)
     // Handle product not found
     if (!product) {
       document.getElementById("userProductPageInfo").innerHTML = `
@@ -578,7 +578,6 @@ async function review(product){
   const reviews = product.Reviews;  
   const reviewContainer = document.getElementById("userProductPageReviewSection");
 
- console.log("product in review :",product)
 
   // const reviews = reviewsArray.Reviews;
 
@@ -629,7 +628,6 @@ reviewContainer.innerHTML = `<div class="d-flex flex-column justify-content-cent
    
 }
     else{
-      console.log("user not buy this")
     reviewContainer.innerHTML = `<p class="text-center">No product reviews found!</p>`;
     return;}
 

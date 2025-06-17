@@ -17,9 +17,10 @@ document.getElementById("userCart").innerHTML = `
     <div class="offcanvas-footer cartfooter">
       <div>
         <div class="cartCoupon justify-content-between align-items-center" style="display: none;">
-          <input class="cartCouponInput" type="text" placeholder="Type coupon code here" />
-          <button class="couponBtn">Apply</button>
+          <input class="cartCouponInput" type="text" id="cartCouponInput" placeholder="Type coupon code here" />
+          <button class="couponBtn" id="applyCouponBtn">Apply</button>
         </div>
+        <div id="discountDetails"></div>
         <p class="have-a-code d-flex gap-3">
           Have a coupon code? <a href="#" id="applyCoupon">Apply Now</a>
         </p>
@@ -27,7 +28,7 @@ document.getElementById("userCart").innerHTML = `
       <hr />
       <div class="toral-checkout d-flex justify-content-between">
         <div class="cartTotal">
-          <p class="catTotalP">Total: ₹ <span id="cratTotal"></span></p>
+          <p class="catTotalP">Total: ₹ <span id="cartTotal"></span></p>
         </div>
         <button class="carCheckout">Checkout</button>
       </div>
@@ -40,7 +41,8 @@ import { showNotification } from "../notifications.js";
 // import { products as vivoProducts } from "../products.js"; // Import products - this was missing
 
   let cart = []; // Initialize the cart as an empty array
-
+let isCouponApplied = false;
+let originalAmount;
 // Update Cart Counter
 function updateCartCount() {
   let cartItems = document.querySelectorAll(".cartproductlistitems").length;
@@ -52,7 +54,7 @@ function updateCartCount() {
 // Update Total Price
 function updateCartTotal() {
   const total = cart.reduce((sum, item) => sum + item.Product.sellingPrice * item.quantity, 0);
-  document.getElementById("cratTotal").textContent = total;
+  document.getElementById("cartTotal").textContent = total;
 }
 
 // Render Cart Items
@@ -353,6 +355,130 @@ async function loadCart() {
   updateCartTotal();    // Pass the cart as a parameter
 }
 
+//event listener for apply coupon btn
+// document.getElementById("applyCouponBtn").addEventListener("click", async function () {
+//   const couponCode = document.getElementById("cartCouponInput").value;
+//   if(isCouponApplied){
+//     showNotification("Only one coupon can applied.", "error");
+//     return;
+//   }
+//   if (!couponCode) {
+//     showNotification("Enter the coupon code", "error");
+//     return;
+//   }
+
+//   try {
+//     const res = await fetch("http://localhost:3000/api/coupon/apply", {
+//       method: 'POST',
+//       headers: {
+//         'Content-Type': 'application/json'
+//       },
+//       body: JSON.stringify({
+//         couponCode,
+//         orderAmount: parseFloat(document.getElementById("cartTotal").innerText)
+//       })
+//     });
+
+//     if (!res.ok) {
+//       showNotification("Invalid coupon code!");
+//       return;
+//     }
+
+//     const resData = await res.json();
+//     const finalAmount = resData.finalAmount;
+//     const discount = resData.discount;
+//     document.getElementById("cartTotal").innerText = finalAmount;
+
+//     document.getElementById("discountDetails").innerHTML = `
+//     <div class="toast align-items-center text-white bg-primary border-0" role="alert" aria-live="assertive" aria-atomic="true">
+//   <div class="d-flex">
+//     <div class="toast-body">
+//     ${couponCode} applied - you save ${discount}₹
+//     </div>
+//     <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+//   </div>
+// </div>`
+
+//     isCouponApplied = true;
+//     showNotification("Coupon code applied!", "success");
+//   } catch (error) {
+//     console.log("Error in validating coupon", error);
+//     showNotification("Error in validating coupon code!", "error");
+//   }
+// });
+
+
+
+
+// Event listener for apply coupon button
+document.getElementById("applyCouponBtn").addEventListener("click", async function () {
+  const couponCode = document.getElementById("cartCouponInput").value.trim();
+// Store original price globally
+originalAmount = parseFloat(document.getElementById("cartTotal").innerText);
+  if (isCouponApplied) {
+    showNotification("Only one coupon can be applied.", "error");
+    return;
+  }
+
+  if (!couponCode) {
+    showNotification("Enter the coupon code", "error");
+    return;
+  }
+
+  try {
+    const res = await fetch("http://localhost:3000/api/coupon/apply", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        couponCode,
+        orderAmount: originalAmount
+      })
+    });
+
+    if (!res.ok) {
+      showNotification("Invalid coupon code!", "error");
+      return;
+    }
+
+    const resData = await res.json();
+    const finalAmount = resData.finalAmount;
+    const discount = resData.discount || 0;
+    
+    document.getElementById("cartTotal").innerText = finalAmount;
+
+    // Render toast
+    document.getElementById("discountDetails").innerHTML = `
+      <div id="couponToast" class="align-items-center p-2 border border-success status-Delivered show" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+          <div class="toast-body">
+            <strong>${couponCode.toUpperCase()}</strong> applied – you saved <strong>₹${discount}</strong>
+          </div>
+          <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close" id="closeCouponToast"></button>
+        </div>
+      </div>`;
+
+    isCouponApplied = true;
+    showNotification("Coupon code applied!", "success");
+
+    // Add event listener for toast close
+    document.getElementById("closeCouponToast").addEventListener("click", function () {
+      // Reset everything
+      document.getElementById("cartTotal").innerText = originalAmount.toFixed(2);
+      isCouponApplied = false;
+      document.getElementById("discountDetails").innerHTML = ""; // Clear toast
+      showNotification("Coupon removed!", "info");
+    });
+
+  } catch (error) {
+    console.error("Error in validating coupon", error);
+    showNotification("Error in validating coupon code!", "error");
+  }
+});
+
+
+
 
 
 
@@ -380,7 +506,7 @@ document.querySelector(".carCheckout").addEventListener("click", async function(
       },
       body: JSON.stringify({
         userId,
-        orderAmount: parseFloat(document.getElementById("cratTotal").innerText),
+        orderAmount: parseFloat(document.getElementById("cartTotal").innerText),
         items: cart, // Directly passing the array, no need for stringify
       }),
     });

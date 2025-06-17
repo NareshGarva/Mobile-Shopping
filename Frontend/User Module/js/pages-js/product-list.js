@@ -1,4 +1,4 @@
-import { displayProductCard, getByCategory } from "../global-product.js";
+import { displayProductCard, getProductByCategory } from "../global-product.js";
 
 let filteredProducts = [];
 let allFilteredBase = [];
@@ -185,16 +185,16 @@ async function initializePage() {
     if (!productCategory && !productLabel && !productSearch) {
       allFilteredBase = [...vivoProducts];
     } else if (productCategory && !productLabel) {
-      allFilteredBase = getByCategory(vivoProducts, productCategory);
+      allFilteredBase = getProductByCategory(vivoProducts, productCategory);
     } else if (!productCategory && productLabel) {
       allFilteredBase = vivoProducts.filter(p => p.warranty?.toLowerCase() === productLabel.toLowerCase());
     } else if (productCategory && productLabel) {
-      allFilteredBase = getByCategory(vivoProducts, productCategory).filter(p =>
+      allFilteredBase = getProductByCategory(vivoProducts, productCategory).filter(p =>
         p.warranty?.toLowerCase() === productLabel.toLowerCase()
       );
     } else if (productSearch) {
       if (qMatchedCategory) {
-        allFilteredBase = getByCategory(vivoProducts, qMatchedCategory);
+        allFilteredBase = getProductByCategory(vivoProducts, qMatchedCategory);
       } else {
         allFilteredBase = qSearchProducts;
       }

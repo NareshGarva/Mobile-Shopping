@@ -1,6 +1,5 @@
-import vivoProducts from "../products.js";
+// import vivoProducts from "../products.js";
 import {
-  getByCategory,
   redirectToProductPage,viewProduct,
   calculateDiscountHTML,
   renderStars,
@@ -13,10 +12,10 @@ document.getElementById("userOfferCategoryProductSlider").innerHTML = `
     <h5>Over Exclusive <strong class="User-section-title-strong">Deals</strong></h5>
   </div>
   <div class="category-buttons">
-    <button class="category-button active" data-category="Smartphones">Smartphones</button>
-    <button class="category-button" data-category="Tablets">Tablets</button>
+    <button class="category-button active" data-category="Smartphone">Smartphone</button>
+    <button class="category-button" data-category="Smartwatch">Smartwatch</button>
+    <button class="category-button" data-category="Audio">Audio</button>
     <button class="category-button" data-category="Accessories">Accessories</button>
-    <button class="category-button" data-category="Wearables">Wearables</button>
   </div>
   <div class="product-grid">
     <div id="product-container"></div>
@@ -24,6 +23,37 @@ document.getElementById("userOfferCategoryProductSlider").innerHTML = `
 </section>
 `;
 
+async function loadProducts(category) {
+    try {
+    const res = await fetch(`http://localhost:3000/api/product/all/${category}`, {
+      method: 'GET'
+    });
+
+    const products = await res.json();
+    return products;
+  } catch (error) {
+    console.log("Error in loading product:", error);
+    alert("Error in loading product");
+    return null;
+  }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+
+ 
+// Now it's safe to call the initial render
+filterProducts("Smartphone", document.querySelector(".category-button"));
+
+// ... Rest of your product list and functions below (unchanged)
+async function filterProducts(category, element) {
+  document
+    .querySelectorAll(".category-button")
+    .forEach((btn) => btn.classList.remove("active"));
+  element.classList.add("active");
+  const products = await loadProducts(category);
+  renderProducts(products);
+  
+}
 // Event delegation for category buttons
 document.querySelectorAll(".category-button").forEach((button) => {
   button.addEventListener("click", function() {
@@ -31,20 +61,11 @@ document.querySelectorAll(".category-button").forEach((button) => {
     filterProducts(category, this);
   });
 });
+ 
+})
 
-// Now it's safe to call the initial render
-filterProducts("Smartphones", document.querySelector(".category-button"));
 
-// ... Rest of your product list and functions below (unchanged)
-function filterProducts(category, element) {
-  document
-    .querySelectorAll(".category-button")
-    .forEach((btn) => btn.classList.remove("active"));
-  element.classList.add("active");
-  
-  renderProducts(getByCategory(vivoProducts,category,5));
-  
-}
+
 
 function renderProducts(filteredProducts) {
   const container = document.getElementById("product-container");
@@ -95,15 +116,15 @@ function generateProductHTML(product) {
   if (!product) return "";
 
   const discount = calculateDiscountHTML(product.originalPrice, product.sellingPrice);
-  const stars = renderStars(product.rating);
+  const stars = renderStars(product.Reviews);
 
   return `
     <div class="product-card">
-      <p class="discount-tag">${discount}% OFF</p>
-      <img src="${product.mainImage}" alt="${product.title}" class="img-fluid">
+      <p class="discount-tag">New Arrival | <span class="text-dark">${discount}% OFF</span></p>
+      <img src="${product.mainImage}" alt="${product.productTitle}" class="img-fluid">
 
       <div class="product-info mt-2">
-        <h5>${product.title}</h5>
+        <h5>${product.productTitle}</h5>
         <p class="text-warning star-rating">${stars}</p>
         <p class="price-container">
           <del>₹${product.originalPrice}</del>

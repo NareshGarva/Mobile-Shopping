@@ -22,7 +22,7 @@
 
 // Importing the products array from another file
 // import vivoProducts from "../products.js";
-import { redirectToProductPage, displayProductCard, getByCategory,viewProduct } from "../global-product.js";
+import { redirectToProductPage, displayProductCard, getProductByCategory,viewProduct } from "../global-product.js";
 
 // const allProducts = vivoProducts;
 
