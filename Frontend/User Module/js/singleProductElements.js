@@ -650,7 +650,7 @@ else{
                 <p class="text-center text-muted">Based on ${totalReviews} reviews</p>
                 ${ratingBars}
                 ${await authUserOrder(product) ? `
-                <a class="RVwriteReviewBtn w-100 mt-3 d-flex align-items-center justify-content-center gap-3" id="writeReviewBtn" href="#">Write a Review</a>` : "Only authorised user can write review."}
+                <a class="RVwriteReviewBtn w-100 mt-3 d-flex align-items-center justify-content-center gap-3" id="writeReviewBtn" href="#">Write a Review</a>` : "Only authorized user can write review."}
               </div>
             </div>
           </div>

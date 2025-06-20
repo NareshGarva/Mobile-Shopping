@@ -1,5 +1,5 @@
-import {handleAddToCart} from "./components-js/user-cart.js";
-window.handleAddToCart = handleAddToCart;
+import { handleAddToCart } from "./components-js/user-cart.js";
+
 
 
 // function to show star rating
@@ -186,7 +186,7 @@ function generateButtons(id,stock, style) {
       <div class="product-actions mt-3 d-flex justify-content-between gap-1">
         <a onclick="viewProduct('${id}')" href="product-details.html?id=${id}" class="btn btn-sm bg-dark text-white w-100">View details</a>
         ${checkInStock(stock)?
-       `<button class="btn btn-sm btn-outline-dark" onclick="handleAddToCart(${id}, '',1)">
+       `<button class="btn btn-sm btn-outline-dark" onclick="addToCartBtn(${id})">
           <img src="../assets/icons/pCart.svg">
         </button>` :        `<button class="btn btn-sm btn-outline-dark notify-me" >
           <img src="../assets/icons/notification.svg">
@@ -219,6 +219,10 @@ function generateButtons(id,stock, style) {
   return "";
 }
 
+window.addToCartBtn = function (id){
+  console.log("function call:",id)
+handleAddToCart(id);
+}
 
 export function redirectToProductPage(id) {
   if (id) {

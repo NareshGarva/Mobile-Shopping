@@ -134,22 +134,27 @@ function getDefaultVariant(product) {
 }
 
 export async function handleAddToCart(id, passedVariant = {}, passedQuantity) {
- 
+ console.log("maa me aa gya: ", id);
+
   if(localStorage.getItem("session-expiry-time") < Date.now()){
     showNotification(`Please <a href="../pages/Authentication.html" style="color: red">Login</a> to add in cart`, "error");
     return;
   }
 
+ console.log("maa me aa gya: 1");
   
   function skipFirst(obj) {
     if (!obj || Object.keys(obj).length === 0) return {};
     return Object.fromEntries(Object.entries(obj).slice(1));
   }
+ console.log("maa me aa gya: 2");
 
   let finalVariant = skipFirst(passedVariant);
   let finalColor = passedVariant?.Color || null;
   let finalQuantity = passedQuantity > 0 ? passedQuantity : 1;
   
+ console.log("maa me aa gya: 3",finalColor, finalQuantity, finalVariant);
+
   // If required data not passed, use defaults
   if (!passedVariant || Object.keys(passedVariant).length === 0) {
     const { variant: defaultVariant, color: defaultColor } = getDefaultVariant(product);
