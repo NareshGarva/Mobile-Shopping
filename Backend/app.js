@@ -14,6 +14,7 @@ const sendMailRoute = require('./routes/sendMailRoute');
 const reviewRoute = require('./routes/reviewRoute');
 const couponRoute = require('./routes/couponCodesRoutes');
 const recentlyViewedRoute = require('./routes/recentlyViewedRoutes');
+const dashController = require('./controllers/dashController');
 
 
 // Apply middleware BEFORE routes
@@ -55,6 +56,10 @@ app.use('/api/coupon', couponRoute);
 
 // coupon  routes
 app.use('/api/recently-viewed', recentlyViewedRoute);
+
+// dashboard  routes
+app.use('/api/dashboard-data/filter-type/:type', dashController.sendDashData);
+app.use('/api/dashboard-data/filter-type/:startDate/:endDate', dashController.sendCousDashData);
 
 
 
