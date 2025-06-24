@@ -20,25 +20,30 @@
     </div>
   `;
 
-// Importing the products array from another file
-// import vivoProducts from "../products.js";
+
 import { redirectToProductPage, displayProductCard, getProductByCategory,viewProduct } from "../global-product.js";
 
-// const allProducts = vivoProducts;
+
 
   const searchInput = document.getElementById("searchInput");
   const searchResults = document.getElementById("searchResults");
   const form = document.querySelector(".searchform");
 
   // Real-time search logic
-  searchInput.addEventListener("input", function () {
-    const query = this.value.toLowerCase();
+  searchInput.addEventListener("input", async function () {
+     const query = this.value.toLowerCase();
     if (!query) {
       searchResults.innerHTML = "";
       return;
     }
- 
-    const filtered = allProducts.filter(item => item.title.toLowerCase().includes(query) || item.category.toLowerCase().includes(query));
+
+    try{
+      const res = await fetch('http://localhost:3000/api/product/all');
+    if (!res.ok) {
+      throw new Error("Product fetch failed");
+    }
+    const products = await res.json(); 
+       const filtered = products.filter(item => item.productTitle.toLowerCase().includes(query) || item.category.toLowerCase().includes(query));
     if (filtered.length === 0) {
       searchResults.innerHTML = `<p>No results found.</p>`;
     } else {
@@ -48,9 +53,9 @@ import { redirectToProductPage, displayProductCard, getProductByCategory,viewPro
     return `
       <div class="col-12 col-sm-6 col-md-4 col-lg-3">
         <div class="product-card border rounded p-2 h-100 d-flex align-items-center gap-2" data-id="${item.id}" style="background: #f9f9f9;">
-          <img style="width:70px;height:70px;object-fit:cover;border-radius:6px;background:gray" src="${item.mainImage}" alt="${item.title}">
+          <img style="width:70px;height:70px;object-fit:cover;border-radius:6px;background:gray" src="${item.mainImage}" alt="${item.productTitle}">
           <div>
-            <p class="mb-0 fw-semibold truncate-title">${item.title}</p>
+            <p class="mb-0 fw-semibold truncate-title">${item.productTitle}</p>
             <p class="text-muted small mb-0">${item.category}</p>
           </div>
         </div>
@@ -58,6 +63,14 @@ import { redirectToProductPage, displayProductCard, getProductByCategory,viewPro
     `;
   })
   .join("");
+
+    }}
+    catch(error){
+      console.log("internal server error");
+    }
+   
+ 
+   
 
 // Now add click event listeners
 document.querySelectorAll(".product-card").forEach(card => {
@@ -68,7 +81,7 @@ document.querySelectorAll(".product-card").forEach(card => {
   });
 });
     }
-  });
+  );
 
   // Redirect on form submit
   form.addEventListener("submit", function (e) {

@@ -136,10 +136,10 @@ function getDefaultVariant(product) {
 export async function handleAddToCart(id, passedVariant = {}, passedQuantity) {
  console.log("maa me aa gya: ", id);
 
-  if(localStorage.getItem("session-expiry-time") < Date.now()){
-    showNotification(`Please <a href="../pages/Authentication.html" style="color: red">Login</a> to add in cart`, "error");
-    return;
-  }
+  // if(localStorage.getItem("session-expiry-time") < Date.now()){
+  //   showNotification(`Please <a href="../pages/Authentication.html" style="color: red">Login</a> to add in cart`, "error");
+  //   return;
+  // }
 
  console.log("maa me aa gya: 1");
   
@@ -416,6 +416,8 @@ async function loadCart() {
 
 
 // Event listener for apply coupon button
+
+
 document.getElementById("applyCouponBtn").addEventListener("click", async function () {
   const couponCode = document.getElementById("cartCouponInput").value.trim();
 // Store original price globally
