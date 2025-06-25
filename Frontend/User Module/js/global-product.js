@@ -1,4 +1,5 @@
 import { handleAddToCart } from "./components-js/user-cart.js";
+import { showNotification } from "./notifications.js";
 
 
 
@@ -118,7 +119,7 @@ export function displayProductCard(productContainerId, productsArray, btnstyle, 
         const productLink =  productCardswiper.querySelector(".productLink");
 if (productLink) {
   productLink.addEventListener("click", () => {
-    viewProduct(product.id);
+    viewedProduct(product.id);
     redirectToProductPage(product.id);
   });
 }
@@ -167,7 +168,7 @@ if (productLink) {
       const productLink = productCard.querySelector(".productLink");
 if (productLink) {
   productLink.addEventListener("click", () => {
-    viewProduct(product.id);
+    viewedProduct(product.id);
     redirectToProductPage(product.id);
   });
 }
@@ -184,7 +185,7 @@ function generateButtons(id,stock, style) {
   if (style == 1) {
     return `
       <div class="product-actions mt-3 d-flex justify-content-between gap-1">
-        <a onclick="viewProduct('${id}')" href="product-details.html?id=${id}" class="btn btn-sm bg-dark text-white w-100">View details</a>
+        <a onclick="viewedProduct('${id}')" href="product-details.html?id=${id}" class="btn btn-sm bg-dark text-white w-100">View details</a>
         ${checkInStock(stock)?
        `<button class="btn btn-sm btn-outline-dark" onclick="addToCartBtn(${id})">
           <img src="../assets/icons/pCart.svg">
@@ -212,15 +213,86 @@ function generateButtons(id,stock, style) {
   } else if (style == 3) {
     return `
       <div class="mt-3">
-        <a onclick="viewProduct(${id})" href="product-details.html?id=${id}" class="btn bg-dark w-100 text-white btn-sm">View details</a>
+        <a onclick="viewedProduct(${id})" href="product-details.html?id=${id}" class="btn bg-dark w-100 text-white btn-sm">View details</a>
       </div>
     `;
   }
   return "";
 }
 
+const loadProduct = async (productId) => {
+ try {
+    const res = await fetch(`http://localhost:3000/api/product/${productId}`);
+    if (!res.ok) {
+      throw new Error("Product fetch failed");
+    }
+    const product = await res.json(); 
+    return product;
+  } catch (error) {
+    console.error("Error fetching product:", error);
+    return null;
+  }
+
+}
+
+export function getFirstColorAndVariant(product) {
+  const color = product.ProductColors?.[0]?.colorValue || null;
+  const variant = Object.fromEntries(
+    product.ProductSizes?.map(({ type, value }) => [type, value.split(',')[0].trim()]) || []
+  );
+  return { color, variant };
+}
+
+export async function buyNowProduct(id){
+    if (localStorage.getItem("session-expiry-time") < Date.now()) {
+      showNotification(`Please <a href="../pages/Authentication.html" style="color: red">Login</a> to proceed to checkout`, "error");
+      return;
+    }
+ 
+  try {
+    const userId = localStorage.getItem("user-access-id");
+const product = await loadProduct(id);
+const orderAmount = product.sellingPrice;
+    const { variant,color } = getFirstColorAndVariant(product);
+const items = [{
+Product:{  mainImage:product.mainImage,
+        productTitle:product.productTitle,
+        sellingPrice:product.sellingPrice,
+        },
+        quantity:1,
+        color:color,
+        cartVarients:variant,
+}]
+    const draftOrder = await fetch('http://localhost:3000/api/order/create-Order', {
+      method: 'POST',
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        userId,
+        orderAmount,
+        items, 
+      }),
+    });
+
+    if (!draftOrder.ok) {
+      const errorData = await draftOrder.json();
+      console.log("Order can't be created. Error:", errorData.message || "Unknown error");
+      return;
+    }
+
+    const responseData = await draftOrder.json();
+    console.log("Order created successfully:", responseData);
+
+    // Redirect to checkout page or show checkout modal
+    window.location.href = window.location.href = `./Checkout.html?orderId=${responseData.order.orderId}`;
+  } catch (err) {
+    console.log("Error in creating order", err.message);
+  }
+
+}
+
 window.addToCartBtn = function (id){
-  console.log("function call:",id)
 handleAddToCart(id);
 }
 
@@ -279,20 +351,12 @@ const addRecentlyViewedProduct = await fetch(`http://localhost:3000/api/recently
 }
 }
 
-// // Get Recently Viewed with Limit
-// export function getRecentlyViewedProducts(products, limit) {
-//   const viewed = JSON.parse(localStorage.getItem("recentlyViewed")) || [];
-//   return viewed
-//     .map(id => products.find(p => p.id === id))
-//     .filter(Boolean)
-//     .slice(0, limit);
-// }
 
 
 
 
-export function viewProduct(productId) {
-  console.log("this is product id :", productId)
+
+export function viewedProduct(productId) {
   addToRecentlyViewed(productId);
 }
 

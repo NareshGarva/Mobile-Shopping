@@ -1,8 +1,9 @@
 // import vivoProducts from "../products.js";
 import {
-  redirectToProductPage,viewProduct,
+  redirectToProductPage,viewedProduct,
   calculateDiscountHTML,
   renderStars,
+  buyNowProduct,
 } from "../global-product.js";
 
 // Inject HTML without calling filterProducts immediately
@@ -37,6 +38,7 @@ async function loadProducts(category) {
     return null;
   }
 }
+
 
 document.addEventListener("DOMContentLoaded", () => {
 
@@ -99,24 +101,37 @@ function renderProducts(filteredProducts) {
   container.appendChild(otherWrapper);
 }
 
+
+
+
+
 function createProductCard(product) {
   const productCard = document.createElement("div");
   productCard.className = "product";
   productCard.innerHTML = generateProductHTML(product);
   
   productCard.addEventListener("click", () => {
-    viewProduct(product.id);
-    redirectToProductPage(product.id);
+    viewedProduct(product.id);
+    // redirectToProductPage(product.id);
+    buyNowProduct(product.id);
   });
 
   return productCard;
 }
+
+
+ 
+
+
+
 
 function generateProductHTML(product) {
   if (!product) return "";
 
   const discount = calculateDiscountHTML(product.originalPrice, product.sellingPrice);
   const stars = renderStars(product.Reviews);
+
+
 
   return `
     <div class="product-card">
@@ -129,9 +144,10 @@ function generateProductHTML(product) {
         <p class="price-container">
           <del>₹${product.originalPrice}</del>
           <strong>₹${product.sellingPrice}</strong>
-        </p>
-        <button onclick="viewProduct('${product.id}')" href="/product-details.html?id=${product.id}" class="buy-now-button">Buy Now</button>
+        </p><button data-id="${product.id}" class="buy-now-button">Buy Now</button>
+
       </div>
     </div>
-  `;
+  `; 
 }
+

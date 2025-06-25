@@ -1,7 +1,7 @@
 // Set Cart UI
 document.getElementById("userCart").innerHTML = `
   <div class="Cart offcanvas offcanvas-end Caroffcanvas" id="cartoffcanvas" tabindex="-1">
-    <div id="notification-container"></div>
+    
     <div class="offcanvas-header d-flex justify-content-between align-items-center">
       <h5 class="offcanvas-title">Your cart • <span class="itemNumberCounter"></span> <span>item</span></h5>
       <button class="close-icon" type="button" data-bs-dismiss="offcanvas">
@@ -38,6 +38,7 @@ document.getElementById("userCart").innerHTML = `
 
 // Import products array
 import { showNotification } from "../notifications.js";
+import { getFirstColorAndVariant } from "../global-product.js";
 // import { products as vivoProducts } from "../products.js"; // Import products - this was missing
 
   let cart = []; // Initialize the cart as an empty array
@@ -114,55 +115,57 @@ document.getElementById("applyCoupon").addEventListener("click", function(e) {
   cartCoupon.style.display = cartCoupon.style.display === "none" ? "flex" : "none";
 });
 
-function getDefaultVariant(product) {
-  const sizes = product.sizes;
-  let variant = {};
-  
-  if (sizes) {
-    for (const key in sizes) {
-      if (Array.isArray(sizes[key])) {
-        variant[key] = sizes[key][0]; // Pick first item from array
-      } else {
-        variant[key] = sizes[key]; // Directly assign string (like Processor)
-      }
+
+
+
+const loadProduct = async (productId) => {
+ try {
+    const res = await fetch(`http://localhost:3000/api/product/${productId}`);
+    if (!res.ok) {
+      throw new Error("Product fetch failed");
     }
+    const product = await res.json(); 
+    return product;
+  } catch (error) {
+    console.error("Error fetching product:", error);
+    return null;
   }
-  
-  const color = product.colors?.[0] || null;
-  
-  return { variant, color };
+
 }
 
 export async function handleAddToCart(id, passedVariant = {}, passedQuantity) {
- console.log("maa me aa gya: ", id);
 
-  // if(localStorage.getItem("session-expiry-time") < Date.now()){
-  //   showNotification(`Please <a href="../pages/Authentication.html" style="color: red">Login</a> to add in cart`, "error");
-  //   return;
-  // }
 
- console.log("maa me aa gya: 1");
+  if(localStorage.getItem("session-expiry-time") < Date.now()){
+    showNotification(`Please <a href="../pages/Authentication.html" style="color: red">Login</a> to add in cart`, "error");
+    return;
+  }
+
+
   
   function skipFirst(obj) {
     if (!obj || Object.keys(obj).length === 0) return {};
     return Object.fromEntries(Object.entries(obj).slice(1));
   }
- console.log("maa me aa gya: 2");
 
   let finalVariant = skipFirst(passedVariant);
   let finalColor = passedVariant?.Color || null;
   let finalQuantity = passedQuantity > 0 ? passedQuantity : 1;
-  
- console.log("maa me aa gya: 3",finalColor, finalQuantity, finalVariant);
 
+
+ try{
   // If required data not passed, use defaults
   if (!passedVariant || Object.keys(passedVariant).length === 0) {
-    const { variant: defaultVariant, color: defaultColor } = getDefaultVariant(product);
+     // Fetch product data
+    const product = await loadProduct(id);
+    const { variant: defaultVariant, color: defaultColor } = getFirstColorAndVariant(product);
     finalVariant = defaultVariant;
     finalColor = defaultColor;
   } 
-  
- 
+}catch(error){
+  console.log("error in loading product");
+}
+
     try{
       const res = await fetch("http://localhost:3000/api/cart/add-to-cart",{
 method: "POST",
@@ -360,63 +363,6 @@ async function loadCart() {
   updateCartTotal();    // Pass the cart as a parameter
 }
 
-//event listener for apply coupon btn
-// document.getElementById("applyCouponBtn").addEventListener("click", async function () {
-//   const couponCode = document.getElementById("cartCouponInput").value;
-//   if(isCouponApplied){
-//     showNotification("Only one coupon can applied.", "error");
-//     return;
-//   }
-//   if (!couponCode) {
-//     showNotification("Enter the coupon code", "error");
-//     return;
-//   }
-
-//   try {
-//     const res = await fetch("http://localhost:3000/api/coupon/apply", {
-//       method: 'POST',
-//       headers: {
-//         'Content-Type': 'application/json'
-//       },
-//       body: JSON.stringify({
-//         couponCode,
-//         orderAmount: parseFloat(document.getElementById("cartTotal").innerText)
-//       })
-//     });
-
-//     if (!res.ok) {
-//       showNotification("Invalid coupon code!");
-//       return;
-//     }
-
-//     const resData = await res.json();
-//     const finalAmount = resData.finalAmount;
-//     const discount = resData.discount;
-//     document.getElementById("cartTotal").innerText = finalAmount;
-
-//     document.getElementById("discountDetails").innerHTML = `
-//     <div class="toast align-items-center text-white bg-primary border-0" role="alert" aria-live="assertive" aria-atomic="true">
-//   <div class="d-flex">
-//     <div class="toast-body">
-//     ${couponCode} applied - you save ${discount}₹
-//     </div>
-//     <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-//   </div>
-// </div>`
-
-//     isCouponApplied = true;
-//     showNotification("Coupon code applied!", "success");
-//   } catch (error) {
-//     console.log("Error in validating coupon", error);
-//     showNotification("Error in validating coupon code!", "error");
-//   }
-// });
-
-
-
-
-// Event listener for apply coupon button
-
 
 document.getElementById("applyCouponBtn").addEventListener("click", async function () {
   const couponCode = document.getElementById("cartCouponInput").value.trim();
@@ -495,9 +441,6 @@ document.querySelector(".carCheckout").addEventListener("click", async function(
     showNotification("Your cart is empty");
     return;
   }
-
-  console.log("the cart items : ",cart)
-  
   if (localStorage.getItem("session-expiry-time") < Date.now()) {
     showNotification(`Please <a href="../pages/Authentication.html" style="color: red">Login</a> to proceed to checkout`, "error");
     return;
@@ -514,7 +457,7 @@ document.querySelector(".carCheckout").addEventListener("click", async function(
       body: JSON.stringify({
         userId,
         orderAmount: parseFloat(document.getElementById("cartTotal").innerText),
-        items: cart, // Directly passing the array, no need for stringify
+        items: cart, 
       }),
     });
 

@@ -21,7 +21,7 @@
   `;
 
 
-import { redirectToProductPage, displayProductCard, getProductByCategory,viewProduct } from "../global-product.js";
+import { redirectToProductPage, displayProductCard, getProductByCategory,viewedProduct } from "../global-product.js";
 
 
 
@@ -76,7 +76,7 @@ import { redirectToProductPage, displayProductCard, getProductByCategory,viewPro
 document.querySelectorAll(".product-card").forEach(card => {
   const productId = card.getAttribute("data-id");
   card.addEventListener("click", () => {
-    viewProduct(productId);
+    viewedProduct(productId);
     redirectToProductPage(productId);
   });
 });

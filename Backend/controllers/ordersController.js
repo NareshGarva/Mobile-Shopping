@@ -29,7 +29,7 @@ exports.createOrder = async (req, res) => {
             return res.status(400).json({ message: 'Items should be an array.' });
         }
      
-
+console.log(items.cartVarients)
         // Create order
         const order = await Order.create({
             userId,
