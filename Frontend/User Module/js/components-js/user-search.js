@@ -21,7 +21,7 @@
   `;
 
 
-import { redirectToProductPage, displayProductCard, getProductByCategory,viewedProduct } from "../global-product.js";
+import { redirectToProductPage,viewedProduct } from "../global-product.js";
 
 
 

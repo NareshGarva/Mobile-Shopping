@@ -27,10 +27,7 @@ document.getElementById("userNavigationMenu").innerHTML = `
             <a class="nav-link product-nav-btn" href="../pages/product-list.html">Shop All</a>
           </li>
           <hr />
-          <li class="nav-item">
-            <a class="nav-link product-nav-btn" href="../pages/product-list.html?Category=Tablets" data-filter="new">New Arrivals</a>
-          </li>
-          <hr />
+        
           <li class="nav-item" id="dropdown">
             <a class="nav-link dropdown-toggle" role="button">
               Shop by category
@@ -43,10 +40,6 @@ document.getElementById("userNavigationMenu").innerHTML = `
               <li><a class="dropdown-item product-nav-btn" href="../pages/product-list.html?Category=Audio">Audio</a></li>
               <li><a class="dropdown-item product-nav-btn" href="../pages/product-list.html?Category=Accessories">Accessories</a></li>
             </ul>
-          </li>
-          <hr />
-          <li class="nav-item">
-            <a class="nav-link product-nav-btn" href="../pages/product-list.html?Category=Tablets">Special Sell</a>
           </li>
           <hr />
           <li class="nav-item">

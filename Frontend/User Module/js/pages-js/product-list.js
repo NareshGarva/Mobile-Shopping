@@ -1,4 +1,4 @@
-import { displayProductCard, getProductByCategory } from "../global-product.js";
+import { displayProductCard } from "../global-product.js";
 
 let filteredProducts = [];
 let allFilteredBase = [];
@@ -152,6 +152,27 @@ async function fetchAllProducts() {
   }
 }
 
+
+// Specific Category Products
+async function getProductByCategory(categoryName) {
+  try {
+    const res = await fetch(`http://localhost:3000/api/product/all/${categoryName}`, {
+      method: 'GET'
+    });
+    const products = await res.json();
+
+    return await products;
+  } catch (error) {
+    console.log("Error in loading product:", error);
+    alert("Error in loading product");
+    return null;
+  }
+}
+
+
+
+
+
 // Initialize the page with products and filters
 async function initializePage() {
   try {
@@ -185,7 +206,7 @@ async function initializePage() {
     if (!productCategory && !productLabel && !productSearch) {
       allFilteredBase = [...vivoProducts];
     } else if (productCategory && !productLabel) {
-      allFilteredBase = getProductByCategory(vivoProducts, productCategory);
+      allFilteredBase = await getProductByCategory(productCategory);
     } else if (!productCategory && productLabel) {
       allFilteredBase = vivoProducts.filter(p => p.warranty?.toLowerCase() === productLabel.toLowerCase());
     } else if (productCategory && productLabel) {

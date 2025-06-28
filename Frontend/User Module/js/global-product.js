@@ -390,34 +390,9 @@ export function viewedProduct(productId) {
 // }
 
 
-// Specific Category Products
-export async function getProductByCategory(categoryName) {
-  
-  // try {
-  //   const res = await fetch(`http://localhost:3000/api/product/all/${categoryName}`, {
-  //     method: 'GET'
-  //   });
-
-  //   const products = await res.json();
-  //   return await products;
-  // } catch (error) {
-  //   console.log("Error in loading product:", error);
-  //   alert("Error in loading product");
-  //   return null;
-  // }
-}
 
 
 
-// // New Arrivals (Added within the last 30 days)
-// function getNewArrivals(products) {
-//   const today = new Date();
-//   return products.filter(product => {
-//     const added = new Date(product.addedDate);
-//     const diffDays = (today - added) / (1000 * 60 * 60 * 24);
-//     return diffDays <= 30;
-//   });
-// }
 
 // // Custom Function (e.g. by RAM or processor)
 // function getBySpecs(products, filter = {}) {
