@@ -318,7 +318,7 @@ location.reload();
       
       const recentOrders = orders
         .slice() // Clone the array
-        .sort((a, b) => new Date(b.date) - new Date(a.date)) // Sort newest first
+        .sort((a, b) => new Date(b.orderDate) - new Date(a.orderDate)) // Sort newest first
         .slice(0, 3); // Take first 3
        
       displayOrders(recentOrders, "lastThreeOrdersSection");

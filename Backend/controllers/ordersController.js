@@ -29,7 +29,7 @@ exports.createOrder = async (req, res) => {
             return res.status(400).json({ message: 'Items should be an array.' });
         }
      
-console.log(items.cartVarients)
+
         // Create order
         const order = await Order.create({
             userId,
@@ -42,6 +42,7 @@ console.log(items.cartVarients)
         }
 
 for (const item of items) {
+  console.log(item.cartVarients)
     const orderItem = await OrderItems.create({
         orderId: order.orderId,
         minImage: item.Product.mainImage,

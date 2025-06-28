@@ -243,6 +243,17 @@ export function getFirstColorAndVariant(product) {
   return { color, variant };
 }
 
+function getFirstColorAndVariantForBuyBtn(product) {
+
+  const color = product.ProductColors?.[0]?.colorValue || null;
+const variant = product.ProductSizes.map(({ type, value }) => ({
+  type,
+  value: value.split(',')[0].trim()
+}));
+
+  return { color, variant };
+}
+
 export async function buyNowProduct(id){
     if (localStorage.getItem("session-expiry-time") < Date.now()) {
       showNotification(`Please <a href="../pages/Authentication.html" style="color: red">Login</a> to proceed to checkout`, "error");
@@ -253,7 +264,7 @@ export async function buyNowProduct(id){
     const userId = localStorage.getItem("user-access-id");
 const product = await loadProduct(id);
 const orderAmount = product.sellingPrice;
-    const { variant,color } = getFirstColorAndVariant(product);
+    const { variant,color } = getFirstColorAndVariantForBuyBtn(product);
 const items = [{
 Product:{  mainImage:product.mainImage,
         productTitle:product.productTitle,
@@ -345,7 +356,7 @@ const addRecentlyViewedProduct = await fetch(`http://localhost:3000/api/recently
           console.log("Product not added");
           return;
         }
-        return console.log("Product added");
+        return;
 }catch(error){
   console.log("error in adding in recently viewed");
 }

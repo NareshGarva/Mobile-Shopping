@@ -1,4 +1,4 @@
-import { renderStars, calculateDiscountHTML } from "./global-product.js";
+import { renderStars, calculateDiscountHTML,buyNowProduct } from "./global-product.js";
 import { handleAddToCart } from "./components-js/user-cart.js";
 
 // Declare the product variable globally
@@ -67,7 +67,6 @@ async function initializePage(productId) {
       sellingPrice: productSellingPrice = 0,
       category: productCategory = "",
       stock: productInStock = 0,
-      rating: productRating = 0,
       Reviews,
       mainImage = "",
       ProductImages = [],
@@ -305,13 +304,12 @@ function setupQuantityControls(isAvailable, productId) {
     
     // Setup buy now button if needed
     const buyNowBtn = document.getElementById('buyNowBtn');
-    if (buyNowBtn) {
-      buyNowBtn.addEventListener('click', () => {
-        // Implement buy now functionality
-        console.log("Buy Now clicked");
-        // Redirect to checkout or handle buy now process
-      });
-    }
+if (buyNowBtn) {
+  buyNowBtn.addEventListener('click', () => {
+    buyNowProduct(productId);
+  });
+}
+
   }
 }
 
