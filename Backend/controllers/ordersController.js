@@ -9,6 +9,7 @@ const {
   OrderItems,
   OrderTimeline,
   OrderItemsVarient,
+  Product
 } = require("../models/initAssociations");
 const {sendMail} = require('../utils/mailer'); // nodemailer for sending emails 
 
@@ -205,6 +206,9 @@ exports.updateOrderStatus = async (req, res) => {
     try {
         let { orderId, shippingStatus, trackId,paymentStatus,orderStatus } = req.body;
         const order = await Order.findByPk(orderId);
+              const orderItemData = await OrderItems.findAll({where: { orderId: orderId }});
+
+  
         if (!order) {
             return res.status(404).json({ message: 'Order not found.' });
         }
@@ -217,6 +221,21 @@ exports.updateOrderStatus = async (req, res) => {
     });
     
         if(( shippingStatus || paymentStatus || orderStatus )=== "Cancelled"){
+         
+          for (const item of orderItemData) {
+  const product = await Product.findOne({ where: { productTitle: item.itemTitle } });
+
+  if (product) {
+    const updatedStock = product.stock + item.itemQty;
+
+    await Product.update(
+      { stock: updatedStock },
+      { where: { productTitle: item.itemTitle } }
+    );
+  }
+}
+
+
 paymentStatus = shippingStatus = orderStatus = "Cancelled";
         }
 
@@ -226,6 +245,21 @@ paymentStatus = "Paid";
         }
 
         if(shippingStatus=== "Returned"){
+
+       for (const item of orderItemData) {
+  const product = await Product.findOne({ where: { productTitle: item.itemTitle } });
+
+  if (product) {
+    const updatedStock = product.stock + item.itemQty;
+
+    await Product.update(
+      { stock: updatedStock },
+      { where: { productTitle: item.itemTitle } }
+    );
+  }
+}
+
+
 orderStatus = "Complete";
 paymentStatus = "Refunded";
         }
@@ -358,10 +392,27 @@ exports.updateOrderDetails = async (req, res) => {
 
   try {
     const order = await Order.findByPk(orderId);
+      const orderItemData = await OrderItems.findAll({where: { orderId: orderId }});
+
 
     if (!order || order.orderStatus !== "Draft") {
       return res.status(404).json({ message: "Draft Order not found." });
     }
+
+
+for (const item of orderItemData) {
+  const product = await Product.findOne({ where: { productTitle: item.itemTitle } });
+
+  if (product) {
+    const updatedStock = product.stock - item.itemQty;
+
+    await Product.update(
+      { stock: updatedStock },
+      { where: { productTitle: item.itemTitle } }
+    );
+  }
+}
+
 
     // Update order
     await order.update({
