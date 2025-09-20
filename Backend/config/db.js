@@ -3,6 +3,9 @@ const { Sequelize } = require('sequelize');
 const sequelize = process.env.DATABASE_URL
   ? new Sequelize(process.env.DATABASE_URL, {
       dialect: 'mysql',
+      dialectOptions: {
+        ssl: { require: true },
+      },
       logging: false,
     })
   : new Sequelize(
@@ -13,6 +16,9 @@ const sequelize = process.env.DATABASE_URL
         host: process.env.DATABASE_HOST,
         port: process.env.DATABASE_PORT,
         dialect: 'mysql',
+        dialectOptions: {
+          ssl: { require: true },
+        },
         logging: false,
       }
     );
