@@ -10,6 +10,7 @@ document.getElementById("userHeader").innerHTML=`    <header>
       </div>
 
       <div class="mobile-icon-btn d-flex align-items-center justify-content-end gap-3">
+      <a href="https://mobile-shopping-admin.project.artifyr.in/login.html">Login as admin</a>
         <img href="#searchoffcanvas" data-bs-toggle="offcanvas" src="../assets/icons/search.svg" alt="" />
 
         <div class="cart-item-counter" data-bs-toggle="offcanvas" href="#cartoffcanvas">

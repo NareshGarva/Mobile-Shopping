@@ -73,7 +73,7 @@
   const token = localStorage.getItem("admin-access-token");
   if (!token) {
     alert("Please login to access this page.");
-    window.location.href = "/Frontend/admin%20module/login.html";
+    window.location.href = "./login.html";
   }
   // Check if the token is valid
 fetch('http://localhost:3000/api/auth/deshboard', {
@@ -88,7 +88,7 @@ fetch('http://localhost:3000/api/auth/deshboard', {
   localStorage.removeItem("admin-access-id"); // Remove  access id
   localStorage.removeItem("admin-session-expiry-time"); // Remove expiry time
     alert("Please login to access this page.");
-    window.location.href = "/Frontend/admin%20module/login.html";
+    window.location.href = "./login.html";
   }
   return res.json();
 });

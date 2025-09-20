@@ -3,8 +3,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "npx nodemon app.js"
-  },
+  "start": "node app.js",
+  "dev": "nodemon app.js"
+},
   "author": "",
   "license": "ISC",
   "description": "",
@@ -20,7 +21,6 @@
     "multer-storage-cloudinary": "^4.0.0",
     "mysql2": "^3.14.1",
     "nodemailer": "^6.10.1",
-    "nodemon": "^3.1.10",
     "pdfkit": "^0.17.1",
     "razorpay": "^2.9.6",
     "sequelize": "^6.37.7"
