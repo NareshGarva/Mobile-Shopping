@@ -18,7 +18,7 @@ const dashController = require('./controllers/dashController');
 
 const allowedOrigins = [
   "https://mobile-shopping.project.artifyr.in",
-  "https://mobile-shopping-admin.project.artifyr.in/",
+  "https://mobile-shopping-admin.project.artifyr.in",
 ];
 
 
