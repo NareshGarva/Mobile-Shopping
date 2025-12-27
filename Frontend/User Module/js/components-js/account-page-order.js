@@ -43,7 +43,7 @@ document.getElementById("accountPageOrders").innerHTML=`
 
    async function loadOrders(userId){
     try{
-      const res =await fetch(`http://localhost:3000/api/order/get-All-Order/${userId}`,{
+      const res =await fetch(`https://mobile-shopping-omvp.onrender.com/api/order/get-All-Order/${userId}`,{
         method: 'GET'
       });
 
@@ -231,7 +231,7 @@ orderlist.sort((a, b) => new Date(b.orderDate) - new Date(a.orderDate));
     button.addEventListener('click', async () => {
   try {
     const orderId = button.getAttribute('data-order-id');
-    const response = await fetch(`http://localhost:3000/api/order/${orderId}/invoice`, {
+    const response = await fetch(`https://mobile-shopping-omvp.onrender.com/api/order/${orderId}/invoice`, {
       method: 'GET',
       headers: {
         'Accept': 'application/pdf',
@@ -266,7 +266,7 @@ orderlist.sort((a, b) => new Date(b.orderDate) - new Date(a.orderDate));
   try {
     const orderId = button.getAttribute('data-order-id');
   const shippingStatus = "Returned"
-    const response = await fetch('http://localhost:3000/api/order/update/status', {
+    const response = await fetch('https://mobile-shopping-omvp.onrender.com/api/order/update/status', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ orderId, shippingStatus }),
@@ -290,7 +290,7 @@ location.reload();
   try {
     const orderId = button.getAttribute('data-order-id');
   const orderStatus = "Cancelled"
-    const response = await fetch('http://localhost:3000/api/order/update/status', {
+    const response = await fetch('https://mobile-shopping-omvp.onrender.com/api/order/update/status', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ orderId, orderStatus }),

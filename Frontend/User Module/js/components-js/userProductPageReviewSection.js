@@ -87,7 +87,7 @@ if (reviewBtn && productId) {
 
 
 async function  authUserOrder() {
-  const res = await fetch(`http://localhost:3000/api/order/auth-order/${productName},${localStorage.getItem('user-access-id')}`,{
+  const res = await fetch(`https://mobile-shopping-omvp.onrender.com/api/order/auth-order/${productName},${localStorage.getItem('user-access-id')}`,{
     method: 'GET'
   });
 

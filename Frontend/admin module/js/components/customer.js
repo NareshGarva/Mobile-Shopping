@@ -25,7 +25,7 @@ document.getElementById("adminCustomer").innerHTML = `
 
   async function allCustomers() {
     try {
-      const res = await fetch('http://localhost:3000/api/customer/all');
+      const res = await fetch('https://mobile-shopping-omvp.onrender.com/api/customer/all');
       if (!res.ok) {
         alert("Customers fetch failed");
         return [];
@@ -62,7 +62,7 @@ randerCustomerTable();
 
 window.deleteCustomer = async function (id) {
   try {
-    const res = await fetch(`http://localhost:3000/api/customer/${id}`, {
+    const res = await fetch(`https://mobile-shopping-omvp.onrender.com/api/customer/${id}`, {
       method: 'DELETE',
     });
 

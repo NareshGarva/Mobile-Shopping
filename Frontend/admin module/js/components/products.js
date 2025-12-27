@@ -173,7 +173,7 @@
 const renderTable = async () => {
   let products;
   try {
-    const response = await fetch('http://localhost:3000/api/product/all', {
+    const response = await fetch('https://mobile-shopping-omvp.onrender.com/api/product/all', {
       method: 'GET',
       headers: { 'Content-Type': 'application/json' }
     });
@@ -244,7 +244,7 @@ let categoryName;
 //fetch category 
 const fetchCategory = async () => {
   try {
-    const res = await fetch('http://localhost:3000/api/category/all', {
+    const res = await fetch('https://mobile-shopping-omvp.onrender.com/api/category/all', {
       method: 'GET',
       headers: { 'Content-Type': 'application/json' }
     }); // Assuming it returns all categories
@@ -491,8 +491,8 @@ productForm.addEventListener('submit', async function(e) {
 
   try {
     const url = isEdit
-      ? `http://localhost:3000/api/product/${idField.value}`
-      : 'http://localhost:3000/api/product/create';
+      ? `https://mobile-shopping-omvp.onrender.com/api/product/${idField.value}`
+      : 'https://mobile-shopping-omvp.onrender.com/api/product/create';
 
     const method = isEdit ? 'PUT' : 'POST';
     console.log("Form Data:", formData);
@@ -541,7 +541,7 @@ function resetForm() {
 window.viewProduct = async (id) => {
   let product;
   try {
-    const response = await fetch(`http://localhost:3000/api/product/${id}`);
+    const response = await fetch(`https://mobile-shopping-omvp.onrender.com/api/product/${id}`);
     product = await response.json();
   } catch (error) {
     console.error("Error fetching product:", error);
@@ -655,7 +655,7 @@ document.getElementById('viewEditBtn').addEventListener('click', function() {
 window.editProduct = async (id) => {
   let product;
   try {
-    const response = await fetch(`http://localhost:3000/api/product/${id}`);
+    const response = await fetch(`https://mobile-shopping-omvp.onrender.com/api/product/${id}`);
     product = await response.json();
   } catch (error) {
     console.error("Error fetching product:", error);
@@ -765,7 +765,7 @@ window.deleteProduct  = async (id) => {
 
   if (confirm("Are you sure you want to delete this product?")) {
     try {
-      const response = await fetch(`http://localhost:3000/api/product/${id}`, {
+      const response = await fetch(`https://mobile-shopping-omvp.onrender.com/api/product/${id}`, {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' }
       });

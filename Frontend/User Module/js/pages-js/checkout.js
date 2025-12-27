@@ -56,7 +56,7 @@ async function renderAddresses() {
     }
 
     // Fetch addresses from API
-    const response = await fetch(`http://localhost:3000/api/address/get-address/${userId}`, {
+    const response = await fetch(`https://mobile-shopping-omvp.onrender.com/api/address/get-address/${userId}`, {
       method: 'GET',
     });
 
@@ -196,7 +196,7 @@ async function renderAddresses() {
     async function fetchAndRenderOrderSummary(orderId) {
       try {
         
-        const response = await fetch(`http://localhost:3000/api/order/${orderId}`, {
+        const response = await fetch(`https://mobile-shopping-omvp.onrender.com/api/order/${orderId}`, {
           method: 'GET',
         });
 
@@ -355,7 +355,7 @@ function setupPurchaseButtons(data) {
     };
 
     try {
-      const res = await fetch('http://localhost:3000/api/order/capture-payment', {
+      const res = await fetch('https://mobile-shopping-omvp.onrender.com/api/order/capture-payment', {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(orderData),
@@ -369,7 +369,7 @@ function setupPurchaseButtons(data) {
 
       const RazorpayRES = await res.json();
 
-      const userRES = await fetch(`http://localhost:3000/api/auth/get-user/${localStorage.getItem('user-access-id')}`);
+      const userRES = await fetch(`https://mobile-shopping-omvp.onrender.com/api/auth/get-user/${localStorage.getItem('user-access-id')}`);
       if (!userRES.ok) {
         const userError = await userRES.json();
         showNotification(userError.message || "User fetch failed.", "error");
@@ -392,7 +392,7 @@ function setupPurchaseButtons(data) {
           console.log("Payment successful: ", response);
 
           // Verify Razorpay signature on the backend
-          const verifyRES = await fetch("http://localhost:3000/api/order/verify-payment", {
+          const verifyRES = await fetch("https://mobile-shopping-omvp.onrender.com/api/order/verify-payment", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -417,7 +417,7 @@ function setupPurchaseButtons(data) {
          const orderData = {
 orderStatus: "Cancelled"
          }
-            const orderRES = await fetch(`http://localhost:3000/api/order/update_order/${data.orderId}`, {
+            const orderRES = await fetch(`https://mobile-shopping-omvp.onrender.com/api/order/update_order/${data.orderId}`, {
             method: 'PUT',
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(orderData),
@@ -440,7 +440,7 @@ orderStatus: "Cancelled"
             razorpaySignature: response.razorpay_signature
           };
 
-          const orderRES = await fetch(`http://localhost:3000/api/order/update_order/${data.orderId}`, {
+          const orderRES = await fetch(`https://mobile-shopping-omvp.onrender.com/api/order/update_order/${data.orderId}`, {
             method: 'PUT',
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(orderUpdateData),
@@ -562,7 +562,7 @@ email: User.email,
           }
 
 
-          const mailRes = await fetch(`http://localhost:3000/api/email/send-mail`, {
+          const mailRes = await fetch(`https://mobile-shopping-omvp.onrender.com/api/email/send-mail`, {
             method: 'POST',
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(mailData),

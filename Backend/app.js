@@ -18,7 +18,12 @@ const dashController = require('./controllers/dashController');
 
 
 // Apply middleware BEFORE routes
-app.use(cors());
+app.use(cors(
+  {
+    origin: 'https://mobile-shopping.project.artifyr.in/',
+    credentials: true
+  }
+));
 app.use(bodyParser.json()); // or app.use(express.json())
 
 // Authantication  routes

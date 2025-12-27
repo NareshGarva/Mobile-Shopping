@@ -14,7 +14,7 @@ document.getElementById("userRecentlyViwedProduct").innerHTML = `
 
 async function renderRecentlyViewed() {
   try {
-    const productsData = await fetch(`http://localhost:3000/api/recently-viewed/get-by-user/${localStorage.getItem('user-access-id')}`, {
+    const productsData = await fetch(`https://mobile-shopping-omvp.onrender.com/api/recently-viewed/get-by-user/${localStorage.getItem('user-access-id')}`, {
       method: 'GET'
     });
 

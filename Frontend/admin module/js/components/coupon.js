@@ -212,7 +212,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 try{
-  const res = await fetch(isEdit ? "http://localhost:3000/api/coupon/update/coupons" : "http://localhost:3000/api/coupon/add/coupons",{
+  const res = await fetch(isEdit ? "https://mobile-shopping-omvp.onrender.com/api/coupon/update/coupons" : "https://mobile-shopping-omvp.onrender.com/api/coupon/add/coupons",{
     method: isEdit ? 'PUT' : 'POST',
     headers:{
     'Content-Type': 'application/json'
@@ -251,7 +251,7 @@ return;
  // Render Coupon Table
 async function renderCoupon() {
   try {
-    const res = await fetch('http://localhost:3000/api/coupon/get-all/coupons', {
+    const res = await fetch('https://mobile-shopping-omvp.onrender.com/api/coupon/get-all/coupons', {
       method: 'GET'
     });
 
@@ -309,7 +309,7 @@ async function renderCoupon() {
 window.deleteCoupon = async function(id) {
   if (confirm("Are you sure you want to delete this Coupon?")) {
     try {
-      const res = await fetch(`http://localhost:3000/api/coupon/coupons/delete/${id}`, {
+      const res = await fetch(`https://mobile-shopping-omvp.onrender.com/api/coupon/coupons/delete/${id}`, {
         method: 'DELETE',
       });
 

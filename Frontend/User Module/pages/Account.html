@@ -73,7 +73,7 @@
 
   const token = localStorage.getItem("token");
 
-fetch('http://localhost:3000/api/auth/profile', {
+fetch('https://mobile-shopping-omvp.onrender.com/api/auth/profile', {
   method: 'GET',
   headers: {
     'Authorization': `Bearer ${token}` // Send token in header

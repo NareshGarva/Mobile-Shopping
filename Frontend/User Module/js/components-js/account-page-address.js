@@ -162,7 +162,7 @@ async function renderAddresses(containerId) {
     }
     
     // Fetch addresses from API
-    const response = await fetch(`http://localhost:3000/api/address/get-address/${userId}`, {
+    const response = await fetch(`https://mobile-shopping-omvp.onrender.com/api/address/get-address/${userId}`, {
       method: 'GET',
     });
 
@@ -250,7 +250,7 @@ async function setDefaultAddress(addressId) {
       return;
     }
     
-    const response = await fetch(`http://localhost:3000/api/address/set-default/${addressId}/${userId}`, {
+    const response = await fetch(`https://mobile-shopping-omvp.onrender.com/api/address/set-default/${addressId}/${userId}`, {
       method: 'PUT',
     });
 
@@ -288,7 +288,7 @@ async function deleteAddress(addressId) {
       return;
     }
     
-    const response = await fetch(`http://localhost:3000/api/address/${addressId}`, {
+    const response = await fetch(`https://mobile-shopping-omvp.onrender.com/api/address/${addressId}`, {
       method: 'DELETE',
     });
 
@@ -323,7 +323,7 @@ async function renderDefaultAddresses() {
       return;
     }
     
-    const response = await fetch(`http://localhost:3000/api/address/get-default-address/${userId}`, {
+    const response = await fetch(`https://mobile-shopping-omvp.onrender.com/api/address/get-default-address/${userId}`, {
       method: 'GET',
     });
 
@@ -418,7 +418,7 @@ document.getElementById("address-form").addEventListener("submit", async functio
     
     if (editingIndex === null) {
       // Add new address
-      response = await fetch("http://localhost:3000/api/address/add-address", {
+      response = await fetch("https://mobile-shopping-omvp.onrender.com/api/address/add-address", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -434,7 +434,7 @@ document.getElementById("address-form").addEventListener("submit", async functio
         return;
       }
       console.log("Address id for update: ", addressId)
-      response = await fetch(`http://localhost:3000/api/address/update-address/${addressId}`, {
+      response = await fetch(`https://mobile-shopping-omvp.onrender.com/api/address/update-address/${addressId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

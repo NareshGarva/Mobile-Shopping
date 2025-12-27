@@ -38,7 +38,7 @@ import { redirectToProductPage,viewedProduct } from "../global-product.js";
     }
 
     try{
-      const res = await fetch('http://localhost:3000/api/product/all');
+      const res = await fetch('https://mobile-shopping-omvp.onrender.com/api/product/all');
     if (!res.ok) {
       throw new Error("Product fetch failed");
     }

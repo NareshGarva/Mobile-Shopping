@@ -140,7 +140,7 @@ document.addEventListener("change", e => {
 // Fetch products from the server
 async function fetchAllProducts() {
   try {
-    const res = await fetch('http://localhost:3000/api/product/all');
+    const res = await fetch('https://mobile-shopping-omvp.onrender.com/api/product/all');
     if (!res.ok) {
       throw new Error("Product fetch failed");
     }
@@ -156,7 +156,7 @@ async function fetchAllProducts() {
 // Specific Category Products
 async function getProductByCategory(categoryName) {
   try {
-    const res = await fetch(`http://localhost:3000/api/product/all/${categoryName}`, {
+    const res = await fetch(`https://mobile-shopping-omvp.onrender.com/api/product/all/${categoryName}`, {
       method: 'GET'
     });
     const products = await res.json();

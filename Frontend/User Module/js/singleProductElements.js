@@ -9,7 +9,7 @@ let productId =null;
 // Fetch products from the server
 async function getProductById(productId) {
   try {
-    const res = await fetch(`http://localhost:3000/api/product/${productId}`);
+    const res = await fetch(`https://mobile-shopping-omvp.onrender.com/api/product/${productId}`);
     if (!res.ok) {
       throw new Error("Product fetch failed");
     }
@@ -544,7 +544,7 @@ function updateSelectedVariantDisplay() {
 
 
 async function authUserOrder(product) {
-    const res = await fetch(`http://localhost:3000/api/order/auth-order/${product.productTitle}/${localStorage.getItem('user-access-id')}`, {
+    const res = await fetch(`https://mobile-shopping-omvp.onrender.com/api/order/auth-order/${product.productTitle}/${localStorage.getItem('user-access-id')}`, {
       method: 'GET'
     });
   //   const data = await res.json();

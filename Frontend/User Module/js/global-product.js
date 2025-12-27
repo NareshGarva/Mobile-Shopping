@@ -222,7 +222,7 @@ function generateButtons(id,stock, style) {
 
 const loadProduct = async (productId) => {
  try {
-    const res = await fetch(`http://localhost:3000/api/product/${productId}`);
+    const res = await fetch(`https://mobile-shopping-omvp.onrender.com/api/product/${productId}`);
     if (!res.ok) {
       throw new Error("Product fetch failed");
     }
@@ -274,7 +274,7 @@ Product:{  mainImage:product.mainImage,
         color:color,
         cartVarients:variant,
 }]
-    const draftOrder = await fetch('http://localhost:3000/api/order/create-Order', {
+    const draftOrder = await fetch('https://mobile-shopping-omvp.onrender.com/api/order/create-Order', {
       method: 'POST',
       headers: {
         "Content-Type": "application/json",
@@ -349,7 +349,7 @@ document.addEventListener("click", (e) => {
 // Add to Recently Viewed
 export async function addToRecentlyViewed(productId) {
 try{
-const addRecentlyViewedProduct = await fetch(`http://localhost:3000/api/recently-viewed/add/${localStorage.getItem('user-access-id')}/${productId}`,{
+const addRecentlyViewedProduct = await fetch(`https://mobile-shopping-omvp.onrender.com/api/recently-viewed/add/${localStorage.getItem('user-access-id')}/${productId}`,{
           method: 'POST',
         });
         if(!addRecentlyViewedProduct.ok){

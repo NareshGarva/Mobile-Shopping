@@ -81,7 +81,7 @@
 
   async function getProductById(productId) {
     try {
-      const res = await fetch(`http://localhost:3000/api/product/${productId}`);
+      const res = await fetch(`https://mobile-shopping-omvp.onrender.com/api/product/${productId}`);
       if (!res.ok) throw new Error("Product fetch failed");
       return await res.json();
     } catch (error) {
@@ -92,7 +92,7 @@
 
   async function authOrderProduct(product) {
     try {
-      const res = await fetch(`http://localhost:3000/api/order/auth-order/${product.productTitle}/${localStorage.getItem('user-access-id')}`);
+      const res = await fetch(`https://mobile-shopping-omvp.onrender.com/api/order/auth-order/${product.productTitle}/${localStorage.getItem('user-access-id')}`);
       if (!res.ok) throw new Error("Auth check failed");
       const data = await res.json();
       orderId = data?.data?.orderId || null;
@@ -131,7 +131,7 @@
     };
 
     try {
-      const res = await fetch(`http://localhost:3000/api/review/add-review/${productId}/${localStorage.getItem('user-access-id')}/${orderId}`, {
+      const res = await fetch(`https://mobile-shopping-omvp.onrender.com/api/review/add-review/${productId}/${localStorage.getItem('user-access-id')}/${orderId}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newReview),

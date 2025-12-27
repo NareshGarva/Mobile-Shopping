@@ -76,7 +76,7 @@
     window.location.href = "./login.html";
   }
   // Check if the token is valid
-fetch('http://localhost:3000/api/auth/deshboard', {
+fetch('https://mobile-shopping-omvp.onrender.com/api/auth/deshboard', {
   method: 'GET',
   headers: {
     'Authorization': `Bearer ${token}` // Send token in header

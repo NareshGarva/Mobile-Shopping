@@ -78,7 +78,7 @@ const ctx = document.getElementById("tabGraph").getContext("2d");
 
 // Fetch data from backend
 async function fetchData(filter = "Today") {
-  const response = await fetch(`http://localhost:3000/api/dashboard-data/filter-type/${filter}`);
+  const response = await fetch(`https://mobile-shopping-omvp.onrender.com/api/dashboard-data/filter-type/${filter}`);
   const data = await response.json();
 console.log(data)
   // Update Cards
@@ -152,7 +152,7 @@ document.getElementById("applyCustomDate").addEventListener("click", async () =>
   }
   const chartType = document.getElementById("chartType").value;
   // Fetch using custom date parameters – adjust endpoint if needed.
-  const response = await fetch(`http://localhost:3000/api/dashboard-data/filter-type/${startDate}/${endDate}`);
+  const response = await fetch(`https://mobile-shopping-omvp.onrender.com/api/dashboard-data/filter-type/${startDate}/${endDate}`);
   const data = await response.json();
   
   // Update Cards

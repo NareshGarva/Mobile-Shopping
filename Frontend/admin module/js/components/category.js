@@ -72,7 +72,7 @@ document.getElementById("adminCategory").innerHTML = `
 
     window.editCategory = async function(id) {
       try {
-        const response = await fetch(`http://localhost:3000/api/category/${id}`, {
+        const response = await fetch(`https://mobile-shopping-omvp.onrender.com/api/category/${id}`, {
           method: 'GET'
         });
         if (!response.ok) {
@@ -106,8 +106,8 @@ document.getElementById("adminCategory").innerHTML = `
     
       try {
         const url = isEdit
-          ? `http://localhost:3000/api/category/${isEdit}`
-          : 'http://localhost:3000/api/category/create';
+          ? `https://mobile-shopping-omvp.onrender.com/api/category/${isEdit}`
+          : 'https://mobile-shopping-omvp.onrender.com/api/category/create';
     
         const method = isEdit ? 'PUT' : 'POST';
     
@@ -150,8 +150,8 @@ document.getElementById("adminCategory").innerHTML = `
   //     };
   //     try {
   //   const url = isEdit
-  //     ? `http://localhost:3000/api/category/${isEdit}`
-  //     : 'http://localhost:3000/api/category/create';
+  //     ? `https://mobile-shopping-omvp.onrender.com/api/category/${isEdit}`
+  //     : 'https://mobile-shopping-omvp.onrender.com/api/category/create';
 
   //   const method = isEdit ? 'PUT' : 'POST';
   //   const res = await fetch(url, {
@@ -185,7 +185,7 @@ document.getElementById("adminCategory").innerHTML = `
     const renderCategory = async () =>{
       let category;
   try {
-    const response = await fetch('http://localhost:3000/api/category/all', {
+    const response = await fetch('https://mobile-shopping-omvp.onrender.com/api/category/all', {
       method: 'GET',
       headers: { 'Content-Type': 'application/json' }
     });
@@ -218,7 +218,7 @@ document.getElementById("adminCategory").innerHTML = `
     window.deleteCategory = async function(id) {
       if (confirm("Are you sure you want to delete this category?")) {
         try {
-          const response = await fetch(`http://localhost:3000/api/category/${id}`, {
+          const response = await fetch(`https://mobile-shopping-omvp.onrender.com/api/category/${id}`, {
             method: 'DELETE',
             headers: { 'Content-Type': 'application/json' }
           });
@@ -237,7 +237,7 @@ document.getElementById("adminCategory").innerHTML = `
 
     // window.editCategory = async function(id) {
     //   try {
-    //     const response = await fetch(`http://localhost:3000/api/category/${id}`,{
+    //     const response = await fetch(`https://mobile-shopping-omvp.onrender.com/api/category/${id}`,{
     //       method:'GET'
     //     });
     //     if (!response.ok) {

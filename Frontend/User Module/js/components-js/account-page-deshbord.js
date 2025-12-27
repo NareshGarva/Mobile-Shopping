@@ -84,7 +84,7 @@ const contactInfoDiv = document.getElementById("contact-info");
 
 
         try{
-          const res = await fetch(`http://localhost:3000/api/auth/update-user`,
+          const res = await fetch(`https://mobile-shopping-omvp.onrender.com/api/auth/update-user`,
             {
               method: 'PUT',
               headers:{
@@ -121,7 +121,7 @@ const contactInfoDiv = document.getElementById("contact-info");
     document.addEventListener("DOMContentLoaded", async function (){
        userId = localStorage.getItem('user-access-id');
       try{
-          const res = await fetch(`http://localhost:3000/api/auth/get-user/${userId}`,
+          const res = await fetch(`https://mobile-shopping-omvp.onrender.com/api/auth/get-user/${userId}`,
             {
               method: 'GET'
             }

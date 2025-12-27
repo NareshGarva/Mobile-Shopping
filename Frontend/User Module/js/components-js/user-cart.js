@@ -120,7 +120,7 @@ document.getElementById("applyCoupon").addEventListener("click", function(e) {
 
 const loadProduct = async (productId) => {
  try {
-    const res = await fetch(`http://localhost:3000/api/product/${productId}`);
+    const res = await fetch(`https://mobile-shopping-omvp.onrender.com/api/product/${productId}`);
     if (!res.ok) {
       throw new Error("Product fetch failed");
     }
@@ -167,7 +167,7 @@ export async function handleAddToCart(id, passedVariant = {}, passedQuantity) {
 }
 
     try{
-      const res = await fetch("http://localhost:3000/api/cart/add-to-cart",{
+      const res = await fetch("https://mobile-shopping-omvp.onrender.com/api/cart/add-to-cart",{
 method: "POST",
 headers:{
   "Content-Type":"application/json",
@@ -227,7 +227,7 @@ console.log(item);
 
   if (item) {
     try {
-      const res = await fetch("http://localhost:3000/api/cart/update-quantity", {
+      const res = await fetch("https://mobile-shopping-omvp.onrender.com/api/cart/update-quantity", {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -267,7 +267,7 @@ async function handleDecreaseQty(id) {
 
   if (item && item.quantity > 1) {
     try {
-      const res = await fetch("http://localhost:3000/api/cart/update-quantity", {
+      const res = await fetch("https://mobile-shopping-omvp.onrender.com/api/cart/update-quantity", {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -302,7 +302,7 @@ const data = await res.json();
 async function handleRemoveItem(id) {
   try {
     // Then sync with server
-    const res = await fetch(`http://localhost:3000/api/cart/${id}`, {
+    const res = await fetch(`https://mobile-shopping-omvp.onrender.com/api/cart/${id}`, {
       method: "DELETE",
     });
 const data = await res.json();
@@ -331,7 +331,7 @@ async function loadCart() {
 
   try {
     // Try to load from API first
-    const response = await fetch("http://localhost:3000/api/cart/get-cart-products", {
+    const response = await fetch("https://mobile-shopping-omvp.onrender.com/api/cart/get-cart-products", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -379,7 +379,7 @@ originalAmount = parseFloat(document.getElementById("cartTotal").innerText);
   }
 
   try {
-    const res = await fetch("http://localhost:3000/api/coupon/apply", {
+    const res = await fetch("https://mobile-shopping-omvp.onrender.com/api/coupon/apply", {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -449,7 +449,7 @@ document.querySelector(".carCheckout").addEventListener("click", async function(
   try {
     const userId = localStorage.getItem("user-access-id");
 
-    const draftOrder = await fetch('http://localhost:3000/api/order/create-Order', {
+    const draftOrder = await fetch('https://mobile-shopping-omvp.onrender.com/api/order/create-Order', {
       method: 'POST',
       headers: {
         "Content-Type": "application/json",

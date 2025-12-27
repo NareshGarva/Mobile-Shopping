@@ -26,7 +26,7 @@ document.getElementById("userOfferCategoryProductSlider").innerHTML = `
 
 async function loadProducts(category) {
     try {
-    const res = await fetch(`http://localhost:3000/api/product/all/${category}`, {
+    const res = await fetch(`https://mobile-shopping-omvp.onrender.com/api/product/all/${category}`, {
       method: 'GET'
     });
 

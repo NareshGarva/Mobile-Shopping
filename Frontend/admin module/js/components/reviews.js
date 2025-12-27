@@ -25,7 +25,7 @@ document.getElementById("adminReview").innerHTML = `
 
   async function allReviews() {
     try {
-      const res = await fetch('http://localhost:3000/api/review/all');
+      const res = await fetch('https://mobile-shopping-omvp.onrender.com/api/review/all');
       if (!res.ok) {
         alert("Review fetch failed");
         return [];
@@ -63,7 +63,7 @@ randerReviewTable();
 
 window.deleteReview = async function (id) {
   try {
-    const res = await fetch(`http://localhost:3000/api/review/${id}`, {
+    const res = await fetch(`https://mobile-shopping-omvp.onrender.com/api/review/${id}`, {
       method: 'DELETE',
     });
 

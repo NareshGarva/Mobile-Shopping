@@ -120,7 +120,7 @@
       password: formData.get('password'),
     };
 console.log(data);
-    const res = await fetch('http://localhost:3000/api/auth/register-user', {
+    const res = await fetch('https://mobile-shopping-omvp.onrender.com/api/auth/register-user', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data)
@@ -146,7 +146,7 @@ console.log(data);
       password: formData.get('password'),
     };
 
-    const res = await fetch('http://localhost:3000/api/auth/login-user', {
+    const res = await fetch('https://mobile-shopping-omvp.onrender.com/api/auth/login-user', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data)
@@ -178,7 +178,7 @@ console.log(data);
       email: formData.get('email'),
     }
 
-    const res = await fetch('http://localhost:3000/api/auth/forgot-password',{
+    const res = await fetch('https://mobile-shopping-omvp.onrender.com/api/auth/forgot-password',{
       method: 'POST',
       headers: {'Content-Type' : 'application/json'},
       body: JSON.stringify(data)

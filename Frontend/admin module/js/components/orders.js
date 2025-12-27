@@ -23,7 +23,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   `;
 
   // Load all orders
-  const res = await fetch(`http://localhost:3000/api/order/get-All-Order`, {
+  const res = await fetch(`https://mobile-shopping-omvp.onrender.com/api/order/get-All-Order`, {
     method: 'GET'
   });
 
@@ -253,7 +253,7 @@ function attachEmailEventListeners() {
       
 
         // Get user info first
-        const userRes = await fetch(`http://localhost:3000/api/auth/get-user/${userId}`, {
+        const userRes = await fetch(`https://mobile-shopping-omvp.onrender.com/api/auth/get-user/${userId}`, {
           method: 'GET',
         });
         
@@ -265,7 +265,7 @@ function attachEmailEventListeners() {
         const user = userData.user;
 
         // Fetch the invoice as a Blob (PDF)
-        const invoiceRes = await fetch(`http://localhost:3000/api/order/${orderId}/invoice`, {
+        const invoiceRes = await fetch(`https://mobile-shopping-omvp.onrender.com/api/order/${orderId}/invoice`, {
           method: 'GET',
           headers: {
             'Accept': 'application/pdf',
@@ -289,7 +289,7 @@ function attachEmailEventListeners() {
         };
 
         // Send email API request
-        const mailRes = await fetch(`http://localhost:3000/api/email/send-mail`, {
+        const mailRes = await fetch(`https://mobile-shopping-omvp.onrender.com/api/email/send-mail`, {
           method: 'POST',
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(mailData),
@@ -329,7 +329,7 @@ window.updateOrder = async function (orderId) {
   const trackId = trackIdElement.value;
 
   try {
-    const response = await fetch('http://localhost:3000/api/order/update/status', {
+    const response = await fetch('https://mobile-shopping-omvp.onrender.com/api/order/update/status', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ orderId, shippingStatus, trackId }),
