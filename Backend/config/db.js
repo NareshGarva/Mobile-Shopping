@@ -1,26 +1,18 @@
-const { Sequelize } = require('sequelize');
+const { Sequelize } = require("sequelize");
 
-const sequelize = process.env.DATABASE_URL
-  ? new Sequelize(process.env.DATABASE_URL, {
-      dialect: 'mysql',
-      dialectOptions: {
-        ssl: { require: true },
-      },
-      logging: false,
-    })
-  : new Sequelize(
-      process.env.DATABASE,
-      process.env.DATABASE_USER,
-      process.env.DATABASE_PASSWORD,
-      {
-        host: process.env.DATABASE_HOST,
-        port: process.env.DATABASE_PORT,
-        dialect: 'mysql',
-        dialectOptions: {
-          ssl: { require: true },
-        },
-        logging: false,
-      }
-    );
+const sequelize = new Sequelize({
+  dialect: "mysql",
+  host: process.env.TIDB_HOST,
+  port: 4000,
+  username: process.env.TIDB_USER,
+  password: process.env.TIDB_PASSWORD,
+  database: process.env.TIDB_DATABASE,
+  dialectOptions: {
+    ssl: {
+      minVersion: "TLSv1.2",
+    },
+  },
+  logging: false,
+});
 
 module.exports = sequelize;
