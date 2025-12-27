@@ -16,14 +16,26 @@ const couponRoute = require('./routes/couponCodesRoutes');
 const recentlyViewedRoute = require('./routes/recentlyViewedRoutes');
 const dashController = require('./controllers/dashController');
 
+const allowedOrigins = [
+  "https://mobile-shopping.project.artifyr.in",
+  "https://mobile-shopping-admin.project.artifyr.in/",
+];
+
 
 // Apply middleware BEFORE routes
-app.use(cors(
-  {
-    origin: 'https://mobile-shopping.project.artifyr.in',
-    credentials: true
-  }
-));
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin) return callback(null, true); // allow Postman / server requests
+
+    if (allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true
+}));
+
 app.use(bodyParser.json()); // or app.use(express.json())
 
 // Authantication  routes
