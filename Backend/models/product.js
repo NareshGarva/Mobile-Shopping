@@ -33,10 +33,10 @@ const Product = sequelize.define('Product', {
             min: 0,  // Price should not be negative
           },
     },
-    category: {
-        type: DataTypes.STRING,
-        allowNull: true
-    },
+   categoryId: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+},
     stock: {
         type: DataTypes.INTEGER,
         defaultValue: 0

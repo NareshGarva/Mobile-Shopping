@@ -101,11 +101,12 @@ userAddress.belongsTo(User, {
 // Category ↔ Product
 // ---------------------
 Category.hasMany(Product, {
-  foreignKey: 'category',
+  foreignKey: 'categoryId',
   onDelete: 'SET NULL',
 });
+
 Product.belongsTo(Category, {
-  foreignKey: 'category',
+  foreignKey: 'categoryId',
 });
 
 // ---------------------
