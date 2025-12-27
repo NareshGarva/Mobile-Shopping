@@ -30,7 +30,11 @@
                            Don't know your password? <a href="#forgotPage">Forgot</a>
                         </div>
                         <button type="submit" class="btn btn-dark w-100 mt-3"><div class="loader"></div>Login</button>
-                 
+                 <div>
+                    <strong>Sample Credentials:</strong>
+                    <p><strong>Email:</strong>admin@gmail.com</p>
+                    <p><strong>Password:</strong>Admin@123</p>
+                 </div>
                     </form>
                 </div>
 
@@ -100,7 +104,7 @@ alert(result.message);
       localStorage.setItem("admin-access-token", result.token); // save JWT in local storage
       localStorage.setItem("admin-access-id", result.id); // save JWT in local storage
       localStorage.setItem("admin-session-expiry-time", result.expireTime); // save JWT in local storage
-      window.location.href = "/Frontend/admin%20module/index.html";
+      window.location.href = "/index.html";
     }
   });
 
