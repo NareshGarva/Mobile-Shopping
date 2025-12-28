@@ -82,7 +82,7 @@ fetch('https://mobile-shopping-omvp.onrender.com/api/auth/profile', {
 .then(res => {
   if (res.status === 401 || res.status === 403) {
     alert("Please login to access this page.");
-    window.location.href = "/Frontend/User%20Module/pages/Authentication.html";
+    window.location.href = "/pages/Authentication.html";
   }
   return res.json();
 })

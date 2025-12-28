@@ -317,7 +317,7 @@ paymentStatus = "Refunded";
 <p>Hello ${user.name},</p>
 <p>Your order <strong>#${orderId}</strong> is currently being processed. We're getting everything ready for you.</p>
 <p style="color: #FFA500; font-weight: bold;">Status: Processing</p>
-<a href="http://127.0.0.1:5500/Frontend/User%20Module/pages/account.html" style="background-color: #FFA500; color: #fff; padding: 10px 20px; text-decoration: none;">View Order</a>
+<a href="https://mobile-shopping.project.artifyr.in/pages/account.html" style="background-color: #FFA500; color: #fff; padding: 10px 20px; text-decoration: none;">View Order</a>
 ` : shippingStatus === "Shipped" ? `<!-- Order Shipped Email -->
 <h1 style="color: #1E90FF;">Your Order Has Been Shipped 🚚</h1>
 <p>Hello ${user.name},</p>
@@ -329,7 +329,7 @@ paymentStatus = "Refunded";
 <p>Hello ${user.name},</p>
 <p>We’re happy to inform you that your order <strong>#${orderId}</strong> has been successfully delivered.</p>
 <p style="color: #28a745; font-weight: bold;">Status: Delivered</p>
-<a href="http://127.0.0.1:5500/Frontend/User%20Module/pages/post%20review.html" style="background-color: #28a745; color: #fff; padding: 10px 20px; text-decoration: none;">Give Feedback</a>
+<a href="https://mobile-shopping.project.artifyr.in/pages/post%20review.html" style="background-color: #28a745; color: #fff; padding: 10px 20px; text-decoration: none;">Give Feedback</a>
 ` : shippingStatus === "Returned" ? `<!-- Order Returned Email -->
 <h1 style="color: #800080;">Your Order Has Been Returned 🔁</h1>
 <p>Hello ${user.name},</p>

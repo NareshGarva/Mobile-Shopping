@@ -546,7 +546,7 @@ orderStatus: "Cancelled"
     </table>
 
     <p>Estimated Delivery: <strong>7 Days</strong></p>
-    <a href="http://127.0.0.1:5500/Frontend/User%20Module/pages/account.html" class="btn">View My Order</a>
+    <a href="https://mobile-shopping.project.artifyr.in/pages/account.html" class="btn">View My Order</a>
 
     <div class="footer">
       <p>If you have any questions, <a href="{{support_link}}">contact our support team</a>.</p>
@@ -567,7 +567,7 @@ email: User.email,
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(mailData),
           });
-          window.location.href = "http://127.0.0.1:5500/Frontend/User%20Module/pages/account.html";
+          window.location.href = "https://mobile-shopping.project.artifyr.in//pages/account.html";
         },
         prefill: {
           name: User.name,
@@ -598,7 +598,7 @@ email: User.email,
  const orderId = urlParams.get("orderId");
 
 if(!orderId){
-  return window.location.href = "http://127.0.0.1:5500/Frontend/User%20Module/pages/index.html"; 
+  return window.location.href = "https://mobile-shopping.project.artifyr.in"; 
 }
 
       renderAddresses();
