@@ -3,7 +3,7 @@ const Admin = require('../models/admin'); // Sequelize model
 const PasswordReset = require('../models/passwordReset'); // Sequelize model
 const jwt = require('jsonwebtoken'); // jsonwebtoken for token generation
 const bcrypt = require('bcryptjs'); // bcryptjs for password hashing
-const sendMail = require('../utils/mailer'); // nodemailer for sending emails
+const {sendMail} = require('../utils/mailer'); // nodemailer for sending emails
 
 // Replace this with your frontend deployed URL
 const FRONTEND_BASE_URL = process.env.FRONTEND_BASE_URL || 'http://your-frontend-url.com';

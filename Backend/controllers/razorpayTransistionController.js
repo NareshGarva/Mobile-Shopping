@@ -2,7 +2,7 @@ const razorpay = require('../config/razorpay');
 const { Order } = require("../models/initAssociations");
 const { validatePaymentVerification } = require('razorpay/dist/utils/razorpay-utils');
 const crypto = require("crypto");
-const {sendMail} = require('../utils/mailer'); // nodemailer for sending emails
+// const {sendMail} = require('../utils/mailer'); // nodemailer for sending emails
 
 exports.capturePayment = async (req, res) => {
   try {
