@@ -4,7 +4,7 @@ exports.sendMail = async (Message, subject, email) => {
 
   try {
     const mailResponse = await transporter.sendMail({
-      from: '"Mobile Shopping" <mobileshopping@clienz.in>',
+      from: '"Mobile Shopping" <nareshgarva@artifyr.in>',
       to: email,
       subject: subject,
       html: Message,
@@ -30,7 +30,7 @@ exports.sendMailRoute = async (req, res) => {
 
   try {
     const mailOptions = {
-      from: '"Mobile Shopping" <mobileshopping@clienz.in>',
+      from: '"Mobile Shopping" <nareshgarva@artifyr.in>',
       to: email,
       subject: subject,
       html: message,
