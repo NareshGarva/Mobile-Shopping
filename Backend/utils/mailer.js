@@ -1,7 +1,7 @@
 import { Resend } from 'resend';
 const resend = new Resend(process.env.RESEND_API);
 
-exports.sendMail = async (Message, subject, email, error) => {
+export const sendMail = async (Message, subject, email, error) => {
 
   try {
     const mailResponse = await resend.emails.send({
@@ -26,7 +26,7 @@ exports.sendMail = async (Message, subject, email, error) => {
 };
 
 
-exports.sendMailRoute = async (req, res) => {
+export const sendMailRoute = async (req, res) => {
   const { message, email, subject, pdfFileName, pdf,error } = req.body;
 
   try {
