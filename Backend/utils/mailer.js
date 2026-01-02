@@ -1,10 +1,11 @@
-const transporter = require('../config/nodemailer');
+import { Resend } from 'resend';
+const resend = new Resend(process.env.RESEND_API);
 
-exports.sendMail = async (Message, subject, email) => {
+exports.sendMail = async (Message, subject, email, error) => {
 
   try {
-    const mailResponse = await transporter.sendMail({
-      from: '"Mobile Shopping" <nareshgarva@artifyr.in>',
+    const mailResponse = await resend.emails.send({
+      from: '"Mobile Shopping" <info@artifyr.in>',
       to: email,
       subject: subject,
       html: Message,
@@ -12,9 +13,9 @@ exports.sendMail = async (Message, subject, email) => {
 
     console.log("Mail response received:", mailResponse);
 
-    if (!mailResponse.accepted || mailResponse.accepted.length === 0) {
-      throw new Error("Mail not accepted by recipient server");
-    }
+    if (error) {
+    return console.error({ error });
+  }
 
     return { success: true, message: "Mail sent successfully", response: mailResponse };
 
@@ -26,7 +27,7 @@ exports.sendMail = async (Message, subject, email) => {
 
 
 exports.sendMailRoute = async (req, res) => {
-  const { message, email, subject, pdfFileName, pdf } = req.body;
+  const { message, email, subject, pdfFileName, pdf,error } = req.body;
 
   try {
     const mailOptions = {
@@ -47,13 +48,15 @@ exports.sendMailRoute = async (req, res) => {
       ];
     }
 
-    const mailResponse = await transporter.sendMail(mailOptions);
+    const mailResponse = await resend.emails.send(mailOptions);
 
     console.log("Mail response received:", mailResponse);
 
-    if (!mailResponse.accepted || mailResponse.accepted.length === 0) {
-      throw new Error("Mail not accepted by recipient server");
-    }
+   
+    if (error) {
+    return console.error({ error });
+  }
+
 
     return res.status(200).json({ 
       success: true, 
