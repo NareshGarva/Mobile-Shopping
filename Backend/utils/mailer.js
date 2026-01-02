@@ -1,11 +1,12 @@
 import { Resend } from 'resend';
+// const { Resend } = require('resend');
 const resend = new Resend(process.env.RESEND_API);
 
 export const sendMail = async (Message, subject, email, error) => {
 
   try {
     const mailResponse = await resend.emails.send({
-      from: '"Mobile Shopping" <info@artifyr.in>',
+      from: '"Mobile Shopping" <auth@artifyr.in>',
       to: email,
       subject: subject,
       html: Message,
@@ -31,7 +32,7 @@ export const sendMailRoute = async (req, res) => {
 
   try {
     const mailOptions = {
-      from: '"Mobile Shopping" <nareshgarva@artifyr.in>',
+      from: '"Mobile Shopping" <auth@artifyr.in>',
       to: email,
       subject: subject,
       html: message,
