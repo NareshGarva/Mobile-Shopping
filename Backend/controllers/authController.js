@@ -6,7 +6,7 @@ const bcrypt = require('bcryptjs'); // bcryptjs for password hashing
 const {sendMail} = require('../utils/mailer'); // nodemailer for sending emails
 
 // Replace this with your frontend deployed URL
-const FRONTEND_BASE_URL = process.env.FRONTEND_BASE_URL || 'http://your-frontend-url.com';
+const FRONTEND_BASE_URL = process.env.FRONTEND_BASE_URL || 'https://mobile-shopping.project.artifyr.in';
 
 // ---------------- REGISTER USER ----------------
 exports.register = async (req, res) => {
@@ -169,7 +169,7 @@ exports.forgotPassword = async (req, res) => {
       tokenExpiry: new Date(expiryTime),
     });
 
-    const resetLink = `${FRONTEND_BASE_URL}/admin/Reset-password?token=${token}&time=${expiryTime}`;
+    const resetLink = `${FRONTEND_BASE_URL}/admin/Reset%20password.html?token=${token}&time=${expiryTime}`;
 
     const mailResult = await sendMail(
       `<p>Click <a href="${resetLink}">here</a> to reset your password. This link expires in 10 minutes.</p>`,
