@@ -6,7 +6,7 @@ export const sendMail = async (Message, subject, email, error) => {
 
   try {
     const mailResponse = await resend.emails.send({
-      from: '"Mobile Shopping" <auth@artifyr.in>',
+      from: '"Mobile Shopping" <info.artifyr.in>',
       to: email,
       subject: subject,
       html: Message,
@@ -32,7 +32,7 @@ export const sendMailRoute = async (req, res) => {
 
   try {
     const mailOptions = {
-      from: '"Mobile Shopping" <auth@artifyr.in>',
+      from: '"Mobile Shopping" <info.artifyr.in>',
       to: email,
       subject: subject,
       html: message,
